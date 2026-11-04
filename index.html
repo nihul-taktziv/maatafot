@@ -442,6 +442,40 @@ main{padding:4px 16px 32px}
 .card-head h2{margin:0}
 .card-head span{font-size:13px;color:var(--ink-2)}
 .spend,.wf{margin-top:14px}
+.sp-row{display:flex;align-items:center;gap:16px;margin-top:8px}
+.sp-donut{width:132px;height:132px;flex:none}
+.sp-num{font:700 15px var(--font);fill:var(--ink)}
+.sp-lbl{font:400 10px var(--font);fill:var(--ink-2)}
+.sp-side{flex:1;min-width:0}
+.sp-sub{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--ink-2);margin-bottom:6px}
+.sp-sub b{font-weight:600}
+.sp-legend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.sp-legend li{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.sp-legend span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-legend b{font-weight:600;white-space:nowrap}
+.sp-legend .sp-none{color:var(--ink-2);font-size:13.5px}
+.sp-dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.sp-fixed{margin-top:14px;border-top:1px solid var(--line)}
+.sp-fixed summary{list-style:none;display:flex;align-items:center;gap:8px;padding:12px 0 6px;cursor:pointer;font-size:15px}
+.sp-fixed summary::-webkit-details-marker{display:none}
+.sp-fixed summary span{flex:1}
+.sp-fixed summary b{font-weight:600}
+.sp-fixed summary svg{color:var(--ink-2);transition:transform .2s;flex:none}
+.sp-fixed[open] summary svg{transform:rotate(-90deg)}
+.sp-fixed ul{list-style:none;margin:4px 0 2px;padding:0 17px 0 0;display:flex;flex-direction:column;gap:7px}
+.sp-fixed li{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--ink-2)}
+.sp-fixed li b{font-weight:600;color:var(--ink);white-space:nowrap}
+.sp-fixed b.est,.sp-fixed li b.est{color:var(--ink-2)}
+.wf-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.wf-tile{background:var(--paper);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.wf-tile span{font-size:12.5px;color:var(--ink-2)}
+.wf-tile b{font-size:17px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf-tile b.est{color:var(--ink-2)}
+.wf-tile small{font-size:11.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf-tile.in b{color:var(--ok)}
+.wf-tile.sv b{color:var(--seal)}
+@media (prefers-reduced-motion: reduce){ .sp-fixed summary svg{transition:none} }
+
 .sb-group{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--ink-2);margin:14px 0 6px}
 .sb-group:first-of-type{margin-top:2px}
 .sb-group b{font-weight:600}
@@ -492,7 +526,19 @@ main{padding:4px 16px 32px}
 .sec-head{margin:22px 4px 10px}
 .link-btn{display:flex;align-items:center;gap:4px;border:0;background:none;color:var(--seal);font-weight:600;font-size:15px;padding:4px}
 .link-btn svg{width:16px;height:16px}
-.cico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none;background:var(--track)}
+.cico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex:none;background:var(--seal-soft);color:var(--seal)}
+.cico .lic{width:21px;height:21px}
+.chip .lic{width:16px;height:16px;vertical-align:-3px}
+.set-ic{color:var(--seal)}
+.tr-ri{color:var(--seal)}
+.tr-ri.do{color:var(--ok)}
+.tr-note .lic,.lbl .lic{vertical-align:-3px;color:var(--seal)}
+.set-alert>span:first-child{display:grid}
+.set-ic .lic{width:19px;height:19px}
+.hp-ic .lic,.an-ic .lic{width:19px;height:19px}
+.wl-points span .lic{display:block}
+.sm-line .lic{width:16px;height:16px;vertical-align:-3px;margin-left:4px;color:var(--seal)}
+#sheetTitle .lic{width:20px;height:20px;vertical-align:-4px;color:var(--seal)}
 .cmain{flex:1;min-width:0;display:flex;flex-direction:column}
 .cmain b{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cmain small{font-size:13px;margin-top:1px;display:block}
@@ -888,14 +934,17 @@ function chargeDate(ym, day){
   const last = new Date(y, mo+1, 0).getDate();
   return new Date(y, mo, Math.min(day, last));
 }
+/* Icons: Lucide (https://lucide.dev), ISC License, Copyright (c) Lucide Contributors */
+const LUCIDE = {"utensils": "<path d=\"M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2\"/><path d=\"M7 2v20\"/><path d=\"M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7\"/>", "shopping-bag": "<path d=\"M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z\"/><path d=\"M3 6h18\"/><path d=\"M16 10a4 4 0 0 1-8 0\"/>", "clapperboard": "<path d=\"M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z\"/><path d=\"m6.2 5.3 3.1 3.9\"/><path d=\"m12.4 3.4 3.1 4\"/><path d=\"M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z\"/>", "sparkles": "<path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"/><path d=\"M20 3v4\"/><path d=\"M22 5h-4\"/><path d=\"M4 17v2\"/><path d=\"M5 18H3\"/>", "shopping-cart": "<circle cx=\"8\" cy=\"21\" r=\"1\"/><circle cx=\"19\" cy=\"21\" r=\"1\"/><path d=\"M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12\"/>", "car": "<path d=\"M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><path d=\"M9 17h6\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/>", "house": "<path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>", "lightbulb": "<path d=\"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5\"/><path d=\"M9 18h6\"/><path d=\"M10 22h4\"/>", "smartphone": "<rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\" ry=\"2\"/><path d=\"M12 18h.01\"/>", "shield-check": "<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/><path d=\"m9 12 2 2 4-4\"/>", "graduation-cap": "<path d=\"M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z\"/><path d=\"M22 10v6\"/><path d=\"M6 12.5V16a6 3 0 0 0 12 0v-3.5\"/>", "dumbbell": "<path d=\"M14.4 14.4 9.6 9.6\"/><path d=\"M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z\"/><path d=\"m21.5 21.5-1.4-1.4\"/><path d=\"M3.9 3.9 2.5 2.5\"/><path d=\"M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z\"/>", "wrench": "<path d=\"M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z\"/>", "gift": "<rect x=\"3\" y=\"8\" width=\"18\" height=\"4\" rx=\"1\"/><path d=\"M12 8v13\"/><path d=\"M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7\"/><path d=\"M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5\"/>", "triangle-alert": "<path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"/><path d=\"M12 9v4\"/><path d=\"M12 17h.01\"/>", "baby": "<path d=\"M9 12h.01\"/><path d=\"M15 12h.01\"/><path d=\"M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5\"/><path d=\"M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5 1.1 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1\"/>", "stethoscope": "<path d=\"M11 2v2\"/><path d=\"M5 2v2\"/><path d=\"M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1\"/><path d=\"M8 15a6 6 0 0 0 12 0v-3\"/><circle cx=\"20\" cy=\"10\" r=\"2\"/>", "paw-print": "<circle cx=\"11\" cy=\"4\" r=\"2\"/><circle cx=\"18\" cy=\"8\" r=\"2\"/><circle cx=\"20\" cy=\"16\" r=\"2\"/><path d=\"M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z\"/>", "briefcase": "<path d=\"M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"/><rect width=\"20\" height=\"14\" x=\"2\" y=\"6\" rx=\"2\"/>", "bus": "<path d=\"M8 6v6\"/><path d=\"M15 6v6\"/><path d=\"M2 12h19.6\"/><path d=\"M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3\"/><circle cx=\"7\" cy=\"18\" r=\"2\"/><path d=\"M9 18h5\"/><circle cx=\"16\" cy=\"18\" r=\"2\"/>", "tag": "<path d=\"M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z\"/><circle cx=\"7.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\"/>", "life-buoy": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m4.93 4.93 4.24 4.24\"/><path d=\"m14.83 9.17 4.24-4.24\"/><path d=\"m14.83 14.83 4.24 4.24\"/><path d=\"m9.17 14.83-4.24 4.24\"/><circle cx=\"12\" cy=\"12\" r=\"4\"/>", "plane": "<path d=\"M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z\"/>", "gem": "<path d=\"M6 3h12l4 6-10 13L2 9Z\"/><path d=\"M11 3 8 9l4 13 4-13-3-6\"/><path d=\"M2 9h20\"/>", "target": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><circle cx=\"12\" cy=\"12\" r=\"6\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/>", "landmark": "<line x1=\"3\" x2=\"21\" y1=\"22\" y2=\"22\"/><line x1=\"6\" x2=\"6\" y1=\"18\" y2=\"11\"/><line x1=\"10\" x2=\"10\" y1=\"18\" y2=\"11\"/><line x1=\"14\" x2=\"14\" y1=\"18\" y2=\"11\"/><line x1=\"18\" x2=\"18\" y1=\"18\" y2=\"11\"/><polygon points=\"12 2 20 7 4 7\"/>", "trending-down": "<polyline points=\"22 17 13.5 8.5 8.5 13.5 2 7\"/><polyline points=\"16 17 22 17 22 11\"/>", "receipt": "<path d=\"M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z\"/><path d=\"M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8\"/><path d=\"M12 17.5v-11\"/>", "lock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\" ry=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/>", "shield": "<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/>", "calendar-days": "<path d=\"M8 2v4\"/><path d=\"M16 2v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/><path d=\"M8 14h.01\"/><path d=\"M12 14h.01\"/><path d=\"M16 14h.01\"/><path d=\"M8 18h.01\"/><path d=\"M12 18h.01\"/><path d=\"M16 18h.01\"/>", "alarm-clock": "<circle cx=\"12\" cy=\"13\" r=\"8\"/><path d=\"M12 9v4l2 2\"/><path d=\"M5 3 2 6\"/><path d=\"m22 6-3-3\"/><path d=\"M6.38 18.7 4 21\"/><path d=\"M17.64 18.67 20 21\"/>", "palette": "<circle cx=\"13.5\" cy=\"6.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"17.5\" cy=\"10.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"8.5\" cy=\"7.5\" r=\".5\" fill=\"currentColor\"/><circle cx=\"6.5\" cy=\"12.5\" r=\".5\" fill=\"currentColor\"/><path d=\"M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z\"/>", "circle-help": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/>", "compass": "<path d=\"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z\"/><circle cx=\"12\" cy=\"12\" r=\"10\"/>", "monitor": "<rect width=\"20\" height=\"14\" x=\"2\" y=\"3\" rx=\"2\"/><line x1=\"8\" x2=\"16\" y1=\"21\" y2=\"21\"/><line x1=\"12\" x2=\"12\" y1=\"17\" y2=\"21\"/>", "chart-pie": "<path d=\"M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z\"/><path d=\"M21.21 15.89A10 10 0 1 1 8 2.83\"/>", "zap": "<path d=\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z\"/>", "pen-line": "<path d=\"M12 20h9\"/><path d=\"M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z\"/>", "circle-check": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/>", "chart-column": "<path d=\"M3 3v16a2 2 0 0 0 2 2h16\"/><path d=\"M18 17V9\"/><path d=\"M13 17V5\"/><path d=\"M8 17v-3\"/>", "calendar-check": "<path d=\"M8 2v4\"/><path d=\"M16 2v4\"/><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"/><path d=\"M3 10h18\"/><path d=\"m9 16 2 2 4-4\"/>", "book-open": "<path d=\"M12 7v14\"/><path d=\"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z\"/>", "file-spreadsheet": "<path d=\"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z\"/><path d=\"M14 2v4a2 2 0 0 0 2 2h4\"/><path d=\"M8 13h2\"/><path d=\"M14 13h2\"/><path d=\"M8 17h2\"/><path d=\"M14 17h2\"/>", "book-marked": "<path d=\"M10 2v8l3-3 3 3V2\"/><path d=\"M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20\"/>", "eye": "<path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "hand": "<path d=\"M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2\"/><path d=\"M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2\"/><path d=\"M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8\"/><path d=\"M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15\"/>", "calculator": "<rect width=\"16\" height=\"20\" x=\"4\" y=\"2\" rx=\"2\"/><line x1=\"8\" x2=\"16\" y1=\"6\" y2=\"6\"/><line x1=\"16\" x2=\"16\" y1=\"14\" y2=\"18\"/><path d=\"M16 10h.01\"/><path d=\"M12 10h.01\"/><path d=\"M8 10h.01\"/><path d=\"M12 14h.01\"/><path d=\"M8 14h.01\"/><path d=\"M12 18h.01\"/><path d=\"M8 18h.01\"/>", "piggy-bank": "<path d=\"M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z\"/><path d=\"M2 9v1c0 1.1.9 2 2 2h1\"/><path d=\"M16 11h.01\"/>"};
+function svgIcon(n, size){ return `<svg class="lic" viewBox="0 0 24 24" width="${size || 20}" height="${size || 20}" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${LUCIDE[n] || LUCIDE.tag}</svg>`; }
 const ICON_MAP = [
-  [/מסעד|אוכל|הזמנ|קפה|פיצ/,"🍽️"],[/בגד|קניות$|אופנ|נעל/,"🛍️"],[/בילוי|יציא|קולנוע|הופע/,"🎬"],[/טיפוח|מספר|קוסמט/,"💅"],
-  [/קניות לבית|סופר|מכולת/,"🛒"],[/דלק|רכב|חני/,"🚗"],[/שכירות|משכנתא|דירה/,"🏠"],[/חשבונ|חשמל|(^|\s)מים|גז|ארנונה/,"💡"],
-  [/תקשורת|מנוי|טלפון|אינטרנט|סלולר/,"📱"],[/ביטוח/,"🛡️"],[/לימוד|קורס|שכר לימוד/,"🎓"],[/כושר|ספורט/,"🏋️"],
-  [/טיפול|תיקון|אגרה/,"🔧"],[/מתנ|אירוע|חתונ/,"🎁"],[/בלתי צפוי|חירום/,"⚠️"],[/ילד|גן|חוג/,"🧸"],[/בריאות|רופא|תרופ/,"🩺"],
-  [/חיה|כלב|חתול|וטרינר/,"🐾"],[/משכורת|הכנסה|עבודה/,"💼"],[/נסיע|תחבורה|אוטובוס|רכבת/,"🚌"]
+  [/מסעד|אוכל|הזמנ|קפה|פיצ/,"utensils"],[/בגד|קניות$|אופנ|נעל/,"shopping-bag"],[/בילוי|יציא|קולנוע|הופע/,"clapperboard"],[/טיפוח|מספר|קוסמט/,"sparkles"],
+  [/קניות לבית|סופר|מכולת/,"shopping-cart"],[/דלק|רכב|חני/,"car"],[/שכירות|משכנתא|דירה/,"house"],[/חשבונ|חשמל|(^|\s)מים|גז|ארנונה/,"lightbulb"],
+  [/תקשורת|מנוי|טלפון|אינטרנט|סלולר/,"smartphone"],[/ביטוח/,"shield-check"],[/לימוד|קורס|שכר לימוד/,"graduation-cap"],[/כושר|ספורט/,"dumbbell"],
+  [/טיפול|תיקון|אגרה/,"wrench"],[/מתנ|אירוע|חתונ/,"gift"],[/בלתי צפוי|חירום/,"triangle-alert"],[/ילד|גן|חוג/,"baby"],[/בריאות|רופא|תרופ/,"stethoscope"],
+  [/חיה|כלב|חתול|וטרינר/,"paw-print"],[/משכורת|הכנסה|עבודה/,"briefcase"],[/נסיע|תחבורה|אוטובוס|רכבת/,"bus"]
 ];
-function iconFor(name){ for(const [re, ic] of ICON_MAP) if(re.test(name || "")) return ic; return "📌"; }
+function iconFor(name){ for(const [re, ic] of ICON_MAP) if(re.test(name || "")) return svgIcon(ic); return svgIcon("tag"); }
 function daysIn(ym){ const [y,m] = ym.split("-").map(Number); return new Date(y, m, 0).getDate(); }
 function num(v){ const n = parseFloat(String(v).replace(/,/g,"").trim()); return isFinite(n) ? n : 0; }
 function fmt(n){
@@ -1052,21 +1101,21 @@ const TOUR = [
 function tourIll(k){
   const bars = (rows) => `<div class="tm-card">${rows.map(r => `<div class="tm-row"><span>${r[0]}</span><b>${r[1]}</b></div><div class="tm-trk"><i style="width:${r[2]}%;background:${r[3] || "var(--seal)"}"></i></div>`).join("")}</div>`;
   if(k === "home") return `<div class="tm"><div class="tm-hero"><small>נשאר להוציא</small><b>3,300 ₪</b><div class="tm-hbar"><i></i></div></div>${bars([["לימודים","1,200 ₪",90,"#9AA1C9"],["רכב ודלק","800 ₪",60,"#9AA1C9"]])}</div>`;
-  if(k === "exp") return `<div class="tm"><div class="tm-seg"><span class="on">משתנות</span><span>קבועות</span><span>פירוט</span></div>${bars([["🍽️ מסעדות","230 ₪",55],["🛒 קניות לבית","410 ₪",40]])}<div class="tm-card"><div class="tm-row"><span><i class="tm-chk on"></i>שכירות</span><b>1,500 ₪</b></div><div class="tm-row"><span><i class="tm-chk"></i>ביטוחים</span><b>300 ₪</b></div></div></div>`;
+  if(k === "exp") return `<div class="tm"><div class="tm-seg"><span class="on">משתנות</span><span>קבועות</span><span>פירוט</span></div>${bars([["מסעדות","230 ₪",55],["קניות לבית","410 ₪",40]])}<div class="tm-card"><div class="tm-row"><span><i class="tm-chk on"></i>שכירות</span><b>1,500 ₪</b></div><div class="tm-row"><span><i class="tm-chk"></i>ביטוחים</span><b>300 ₪</b></div></div></div>`;
   if(k === "add") return `<div class="tm tm-add">
       <div class="tm-sheet">
         <div class="tm-title">הוצאה חדשה</div>
         <div class="tm-amt"><span class="tm-n">1</span>45 ₪</div>
         <div class="tm-field"><span class="tm-n">2</span>קפה ומאפה</div>
-        <div class="tm-chips"><span class="tm-n">3</span><em class="on">🍽️ מסעדות</em><em>🛒 סופר</em><em>🎬 בילויים</em></div>
+        <div class="tm-chips"><span class="tm-n">3</span><em class="on">מסעדות</em><em>סופר</em><em>בילויים</em></div>
         <div class="tm-save"><span class="tm-n">4</span>שמירה</div>
       </div>
       <div class="tm-tabbar"><i></i><i></i><span class="tm-fab">+</span><i></i><i></i></div>
       <div class="tm-point">לוחצים כאן</div>
     </div>`;
   if(k === "save") return `<div class="tm"><div class="tm-hero"><small>בקופת החיסכון</small><b>4,200 ₪</b><div class="tm-seals"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div></div><div class="tm-card"><div class="tm-row"><span>נחסכו</span><b>4,700 ₪</b></div><div class="tm-row"><span>עברו למטרות</span><b>500 ₪</b></div></div></div>`;
-  if(k === "goals") return `<div class="tm">${bars([["🛟 קרן חירום","1,500 / 3,000",50],["🚗 רכב","6,000 / 24,000",25],["✈️ חופשה","800 / 4,000",20]])}<div class="tm-card tm-soft"><div class="tm-row"><span>500 ₪ בחודש</span><b>יעד ב-2027</b></div></div></div>`;
-  if(k === "debts") return `<div class="tm"><div class="tm-hero"><small>סך החובות</small><b>21,375 ₪</b><svg viewBox="0 0 120 30" class="tm-line"><polyline points="2,6 32,11 62,15 92,21 118,26" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>${bars([["🏦 הלוואת רכב","14,475 ₪",12,"var(--ok)"],["🧾 טלפון בתשלומים","2,200 ₪",8,"var(--ok)"]])}</div>`;
+  if(k === "goals") return `<div class="tm">${bars([["קרן חירום","1,500 / 3,000",50],["רכב","6,000 / 24,000",25],["✈️ חופשה","800 / 4,000",20]])}<div class="tm-card tm-soft"><div class="tm-row"><span>500 ₪ בחודש</span><b>יעד ב-2027</b></div></div></div>`;
+  if(k === "debts") return `<div class="tm"><div class="tm-hero"><small>סך החובות</small><b>21,375 ₪</b><svg viewBox="0 0 120 30" class="tm-line"><polyline points="2,6 32,11 62,15 92,21 118,26" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>${bars([["הלוואת רכב","14,475 ₪",12,"var(--ok)"],["טלפון בתשלומים","2,200 ₪",8,"var(--ok)"]])}</div>`;
   return `<div class="tm"><div class="tm-hero"><small>ניתוח אוקטובר</small><b style="font-size:19px">עמדת בתקציב</b></div><div class="tm-card"><div class="tm-row"><span>בגדים וקניות</span><b style="color:var(--rose)">חריגה 200</b></div><div class="tm-row"><span>בילויים</span><b style="color:var(--ok)">נשאר 350</b></div></div><div class="tm-card tm-soft"><div class="tm-row"><span>להעלות יעד ל-450 ₪?</span><b style="color:var(--seal)">אישור</b></div></div></div>`;
 }
 function renderIntro(){
@@ -1079,9 +1128,9 @@ function renderIntro(){
         <h1>ניהול פיננסי</h1>
         <p class="wl-sub">לדעת כמה נשאר, לאן הכסף הולך, ולחסוך בכל חודש.</p>
         <div class="wl-points">
-          <div><span>📊</span>רואים בכל רגע כמה נשאר להוציא החודש</div>
-          <div><span>⚡</span>רושמים הוצאה בכמה שניות</div>
-          <div><span>🎯</span>עוקבים אחרי החיסכון, המטרות וההלוואות, ורואים אותם מתקדמים</div>
+          <div><span>${svgIcon("chart-pie", 20)}</span>רואים בכל רגע כמה נשאר להוציא החודש</div>
+          <div><span>${svgIcon("zap", 20)}</span>רושמים הוצאה בכמה שניות</div>
+          <div><span>${svgIcon("target", 20)}</span>עוקבים אחרי החיסכון, המטרות וההלוואות, ורואים אותם מתקדמים</div>
         </div>
         <button class="wl-go" id="wlGo">בואו נכיר</button>
         <button class="wl-link" id="obRestore">יש לי קובץ גיבוי</button>
@@ -1104,10 +1153,10 @@ function renderIntro(){
         <div class="tr-kick">${i + 1} מתוך ${TOUR.length}</div>
         <h2>${s.t}</h2>
         <div class="tr-rows">
-          <div class="tr-row"><span class="tr-ri see">👀</span><span><b>מה רואים כאן</b>${s.see}</span></div>
-          <div class="tr-row"><span class="tr-ri do">✋</span><span><b>מה עושים כאן</b>${s.doo}</span></div>
+          <div class="tr-row"><span class="tr-ri see">${svgIcon("eye", 17)}</span><span><b>מה רואים כאן</b>${s.see}</span></div>
+          <div class="tr-row"><span class="tr-ri do">${svgIcon("hand", 17)}</span><span><b>מה עושים כאן</b>${s.doo}</span></div>
         </div>
-        ${last ? `<p class="tr-note">🧭 אפשר לחזור לסיור בכל רגע: <b>הגדרות ← סיור היכרות</b></p>` : ""}
+        ${last ? `<p class="tr-note">${svgIcon("compass", 16)} אפשר לחזור לסיור בכל רגע: <b>הגדרות ← סיור היכרות</b></p>` : ""}
         <div class="tr-act">
           ${i > 0 ? `<button class="btn btn-ghost" id="trPrev">הקודם</button>` : ""}
           <button class="btn btn-primary" id="trNext">${last ? (replay ? "סיום" : "מתחילים") : "הבא"}</button>
@@ -1782,7 +1831,7 @@ function isIOS(){ return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navig
 function isStandalone(){ return window.navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches); }
 
 /* ================= DEBTS & GOALS ================= */
-const DEBT_TYPES = { loan:{ t:"הלוואה", ic:"🏦" }, overdraft:{ t:"מינוס בבנק", ic:"📉" }, installments:{ t:"עסקה בתשלומים", ic:"🧾" } };
+const DEBT_TYPES = { loan:{ t:"הלוואה", ic:svgIcon("landmark") }, overdraft:{ t:"מינוס בבנק", ic:svgIcon("trending-down") }, installments:{ t:"עסקה בתשלומים", ic:svgIcon("receipt") } };
 function debts(){ return state.debts || (state.debts = []); }
 function goals(){ return state.goals || (state.goals = []); }
 function debtBalance(d, upto){
@@ -1892,7 +1941,7 @@ function debtsHTML(){
   const ds = debts();
   if(!ds.length) return `
     <section class="card empty-month">
-      <div class="em-ic">🏦</div>
+      <div class="em-ic">${svgIcon("landmark", 28)}</div>
       <h2>אין חובות במעקב</h2>
       <p>הלוואות, מינוס בבנק ועסקאות בתשלומים. מוסיפים כל חוב פעם אחת, וההחזר החודשי נכנס לבד להוצאות הקבועות.</p>
       <button class="btn btn-primary" id="addDebt">הוספת חוב</button>
@@ -1946,7 +1995,7 @@ function openDebtSheet(id){
       </div>
       ${t === "loan" ? `<label class="lbl" for="dRate">ריבית שנתית % (לא חובה)</label><input class="field" id="dRate" inputmode="decimal" placeholder="למשל 6.5" value="${d && d.rate ? d.rate : ""}">` : ""}
       ${od ? "" : `<div class="calc-box">
-        <label class="lbl" for="dMonths">🧮 לא יודעים את ההחזר? כמה חודשים נשארו?</label>
+        <label class="lbl" for="dMonths">${svgIcon("calculator", 16)} לא יודעים את ההחזר? כמה חודשים נשארו?</label>
         <input class="field" id="dMonths" inputmode="numeric" placeholder="${t === "installments" ? "למשל 12 תשלומים" : "למשל 36"}">
         <p class="hint" id="dCalc">ממלאים יתרה${t === "loan" ? ", ריבית" : ""} ומספר חודשים, וההחזר החודשי יחושב לבד.</p>
       </div>
@@ -2024,8 +2073,8 @@ function openOverdraftSheet(d){
 }
 
 /* ---------- goals ---------- */
-const GOAL_ICONS = [[/חירום|ביטחון/,"🛟"],[/רכב|אוטו/,"🚗"],[/חופש|טיול/,"✈️"],[/דירה|בית|משכנתא/,"🏠"],[/חתונה/,"💍"],[/לימוד/,"🎓"],[/ילד|לידה/,"🍼"]];
-function goalIcon(n){ for(const [re, ic] of GOAL_ICONS) if(re.test(n || "")) return ic; return "🎯"; }
+const GOAL_ICONS = [[/חירום|ביטחון/,"life-buoy"],[/רכב|אוטו/,"car"],[/חופש|טיול/,"plane"],[/דירה|בית|משכנתא/,"house"],[/חתונה/,"gem"],[/לימוד/,"graduation-cap"],[/ילד|לידה/,"baby"]];
+function goalIcon(n){ for(const [re, ic] of GOAL_ICONS) if(re.test(n || "")) return svgIcon(ic); return svgIcon("target"); }
 function goalProgress(){
   const gs = goals().slice().sort((a,b) => (a.order || 0) - (b.order || 0));
   const cur = {}; gs.forEach(g => cur[g.id] = g.initial || 0);
@@ -2058,7 +2107,7 @@ function goalsHTML(){
   const lastK = Object.keys(alloc).filter(k => alloc[k].length).sort().pop();
   if(!gs.length) return `
     <section class="card empty-month">
-      <div class="em-ic">🎯</div>
+      <div class="em-ic">${svgIcon("target", 28)}</div>
       <h2>בשביל מה חוסכים?</h2>
       <p>מגדירים מטרה, סכום יעד והפרשה חודשית. בסוף כל חודש ההפרשה נכנסת לבד מהחיסכון של החודש.</p>
       <button class="btn btn-primary" id="goalEmergency">להתחיל בקרן חירום</button>
@@ -2096,7 +2145,7 @@ function goalsHTML(){
     <div class="list">${gs.map(row).join("")}
       ${savedSince > 0 ? `
       <div class="free-row">
-        <span class="cico">💰</span>
+        <span class="cico">${svgIcon("piggy-bank")}</span>
         <span class="cmain"><b>חיסכון חופשי</b><small>נחסך ולא שויך למטרה</small></span>
         <span class="camt"><b>${money(freeSince)}</b><small>מתוך ${money(savedSince)} שנחסכו</small></span>
       </div>` : ""}
@@ -2170,17 +2219,17 @@ function helpHTML(){
       <div class="sm-title" style="margin-bottom:6px">איך מנהלים את התקציב באפליקציה</div>
       <div class="h2-sub">שלושה הרגלים: לרשום כל יום, לבדוק כל שבוע, ולסגור כל חודש.</div>
     </section>
-    ${sec("✍️", "כל יום: רושמים הוצאות", `
+    ${sec(svgIcon("pen-line"), "כל יום: רושמים הוצאות", `
       <ol class="hp-ol"><li>לוחצים על <b>+</b> בתחתית המסך.</li><li>מזינים סכום ו"על מה?". שם שכבר הזנתם יוצע לבד, עם הקטגוריה שלו.</li><li>בוחרים קטגוריה ומוודאים שהתאריך הוא יום הקנייה.</li><li>שמירה. טעיתם? כפתור <b>ביטול</b> מופיע לכמה שניות.</li></ol>`, true)}
-    ${sec("✅", "כשתשלום קבוע יורד", `
+    ${sec(svgIcon("circle-check"), "כשתשלום קבוע יורד", `
       <p>בדף <b>הוצאות ← קבועות</b> לוחצים על העיגול ליד התשלום, והוא הופך לווי ירוק. סכום שונה מהתכנון? לוחצים על השורה ומעדכנים. כשהמשכורת נכנסת: בדף הבית ← <b>הכנסות החודש</b> ← "התקבל".</p>`)}
-    ${sec("📊", "כל שבוע: בודקים איפה עומדים", `
+    ${sec(svgIcon("chart-column"), "כל שבוע: בודקים איפה עומדים", `
       <p>בדף <b>הוצאות ← משתנות</b> רואים לכל קטגוריה כמה נשאר. כתום = קרוב לגבול, אדום = חריגה. בלשונית <b>פירוט</b> אפשר לחפש ("כמה הוצאתי על קפה?") ולמיין לפי סכום. בדף הבית, "נשאר להוציא" אומר כמה עוד אפשר להוציא, וכמה זה ליום.</p>`)}
-    ${sec("🗓️", "סוף החודש: ניתוח והמלצות", `
+    ${sec(svgIcon("calendar-check"), "סוף החודש: ניתוח והמלצות", `
       <p>בתחילת כל חודש מופיע בדף הבית <b>"הניתוח של החודש הקודם מוכן"</b>. שם רואים אם עמדתם בתקציב, איפה חרגתם, כמה נחסך, והצעות לחודש הבא שמתעדכנות בלחיצה. החיסכון מחושב לבד: ההכנסה פחות כל ההוצאות. החודש החדש נפתח לבד עם התכנון של הקודם.</p>`)}
-    ${sec("🎯", "מטרות וחובות", `
+    ${sec(svgIcon("target"), "מטרות וחובות", `
       <p>בדף <b>חיסכון ← מטרות</b> מגדירים בשביל מה חוסכים, עם הפרשה חודשית שנכנסת לבד בסוף כל חודש. ב<b>חובות</b> מוסיפים הלוואות, עסקאות בתשלומים ומינוס. ההחזר נכנס לבד להוצאות הקבועות, וכל סימון "שולם" מוריד את היתרה. את המינוס מעדכנים פעם בחודש.</p>`)}
-    ${sec("❓", "שאלות נפוצות", `
+    ${sec(svgIcon("circle-help"), "שאלות נפוצות", `
       <dl class="hp-dl">
         <dt>החזרתי מוצר וקיבלתי זיכוי</dt><dd>פותחים את ההוצאה המקורית ומקטינים את הסכום, או מוחקים אותה אם הוחזר הכול.</dd>
         <dt>משכתי מזומן מכספומט</dt><dd>לא רושמים את המשיכה. רושמים את מה שקונים במזומן, כל קנייה בקטגוריה שלה. אחרת אותו כסף נספר פעמיים.</dd>
@@ -2189,9 +2238,9 @@ function helpHTML(){
         <dt>שכחתי לרשום הוצאה מלפני כמה ימים</dt><dd>מוסיפים בכפתור + ומשנים את התאריך ליום הקנייה.</dd>
         <dt>הוצאה שנתית, כמו ביטוח רכב</dt><dd>מוסיפים הוצאה קבועה "הפרשה לביטוח רכב" בגובה החלק החודשי, ומסמנים אותה כשמעבירים לחיסכון נפרד. כשהחיוב השנתי יורד, לא רושמים אותו שוב.</dd>
       </dl>`)}
-    ${sec("🛟", "גיבוי ונעילה", `
+    ${sec(svgIcon("life-buoy"), "גיבוי ונעילה", `
       <p>הנתונים נשמרים רק בטלפון. פעם בחודש: <b>הגדרות ← שמירת גיבוי</b>. בהגדרות אפשר גם להפעיל נעילה בקוד, ולהוסיף ליומן תזכורת שבועית וחודשית.</p>`)}
-    ${(() => { const base = BUILD === "pwa" ? "" : "https://nihul-taktziv.github.io/maatafot/"; const a = (href, ic, t, sub, first) => `<a class="an-btn" href="${base}${href}" target="_blank" rel="noopener" style="margin-top:${first ? 14 : 8}px;text-decoration:none"><span class="an-ic">${ic}</span><span class="an-t"><b>${t}</b><small>${sub}</small></span>${ICONS.next}</a>`; return a("guide.pdf", "📘", "המדריך המלא", "איך בונים תקציב מאפס, ב-8 שלבים (PDF)", true) + a("budget-planning.xlsx", "📊", "קובץ האקסל", "מחשב את התקציב לפני שמזינים לאתר", false) + a("madrich-excel.pdf", "📗", "מדריך לקובץ האקסל", "מה ממלאים בכל גיליון ואיך קוראים את התוצאות (PDF)", false); })()}
+    ${(() => { const base = BUILD === "pwa" ? "" : "https://nihul-taktziv.github.io/maatafot/"; const a = (href, ic, t, sub, first) => `<a class="an-btn" href="${base}${href}" target="_blank" rel="noopener" style="margin-top:${first ? 14 : 8}px;text-decoration:none"><span class="an-ic">${ic}</span><span class="an-t"><b>${t}</b><small>${sub}</small></span>${ICONS.next}</a>`; return a("guide.pdf", svgIcon("book-open"), "המדריך המלא", "איך בונים תקציב מאפס, ב-8 שלבים (PDF)", true) + a("budget-planning.xlsx", svgIcon("file-spreadsheet"), "קובץ האקסל", "מחשב את התקציב לפני שמזינים לאתר", false) + a("madrich-excel.pdf", svgIcon("book-marked"), "מדריך לקובץ האקסל", "מה ממלאים בכל גיליון ואיך קוראים את התוצאות (PDF)", false); })()}
     <button class="btn btn-primary sm-done" id="hpDone">סגירה</button>`;
 }
 function openSummary(ym){
@@ -2360,29 +2409,48 @@ function spendBarsHTML(r){
     if(l.actual == null && (l.plan || 0) > 0) byPlan = true;
     if(v > 0) fixedItems.push({ name:l.name, amount:v, est:l.actual == null });
   }));
-  Object.keys(r.byCat).forEach(id => { if(r.byCat[id] > 0){ const c = catById(id); varItems.push({ name:c.name, amount:r.byCat[id], color:c.color, budget:m.env[id] || 0 }); } });
+  Object.keys(r.byCat).forEach(id => { if(r.byCat[id] > 0){ const c = catById(id); varItems.push({ name:c.name, amount:r.byCat[id], color:c.color }); } });
   fixedItems.sort((a,b) => b.amount - a.amount);
   varItems.sort((a,b) => b.amount - a.amount);
-  const total = fixedItems.concat(varItems).reduce((a,x) => a + x.amount, 0);
+  const sum = xs => xs.reduce((a,x) => a + x.amount, 0);
+  const fixedTotal = sum(fixedItems), varTotal = sum(varItems), total = fixedTotal + varTotal;
   if(total <= 0) return `
     <section class="card spend">
       <div class="card-head"><h2>לאן הלך הכסף${qh("spend")}</h2></div>
       <div class="empty" style="padding:10px 0 2px">עוד אין הוצאות החודש. אחרי שיירשמו הוצאות, כאן יופיע הפילוח שלהן.</div>
     </section>`;
-  const max = Math.max(...fixedItems.concat(varItems).map(x => x.amount));
-  const row = (x, color) => `
-    <li>
-      <div class="sb-top"><span>${esc(x.name)}</span><b class="${x.est ? "est" : ""}">${money(x.amount)}</b></div>
-      <div class="sb-track"><i style="width:${Math.max(2, x.amount / max * 100)}%;background:${color}"></i></div>
-    </li>`;
-  const group = (title, items, colorFn) => items.length ? `
-    <div class="sb-group"><span>${title}</span><b>${money(items.reduce((a,x) => a + x.amount, 0))}</b></div>
-    <ul class="sb-list">${items.map(x => row(x, colorFn(x))).join("")}</ul>` : "";
+  const slices = varItems.map(x => ({ amount:x.amount, color:x.color }));
+  if(fixedTotal > 0) slices.push({ amount:fixedTotal, color:"var(--fixed-bar)" });
+  const R = 44, C = 2 * Math.PI * R, gap = slices.length > 1 ? 1.6 : 0;
+  let acc = 0;
+  const arcs = slices.map(x => {
+    const len = x.amount / total * C;
+    const a = `<circle r="${R}" cx="60" cy="60" fill="none" stroke-width="15" style="stroke:${x.color}" stroke-dasharray="${Math.max(0.6, len - gap)} ${C}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"/>`;
+    acc += len; return a;
+  }).join("");
+  const pct = v => Math.round(v / total * 100);
+  const legend = varItems.length ? varItems.map(x => `<li><i class="sp-dot" style="background:${x.color}"></i><span>${esc(x.name)}</span><b>${money(x.amount)}</b></li>`).join("")
+    : `<li class="sp-none">עוד אין הוצאות משתנות החודש</li>`;
   return `
     <section class="card spend" aria-label="לאן הלך הכסף">
       <div class="card-head"><h2>לאן הלך הכסף${qh("spend")}</h2><span>סך הכול ${money(total)}</span></div>
-      ${group("הוצאות משתנות", varItems, x => x.color)}
-      ${group("הוצאות קבועות", fixedItems, () => "var(--fixed-bar)")}
+      <div class="sp-row">
+        <svg class="sp-donut" viewBox="0 0 120 120" role="img" aria-label="הוצאות משתנות ${pct(varTotal)}%, הוצאות קבועות ${pct(fixedTotal)}%">
+          <circle r="${R}" cx="60" cy="60" fill="none" stroke-width="15" style="stroke:var(--track)"/>
+          ${arcs}
+          <text x="60" y="58" text-anchor="middle" direction="ltr" class="sp-num">${fmt(total)} ₪</text>
+          <text x="60" y="74" text-anchor="middle" class="sp-lbl">סך ההוצאות</text>
+        </svg>
+        <div class="sp-side">
+          <div class="sp-sub"><span>הוצאות משתנות</span><b>${money(varTotal)}</b></div>
+          <ul class="sp-legend">${legend}</ul>
+        </div>
+      </div>
+      ${fixedItems.length ? `
+      <details class="sp-fixed">
+        <summary><i class="sp-dot" style="background:var(--fixed-bar)"></i><span>הוצאות קבועות</span><b class="${byPlan ? "est" : ""}">${money(fixedTotal)}</b>${ICONS.next}</summary>
+        <ul>${fixedItems.map(x => `<li><span>${esc(x.name)}</span><b class="${x.est ? "est" : ""}">${money(x.amount)}</b></li>`).join("")}</ul>
+      </details>` : ""}
       ${byPlan ? `<p class="hint">סכום באפור נספר לפי התכנון, עד שיוזן סכום בפועל.</p>` : ""}
     </section>`;
 }
@@ -2392,11 +2460,8 @@ function summaryCardHTML(r, ym){
   const fixedEst = ["fixed","extra"].some(k => m.lines[k].some(l => l.actual == null && (l.plan || 0) > 0));
   const fixedPlan = r.fixedPlan + r.extraPlan, fixedEff = r.fixedEff + r.extraEff;
   const planRem = r.incomePlan - r.saving - fixedPlan - r.envPlan;
-  const line = (label, val, plan, sign, est) => `
-    <div class="wf-row">
-      <span class="wf-label">${label}</span>
-      <span class="wf-val"><b class="${est ? "est" : ""}">${sign ? smoney(-val) : money(val)}</b><small>תכנון ${money(plan)}</small></span>
-    </div>`;
+  const tile = (cls, label, val, plan, est) => `
+    <div class="wf-tile ${cls}"><span>${label}</span><b class="${est ? "est" : ""}">${money(val)}</b><small>תכנון ${money(plan)}</small></div>`;
   const verdict = r.incomePlan <= 0
     ? `<p class="wf-note over">עוד לא הוגדרה הכנסה לחודש הזה.</p>`
     : planRem > 0
@@ -2407,13 +2472,10 @@ function summaryCardHTML(r, ym){
   return `
     <section class="card wf" aria-label="סיכום החודש">
       <div class="card-head"><h2>סיכום ${monthNameOf(ym)}${qh("wf")}</h2><span>בפועל</span></div>
-      ${line("הכנסות", r.incomeEff, r.incomePlan, "", incomeEst)}
-      ${line("חיסכון", r.savingEff, r.saving, "−", false)}
-      ${line("הוצאות קבועות", fixedEff, fixedPlan, "−", fixedEst)}
-      ${line("הוצאות משתנות", r.variable, r.envPlan, "−", false)}
-      <div class="wf-row wf-total">
-        <span class="wf-label">נשאר להוציא</span>
-        <span class="wf-val"><b class="${r.avail < 0 ? "neg" : ""}">${smoney(r.avail)}</b><small>תכנון ${smoney(planRem)}</small></span>
+      <div class="wf-tiles">
+        ${tile("in", "הכנסות", r.incomeEff, r.incomePlan, incomeEst)}
+        ${tile("out", "הוצאות", fixedEff + r.variable, fixedPlan + r.envPlan, fixedEst)}
+        ${tile("sv", "חיסכון", r.savingEff, r.saving, false)}
       </div>
       ${verdict}
       <button class="an-btn" id="openSummary">
@@ -2517,7 +2579,7 @@ function budgetHTML(){
       const stText = budget > 0 ? (st.cls === "over" ? `חריגה של ${money(used - budget)}` : `נשארו ${money(budget - used)}`) : "ללא יעד";
       return `
         <button class="crow" data-catview="${id}">
-          <span class="cico" style="background:${c.color}1f">${iconFor(c.name)}</span>
+          <span class="cico" style="background:${c.color}1f;color:${c.color}">${iconFor(c.name)}</span>
           <span class="cmain"><b>${esc(c.name)}</b><small class="st-${st.cls || "ok"}">${stText}${cnt[id] ? `<span class="sep"></span>${cnt[id] === 1 ? "הוצאה אחת" : cnt[id] + " הוצאות"}` : ""}</small></span>
           <span class="camt"><b>${money(used)}</b>${budget ? `<small>מתוך ${money(budget)}</small>` : ""}</span>
           ${budget > 0 ? `<span class="cbar"><i style="width:${Math.min(100, st.ratio*100)}%;background:${barColor}"></i></span>` : ""}
@@ -2703,7 +2765,7 @@ function expRowHTML(e, showCat){
   const c = catById(e.catId);
   return `
     <button class="erow" data-exp="${e.id}">
-      <span class="cico" style="background:${c.color}1f">${iconFor(c.name)}</span>
+      <span class="cico" style="background:${c.color}1f;color:${c.color}">${iconFor(c.name)}</span>
       <span class="cmain"><b>${esc(e.name || c.name)}</b><small>${showCat ? esc(c.name) : relDay(e.date)}</small></span>
       <span class="camt"><b>${money(e.amount)}</b></span>
     </button>`;
@@ -2858,7 +2920,7 @@ function monthSummaryHTML(ym){
   const over = d.cats.filter(x => x.budget > 0 && x.diff > 0), under = d.cats.filter(x => x.budget > 0 && x.diff <= 0);
   const catRow = x => `
     <div class="erow">
-      <span class="cico" style="background:${x.c.color}1f">${iconFor(x.c.name)}</span>
+      <span class="cico" style="background:${x.c.color}1f;color:${x.c.color}">${iconFor(x.c.name)}</span>
       <span class="cmain"><b>${esc(x.c.name)}</b><small>הוצאו ${money(x.used)} מתוך ${money(x.budget)}</small></span>
       <span class="camt"><b class="${x.diff > 0 ? "st-over" : "st-ok"}">${fmt(Math.abs(x.diff))} ₪</b><small>${x.diff > 0 ? "חריגה" : "נשאר"}</small></span>
     </div>`;
@@ -3144,30 +3206,30 @@ function settingsHTML(){
   const row = (key, ic, t, v, extra) => `<button class="set-row" data-set="${key}"${extra || ""}><span class="set-ic">${ic}</span><span class="set-t">${t}</span>${v ? `<span class="set-v${v.warn ? " warn" : ""}">${v.t}</span>` : ""}${ICONS.next}</button>`;
   return `
     <h2 class="set-title">הגדרות</h2>
-    ${due || never ? `<div class="set-alert"><span aria-hidden="true">⚠️</span><span class="set-alert-t">${never ? "עוד לא נשמר גיבוי." : `הגיבוי האחרון לפני ${bkDays} ימים.`}<small>הנתונים שמורים רק בטלפון הזה.</small></span><button class="btn btn-primary" id="bkNow">שמירה</button></div>` : ""}
+    ${due || never ? `<div class="set-alert"><span aria-hidden="true">${svgIcon("triangle-alert", 22)}</span><span class="set-alert-t">${never ? "עוד לא נשמר גיבוי." : `הגיבוי האחרון לפני ${bkDays} ימים.`}<small>הנתונים שמורים רק בטלפון הזה.</small></span><button class="btn btn-primary" id="bkNow">שמירה</button></div>` : ""}
 
     <section class="set-grp"><h3>הנתונים שלי</h3><div class="set-list">
-      ${row("backup", "🛟", "גיבוי ושחזור", { t: bkVal, warn: due || never })}
-      ${row("lock", "🔒", "נעילה בקוד", { t: lockOn() ? "פעילה" : "כבויה" }, ' data-c="lock"')}
-      ${row("privacy", "🔐", "פרטיות", { t: "רק במכשיר" })}
+      ${row("backup", svgIcon("life-buoy"), "גיבוי ושחזור", { t: bkVal, warn: due || never })}
+      ${row("lock", svgIcon("lock"), "נעילה בקוד", { t: lockOn() ? "פעילה" : "כבויה" }, ' data-c="lock"')}
+      ${row("privacy", svgIcon("shield"), "פרטיות", { t: "רק במכשיר" })}
     </div></section>
 
     <section class="set-grp"><h3>חודש ותזכורות</h3><div class="set-list">
-      ${row("cycle", "📅", "חודש תקציבי", { t: cycleDay() === 1 ? "חודש קלנדרי" : `מתחיל ב-${cycleDay()}` })}
-      ${row("rem", "⏰", "תזכורות ביומן", { t: remVal })}
-      <button class="set-row" id="goBudget"><span class="set-ic">🧾</span><span class="set-t">עריכת התקציב</span><span class="set-v">בדף ההוצאות</span>${ICONS.next}</button>
+      ${row("cycle", svgIcon("calendar-days"), "חודש תקציבי", { t: cycleDay() === 1 ? "חודש קלנדרי" : `מתחיל ב-${cycleDay()}` })}
+      ${row("rem", svgIcon("alarm-clock"), "תזכורות ביומן", { t: remVal })}
+      <button class="set-row" id="goBudget"><span class="set-ic">${svgIcon("receipt")}</span><span class="set-t">עריכת התקציב</span><span class="set-v">בדף ההוצאות</span>${ICONS.next}</button>
     </div></section>
 
     <section class="set-grp"><h3>תצוגה</h3><div class="set-list">
-      <div class="set-row set-row-static"><span class="set-ic">🎨</span><span class="set-t">מראה</span>
+      <div class="set-row set-row-static"><span class="set-ic">${svgIcon("palette")}</span><span class="set-t">מראה</span>
         <div class="seg set-seg" role="group" aria-label="ערכת צבעים">${[["auto","אוטומטי"],["light","בהיר"],["dark","כהה"]].map(([k,l]) => `<button data-theme-set="${k}" aria-pressed="${(state.theme || "auto") === k}">${l}</button>`).join("")}</div>
       </div>
     </div></section>
 
     <section class="set-grp"><h3>עזרה ומידע</h3><div class="set-list">
-      <button class="set-row" id="openHelp"><span class="set-ic">❓</span><span class="set-t">איך משתמשים?</span><span class="set-v">מדריך ושאלות</span>${ICONS.next}</button>
-      <button class="set-row" id="replayTour"><span class="set-ic">🧭</span><span class="set-t">סיור היכרות</span><span class="set-v">7 שקופיות</span>${ICONS.next}</button>
-      ${BUILD === "file" ? row("install", "💻", "גרסת מחשב", { t: "טיפים" }) : row("install", "📲", "התקנה באייפון", { t: standalone ? "מותקנת ✓" : "איך מתקינים" })}
+      <button class="set-row" id="openHelp"><span class="set-ic">${svgIcon("circle-help")}</span><span class="set-t">איך משתמשים?</span><span class="set-v">מדריך ושאלות</span>${ICONS.next}</button>
+      <button class="set-row" id="replayTour"><span class="set-ic">${svgIcon("compass")}</span><span class="set-t">סיור היכרות</span><span class="set-v">7 שקופיות</span>${ICONS.next}</button>
+      ${BUILD === "file" ? row("install", svgIcon("monitor"), "גרסת מחשב", { t: "טיפים" }) : row("install", svgIcon("smartphone"), "התקנה באייפון", { t: standalone ? "מותקנת ✓" : "איך מתקינים" })}
     </div></section>
 
     <button class="set-danger" data-set="reset">מחיקת כל הנתונים</button>
