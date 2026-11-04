@@ -2159,7 +2159,7 @@ function helpHTML(){
       </dl>`)}
     ${sec("🛟", "גיבוי ונעילה", `
       <p>הנתונים נשמרים רק בטלפון. פעם בחודש: <b>הגדרות ← שמירת גיבוי</b>. בהגדרות אפשר גם להפעיל נעילה בקוד, ולהוסיף ליומן תזכורת שבועית וחודשית.</p>`)}
-    ${BUILD === "pwa" ? `<a class="an-btn" href="guide.pdf" target="_blank" rel="noopener" style="margin-top:14px;text-decoration:none"><span class="an-ic">📘</span><span class="an-t"><b>המדריך המלא</b><small>איך בונים תקציב מאפס, ב-8 שלבים (PDF)</small></span>${ICONS.next}</a>` : ""}
+    ${(() => { const base = BUILD === "pwa" ? "" : "https://nihul-taktziv.github.io/maatafot/"; const a = (href, ic, t, sub, first) => `<a class="an-btn" href="${base}${href}" target="_blank" rel="noopener" style="margin-top:${first ? 14 : 8}px;text-decoration:none"><span class="an-ic">${ic}</span><span class="an-t"><b>${t}</b><small>${sub}</small></span>${ICONS.next}</a>`; return a("guide.pdf", "📘", "המדריך המלא", "איך בונים תקציב מאפס, ב-8 שלבים (PDF)", true) + a("budget-planning.xlsx", "📊", "קובץ האקסל", "מחשב את התקציב לפני שמזינים לאתר", false) + a("madrich-excel.pdf", "📗", "מדריך לקובץ האקסל", "מה ממלאים בכל גיליון ואיך קוראים את התוצאות (PDF)", false); })()}
     <button class="btn btn-primary sm-done" id="hpDone">סגירה</button>`;
 }
 function openSummary(ym){
