@@ -462,8 +462,9 @@ main{padding:4px 16px 32px}
 .sp-fixed summary b{font-weight:600}
 .sp-fixed summary svg{color:var(--ink-2);transition:transform .2s;flex:none}
 .sp-fixed[open] summary svg{transform:rotate(-90deg)}
-.sp-fixed ul{list-style:none;margin:4px 0 2px;padding:0 17px 0 0;display:flex;flex-direction:column;gap:7px}
-.sp-fixed li{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--ink-2)}
+.sp-fixed ul{list-style:none;margin:4px 0 2px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}
+.sp-fixed li{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink-2);min-width:0}
+.sp-fixed li span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sp-fixed li b{font-weight:600;color:var(--ink);white-space:nowrap}
 .sp-fixed b.est,.sp-fixed li b.est{color:var(--ink-2)}
 .wf-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
@@ -2412,6 +2413,7 @@ function spendBarsHTML(r){
   Object.keys(r.byCat).forEach(id => { if(r.byCat[id] > 0){ const c = catById(id); varItems.push({ name:c.name, amount:r.byCat[id], color:c.color }); } });
   fixedItems.sort((a,b) => b.amount - a.amount);
   varItems.sort((a,b) => b.amount - a.amount);
+  fixedItems.forEach((x, i) => x.color = FIXED_COLORS[i % FIXED_COLORS.length]);
   const sum = xs => xs.reduce((a,x) => a + x.amount, 0);
   const fixedTotal = sum(fixedItems), varTotal = sum(varItems), total = fixedTotal + varTotal;
   if(total <= 0) return `
@@ -2419,8 +2421,7 @@ function spendBarsHTML(r){
       <div class="card-head"><h2>לאן הלך הכסף${qh("spend")}</h2></div>
       <div class="empty" style="padding:10px 0 2px">עוד אין הוצאות החודש. אחרי שיירשמו הוצאות, כאן יופיע הפילוח שלהן.</div>
     </section>`;
-  const slices = varItems.map(x => ({ amount:x.amount, color:x.color }));
-  if(fixedTotal > 0) slices.push({ amount:fixedTotal, color:"var(--fixed-bar)" });
+  const slices = varItems.concat(fixedItems).map(x => ({ amount:x.amount, color:x.color }));
   const R = 44, C = 2 * Math.PI * R, gap = slices.length > 1 ? 1.6 : 0;
   let acc = 0;
   const arcs = slices.map(x => {
@@ -2447,9 +2448,9 @@ function spendBarsHTML(r){
         </div>
       </div>
       ${fixedItems.length ? `
-      <details class="sp-fixed">
-        <summary><i class="sp-dot" style="background:var(--fixed-bar)"></i><span>הוצאות קבועות</span><b class="${byPlan ? "est" : ""}">${money(fixedTotal)}</b>${ICONS.next}</summary>
-        <ul>${fixedItems.map(x => `<li><span>${esc(x.name)}</span><b class="${x.est ? "est" : ""}">${money(x.amount)}</b></li>`).join("")}</ul>
+      <details class="sp-fixed" open>
+        <summary><span>הוצאות קבועות</span><b class="${byPlan ? "est" : ""}">${money(fixedTotal)}</b>${ICONS.next}</summary>
+        <ul>${fixedItems.map(x => `<li><i class="sp-dot" style="background:${x.color}"></i><span>${esc(x.name)}</span><b class="${x.est ? "est" : ""}">${money(x.amount)}</b></li>`).join("")}</ul>
       </details>` : ""}
       ${byPlan ? `<p class="hint">סכום באפור נספר לפי התכנון, עד שיוזן סכום בפועל.</p>` : ""}
     </section>`;
