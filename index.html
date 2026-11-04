@@ -664,6 +664,133 @@ main{padding:4px 16px 32px}
 .yr-flow span{display:flex;flex-direction:column}
 .yr-flow b{font-size:15px;color:#fff;font-weight:700;white-space:nowrap}
 .yr-flow .op{font-size:18px;font-weight:700;color:#fff;align-self:center}
+
+/* ---------- welcome ---------- */
+.wl{height:100%;overflow-y:auto;color:#fff;background:linear-gradient(160deg,var(--hero-a) 0%,#5560D6 52%,var(--hero-b) 100%);display:flex;flex-direction:column;align-items:center;text-align:center;padding:max(48px, calc(env(safe-area-inset-top,0px) + 30px)) 26px max(26px, env(safe-area-inset-bottom,0px));position:relative;overflow-x:hidden}
+.wl::before{content:"";position:absolute;width:440px;height:440px;border-radius:50%;border:58px solid rgba(255,255,255,.07);left:-200px;bottom:-210px;pointer-events:none}
+.wl::after{content:"";position:absolute;width:230px;height:230px;border-radius:50%;border:30px solid rgba(255,255,255,.06);right:-95px;top:-85px;pointer-events:none}
+.wl-logo{width:96px;height:96px;border-radius:28px;background:rgba(255,255,255,.14);display:grid;place-items:center;margin-top:24px;box-shadow:0 14px 34px rgba(0,0,0,.18);animation:wlpop .6s cubic-bezier(.2,.8,.2,1) both}
+.wl-logo svg{width:62px;height:62px}
+.wl-arc{stroke-dasharray:0 1000;animation:wldraw 1.1s .25s ease-out forwards}
+@keyframes wldraw{to{stroke-dasharray:500 1000}}
+@keyframes wlpop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+.wl-kick{margin-top:26px;font-size:16px;opacity:.85}
+.wl h1{font-size:34px;line-height:1.1;margin:4px 0 10px;letter-spacing:-.6px;color:#fff}
+.wl-sub{font-size:16px;opacity:.92;max-width:28ch;line-height:1.5;margin:0}
+.wl-points{display:flex;flex-direction:column;gap:10px;margin:26px 0 22px;width:100%;max-width:400px;position:relative;z-index:1}
+.wl-points div{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.13);border-radius:14px;padding:12px 14px;font-size:15px;text-align:right;line-height:1.4}
+.wl-points span{font-size:19px}
+.wl-go{margin-top:auto;width:100%;max-width:400px;border:0;border-radius:16px;background:#fff;color:var(--hero-a);font-size:18px;font-weight:700;min-height:56px;position:relative;z-index:1}
+.wl-link{border:0;background:none;color:#fff;opacity:.88;font-size:15px;margin-top:12px;padding:8px;position:relative;z-index:1;text-decoration:underline;text-underline-offset:3px}
+/* ---------- tour ---------- */
+.tr{height:100%;display:flex;flex-direction:column;padding:max(18px, calc(env(safe-area-inset-top,0px) + 10px)) 22px max(22px, env(safe-area-inset-bottom,0px));background:var(--paper);overflow-y:auto}
+.tr-top{display:flex;justify-content:space-between;align-items:center}
+.tr-dots{display:flex;gap:6px}
+.tr-dots i{width:7px;height:7px;border-radius:99px;background:var(--line);transition:all .25s}
+.tr-dots i.on{width:22px;background:var(--seal)}
+.tr-skip{border:0;background:none;color:var(--ink-2);font-size:16px;padding:8px}
+.tr-stage{flex:1;min-height:250px;display:flex;align-items:center;justify-content:center;margin:8px 0}
+.tr-text{max-width:460px;width:100%;margin:0 auto}
+.tr-kick{color:var(--seal);font-weight:600;font-size:14px;margin-bottom:4px}
+.tr-text h2{font-size:24px;margin:0;letter-spacing:-.3px;line-height:1.25}
+.tr-rows{display:flex;flex-direction:column;gap:12px;margin:16px 0 20px}
+.tr-row{display:flex;gap:12px;align-items:flex-start;font-size:15.5px;line-height:1.5}
+.tr-ri{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;font-size:16px}
+.tr-ri.see{background:var(--seal-soft)} .tr-ri.do{background:var(--ok-soft)}
+.tr-row b{display:block;font-size:13px;color:var(--ink-2);font-weight:500}
+.tr-act{display:flex;gap:10px}
+.tr-act .btn{flex:1} .tr-act .btn-ghost{flex:.55}
+.tm{width:230px;border-radius:24px;background:var(--surface);box-shadow:var(--shadow);padding:12px;display:flex;flex-direction:column;gap:8px;transform:rotate(-3deg);animation:tmin .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes tmin{from{transform:rotate(-3deg) translateY(14px);opacity:0}to{transform:rotate(-3deg);opacity:1}}
+.tm-hero{border-radius:14px;padding:12px;color:#fff;background:linear-gradient(135deg,var(--hero-a),var(--hero-b))}
+.tm-hero small{display:block;font-size:11px;opacity:.88}
+.tm-hero b{display:block;font-size:25px;letter-spacing:-.5px;margin:2px 0 6px}
+.tm-hbar{height:5px;border-radius:9px;background:rgba(255,255,255,.3);overflow:hidden}
+.tm-hbar i{display:block;height:100%;width:62%;background:#fff}
+.tm-line{width:100%;height:28px;display:block}
+.tm-card{border-radius:12px;background:var(--paper);padding:9px 10px;display:flex;flex-direction:column;gap:5px}
+.tm-soft{background:var(--seal-soft)}
+.tm-row{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;gap:6px}
+.tm-row span{display:flex;align-items:center;gap:6px}
+.tm-row b{font-weight:600;white-space:nowrap}
+.tm-trk{height:5px;border-radius:9px;background:var(--track);overflow:hidden;margin-bottom:2px}
+.tm-trk i{display:block;height:100%;border-radius:9px}
+.tm-chk{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);display:inline-block}
+.tm-chk.on{background:var(--ok);border-color:var(--ok)}
+.tm-seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--track);border-radius:8px;padding:2px;font-size:10.5px;text-align:center}
+.tm-seg span{padding:4px 0;border-radius:6px;color:var(--ink-2)}
+.tm-seg span.on{background:var(--surface);color:var(--ink);font-weight:600}
+.tm-seals{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-top:6px}
+.tm-seals i{aspect-ratio:1;border-radius:50%;border:1.5px solid rgba(255,255,255,.45)}
+.tm-seals i.on{background:#fff;border-color:#fff}
+.tm-add{position:relative;padding-bottom:62px;gap:0}
+.tm-sheet{display:flex;flex-direction:column;gap:7px}
+.tm-title{text-align:center;font-weight:700;font-size:13px}
+.tm-amt{text-align:center;font-size:26px;font-weight:700;border-bottom:2px solid var(--seal);padding-bottom:4px;position:relative}
+.tm-field{border:1px solid var(--line);border-radius:9px;padding:6px 9px;font-size:11.5px;position:relative}
+.tm-chips{display:flex;flex-wrap:wrap;gap:4px;position:relative;padding-top:2px}
+.tm-chips em{font-style:normal;font-size:10px;border-radius:99px;padding:4px 7px;background:var(--track)}
+.tm-chips em.on{background:var(--seal);color:#fff}
+.tm-save{background:var(--seal);color:#fff;border-radius:10px;text-align:center;padding:7px;font-size:12px;font-weight:600;position:relative}
+.tm-n{position:absolute;left:-9px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:var(--amber);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;box-shadow:0 0 0 3px var(--surface)}
+.tm-chips .tm-n{top:12px}
+.tm-tabbar{position:absolute;left:0;right:0;bottom:0;height:50px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-around;padding:0 6px}
+.tm-tabbar i{width:18px;height:18px;border-radius:6px;background:var(--track)}
+.tm-fab{width:38px;height:38px;border-radius:12px;background:var(--seal);color:#fff;display:grid;place-items:center;font-size:22px;font-weight:300;animation:tmpulse 1.6s ease-in-out infinite}
+@keyframes tmpulse{0%,100%{box-shadow:0 0 0 0 rgba(74,85,201,.45)}50%{box-shadow:0 0 0 10px rgba(74,85,201,0)}}
+.tm-point{position:absolute;bottom:16px;right:calc(50% + 30px);background:var(--ink);color:var(--paper);font-size:10.5px;font-weight:600;border-radius:8px;padding:3px 8px;white-space:nowrap}
+.tm-point::after{content:"";position:absolute;top:50%;right:-4px;margin-top:-4px;width:8px;height:8px;background:var(--ink);transform:rotate(45deg)}
+.tm-tabbar i:nth-child(2){visibility:hidden}
+/* ---------- coach marks ---------- */
+.coach{position:absolute;inset:0;z-index:90}
+.c-hole{position:absolute;box-shadow:0 0 0 3px rgba(255,255,255,.95),0 0 0 9999px rgba(10,12,28,.64);pointer-events:none;transition:all .25s cubic-bezier(.2,.8,.2,1)}
+.c-bal{position:absolute;left:14px;right:14px;max-width:420px;margin:0 auto;background:var(--surface);color:var(--ink);border-radius:18px;padding:14px 16px 12px;box-shadow:0 14px 38px rgba(0,0,0,.3);animation:cin .25s ease-out}
+@keyframes cin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.c-bal::before{content:"";position:absolute;width:16px;height:16px;background:var(--surface);transform:rotate(45deg);left:var(--ax,40px)}
+.c-bal.below::before{top:-7px} .c-bal.above::before{bottom:-7px} .c-bal.noarrow::before{display:none}
+.c-step{font-size:12.5px;color:var(--seal);font-weight:600;margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
+.c-step button{border:0;background:none;color:var(--ink-2);font-size:12.5px;padding:4px 0}
+.c-bal h4{margin:0 0 8px;font-size:18px}
+.c-lines{display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.45;margin-bottom:12px}
+.c-lines div{display:grid;grid-template-columns:64px 1fr;gap:6px}
+.c-lines b{color:var(--ink-2);font-weight:500;font-size:12.5px;padding-top:1px}
+.c-act{display:flex;gap:8px;align-items:center}
+.c-act .btn{min-height:42px;padding:8px 14px;font-size:15px;flex:none}
+.c-act .btn-primary{min-width:96px}
+.c-dots{display:flex;gap:4px;margin-right:auto}
+.c-dots i{width:6px;height:6px;border-radius:99px;background:var(--line)}
+.c-dots i.on{background:var(--seal);width:16px}
+/* ---------- ? help ---------- */
+.qh{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--seal);color:var(--seal);background:var(--seal-soft);font-size:11.5px;font-weight:700;display:inline-grid;place-items:center;padding:0;margin-inline-start:6px;vertical-align:2px;line-height:1;flex:none;font-family:var(--font)}
+.qh.on{background:var(--seal);color:var(--on-seal)}
+.qh-l{border-color:rgba(255,255,255,.7);color:#fff;background:rgba(255,255,255,.16)}
+.qh-l.on{background:#fff;color:var(--hero-a)}
+.qtip{position:absolute;z-index:80;background:var(--ink);color:var(--paper);border-radius:14px;padding:11px 14px 12px 28px;font-size:14px;line-height:1.5;box-shadow:0 12px 30px rgba(0,0,0,.28);animation:cin .2s ease-out}
+.qtip b{display:block;font-size:15px;margin-bottom:2px}
+.qtip::before{content:"";position:absolute;top:-6px;left:var(--ax,20px);width:12px;height:12px;background:var(--ink);transform:rotate(45deg)}
+.qtip.up::before{top:auto;bottom:-6px}
+.qx{position:absolute;top:6px;left:6px;border:0;background:none;color:inherit;opacity:.7;font-size:18px;padding:2px 6px;line-height:1}
+@media (prefers-reduced-motion: reduce){ .wl-logo,.wl-arc,.tm,.tm-fab,.c-bal,.qtip{animation:none} .wl-arc{stroke-dasharray:500 1000} .c-hole{transition:none} }
+
+.ob-back-tour{display:block;margin:22px auto 0}
+.tr-note{margin:0 0 14px;font-size:14px;color:var(--ink-2);background:var(--seal-soft);border-radius:12px;padding:10px 12px}
+.tr-note b{color:var(--seal);font-weight:600}
+
+/* onboarding: debts & goals */
+.ob-yn{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 14px}
+.ob-yn button{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:14px;font-size:16px;font-weight:600;color:var(--ink)}
+.ob-yn button[aria-pressed="true"]{border-color:var(--seal);background:var(--seal-soft);color:var(--seal)}
+.ob-debt,.ob-goal{background:var(--surface);border-radius:16px;padding:12px;margin-bottom:10px;box-shadow:var(--shadow)}
+.ob-debt-top{display:grid;grid-template-columns:110px 1fr 34px;gap:8px;align-items:center}
+.ob-debt-top .field,.ob-debt-nums .field{min-height:44px;padding:9px 12px;font-size:16px}
+.ob-x{border:0;background:var(--track);color:var(--ink-2);border-radius:10px;height:40px;font-size:20px;line-height:1}
+.ob-debt-nums{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ob-debt-nums label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink-2)}
+.ob-od-note{justify-content:flex-end;padding-bottom:12px}
+.ob-adddebt{display:flex;align-items:center;gap:6px;justify-content:center;width:100%;border:1.5px dashed var(--line);background:none;color:var(--seal);border-radius:14px;padding:12px;font-size:15px;font-weight:600}
+.ob-adddebt svg{width:16px;height:16px}
+.ob-goal-name{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px}
+.ob-goal-name input{width:20px;height:20px;accent-color:var(--seal)}
 </style>
 </head>
 <body>
@@ -875,9 +1002,318 @@ function toast(msg, undo){
 }
 
 /* ---------- render root ---------- */
+/* ================= WELCOME + TOUR ================= */
+let intro = { stage:"welcome", i:0 };
+const TOUR = [
+  { k:"home",  t:"דף הבית: איך החודש שלי?", see:"כמה נשאר להוציא החודש, לאן הלך הכסף, וסיכום של תכנון מול בפועל.", doo:"מציצים כאן כל יום, לפני שמוציאים כסף." },
+  { k:"exp",   t:"הוצאות: כל מה שיוצא", see:"שלוש לשוניות: משתנות לפי קטגוריה, קבועות כמו שכירות וחשבונות, ופירוט של כל ההוצאות.", doo:"מסמנים תשלום קבוע כשהוא יורד, ובודקים כמה נשאר בכל קטגוריה." },
+  { k:"add",   t:"הוספת הוצאה: כמה שניות", see:"לוחצים על ה-+ בתחתית המסך, ונפתח חלון קצר.", doo:"1 סכום, 2 על מה, 3 קטגוריה, 4 שמירה. שם שכבר הזנתם יוצע לבד." },
+  { k:"save",  t:"חיסכון: הכסף שנשאר אצלכם", see:"כמה נחסך בכל חודש, וכמה יש בקופת החיסכון.", doo:"לא צריך להזין. החיסכון מחושב לבד בסוף כל חודש." },
+  { k:"goals", t:"מטרות: חוסכים בשביל משהו", see:"קרן חירום, רכב, חופשה. לכל מטרה רואים כמה נצבר ומתי תגיעו אליה.", doo:"מגדירים מטרה והפרשה חודשית פעם אחת. הכסף נכנס לבד." },
+  { k:"debts", t:"הלוואות וחובות: רואים אותם יורדים", see:"כל הלוואה, עסקה בתשלומים ומינוס, עם יתרה ומועד סיום.", doo:"מוסיפים פעם אחת. ההחזר נכנס לבד לקבועות, וכל \"שולם\" מוריד את היתרה." },
+  { k:"an",    t:"ניתוח החודש", see:"בתחילת כל חודש: האם עמדתם בתקציב, איפה חרגתם וכמה נחסך.", doo:"מאשרים בלחיצה הצעות לחודש הבא." }
+];
+function tourIll(k){
+  const bars = (rows) => `<div class="tm-card">${rows.map(r => `<div class="tm-row"><span>${r[0]}</span><b>${r[1]}</b></div><div class="tm-trk"><i style="width:${r[2]}%;background:${r[3] || "var(--seal)"}"></i></div>`).join("")}</div>`;
+  if(k === "home") return `<div class="tm"><div class="tm-hero"><small>נשאר להוציא</small><b>3,300 ₪</b><div class="tm-hbar"><i></i></div></div>${bars([["לימודים","1,200 ₪",90,"#9AA1C9"],["רכב ודלק","800 ₪",60,"#9AA1C9"]])}</div>`;
+  if(k === "exp") return `<div class="tm"><div class="tm-seg"><span class="on">משתנות</span><span>קבועות</span><span>פירוט</span></div>${bars([["🍽️ מסעדות","230 ₪",55],["🛒 קניות לבית","410 ₪",40]])}<div class="tm-card"><div class="tm-row"><span><i class="tm-chk on"></i>שכירות</span><b>1,500 ₪</b></div><div class="tm-row"><span><i class="tm-chk"></i>ביטוחים</span><b>300 ₪</b></div></div></div>`;
+  if(k === "add") return `<div class="tm tm-add">
+      <div class="tm-sheet">
+        <div class="tm-title">הוצאה חדשה</div>
+        <div class="tm-amt"><span class="tm-n">1</span>45 ₪</div>
+        <div class="tm-field"><span class="tm-n">2</span>קפה ומאפה</div>
+        <div class="tm-chips"><span class="tm-n">3</span><em class="on">🍽️ מסעדות</em><em>🛒 סופר</em><em>🎬 בילויים</em></div>
+        <div class="tm-save"><span class="tm-n">4</span>שמירה</div>
+      </div>
+      <div class="tm-tabbar"><i></i><i></i><span class="tm-fab">+</span><i></i><i></i></div>
+      <div class="tm-point">לוחצים כאן</div>
+    </div>`;
+  if(k === "save") return `<div class="tm"><div class="tm-hero"><small>בקופת החיסכון</small><b>4,200 ₪</b><div class="tm-seals"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div></div><div class="tm-card"><div class="tm-row"><span>נחסכו</span><b>4,700 ₪</b></div><div class="tm-row"><span>עברו למטרות</span><b>500 ₪</b></div></div></div>`;
+  if(k === "goals") return `<div class="tm">${bars([["🛟 קרן חירום","1,500 / 3,000",50],["🚗 רכב","6,000 / 24,000",25],["✈️ חופשה","800 / 4,000",20]])}<div class="tm-card tm-soft"><div class="tm-row"><span>500 ₪ בחודש</span><b>יעד ב-2027</b></div></div></div>`;
+  if(k === "debts") return `<div class="tm"><div class="tm-hero"><small>סך החובות</small><b>21,375 ₪</b><svg viewBox="0 0 120 30" class="tm-line"><polyline points="2,6 32,11 62,15 92,21 118,26" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>${bars([["🏦 הלוואת רכב","14,475 ₪",12,"var(--ok)"],["🧾 טלפון בתשלומים","2,200 ₪",8,"var(--ok)"]])}</div>`;
+  return `<div class="tm"><div class="tm-hero"><small>ניתוח אוקטובר</small><b style="font-size:19px">עמדת בתקציב</b></div><div class="tm-card"><div class="tm-row"><span>בגדים וקניות</span><b style="color:var(--rose)">חריגה 200</b></div><div class="tm-row"><span>בילויים</span><b style="color:var(--ok)">נשאר 350</b></div></div><div class="tm-card tm-soft"><div class="tm-row"><span>להעלות יעד ל-450 ₪?</span><b style="color:var(--seal)">אישור</b></div></div></div>`;
+}
+function renderIntro(){
+  const replay = !!ui.tourReplay;
+  if(intro.stage === "welcome" && !replay){
+    app.innerHTML = `
+      <div class="wl">
+        <div class="wl-logo"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="40" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="16"/><circle class="wl-arc" cx="60" cy="60" r="40" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" transform="rotate(-90 60 60)"/></svg></div>
+        <div class="wl-kick">ברוכים הבאים ל</div>
+        <h1>ניהול תקציב</h1>
+        <p class="wl-sub">לדעת כמה נשאר, לאן הכסף הולך, ולחסוך בכל חודש.</p>
+        <div class="wl-points">
+          <div><span>📊</span>רואים בכל רגע כמה נשאר להוציא החודש</div>
+          <div><span>⚡</span>רושמים הוצאה בכמה שניות</div>
+          <div><span>🎯</span>עוקבים אחרי החיסכון, המטרות וההלוואות, ורואים אותם מתקדמים</div>
+        </div>
+        <button class="wl-go" id="wlGo">בואו נכיר</button>
+        <button class="wl-link" id="obRestore">יש לי קובץ גיבוי</button>
+        <input type="file" id="obRestoreFile" accept=".json,application/json" hidden>
+      </div>`;
+    document.getElementById("wlGo").onclick = () => { intro = { stage:"tour", i:0 }; renderIntro(); };
+    bindObRestore();
+    return;
+  }
+  const i = intro.i, s = TOUR[i], last = i === TOUR.length - 1;
+  app.innerHTML = `
+    <div class="tr">
+      <div class="tr-top">
+        <div class="tr-dots" aria-hidden="true">${TOUR.map((_, n) => `<i class="${n === i ? "on" : ""}"></i>`).join("")}</div>
+        <button class="tr-skip" id="trSkip">${replay ? "סגירה" : "דלג"}</button>
+      </div>
+      <div class="tr-stage">${tourIll(s.k)}</div>
+      <div class="tr-text">
+        <div class="tr-kick">${i + 1} מתוך ${TOUR.length}</div>
+        <h2>${s.t}</h2>
+        <div class="tr-rows">
+          <div class="tr-row"><span class="tr-ri see">👀</span><span><b>מה רואים כאן</b>${s.see}</span></div>
+          <div class="tr-row"><span class="tr-ri do">✋</span><span><b>מה עושים כאן</b>${s.doo}</span></div>
+        </div>
+        ${last ? `<p class="tr-note">🧭 אפשר לחזור לסיור בכל רגע: <b>הגדרות ← סיור היכרות</b></p>` : ""}
+        <div class="tr-act">
+          ${i > 0 ? `<button class="btn btn-ghost" id="trPrev">הקודם</button>` : ""}
+          <button class="btn btn-primary" id="trNext">${last ? (replay ? "סיום" : "מתחילים") : "הבא"}</button>
+        </div>
+      </div>
+    </div>`;
+  const done = () => {
+    if(replay){ ui.tourReplay = false; intro = { stage:"welcome", i:0 }; ui.tab = "home"; renderApp(); }
+    else { intro = { stage:"done", i:0 }; renderOnboarding(); }
+  };
+  document.getElementById("trNext").onclick = () => { if(last) done(); else { intro.i++; renderIntro(); } };
+  const pv = document.getElementById("trPrev"); if(pv) pv.onclick = () => { intro.i--; renderIntro(); };
+  document.getElementById("trSkip").onclick = done;
+  let x0 = null;
+  const st = app.querySelector(".tr");
+  st.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; }, { passive:true });
+  st.addEventListener("touchend", e => {
+    if(x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if(Math.abs(dx) < 50) return;
+    if(dx > 0 && !last){ intro.i++; renderIntro(); }
+    else if(dx < 0 && i > 0){ intro.i--; renderIntro(); }
+  });
+}
+function bindObRestore(){
+  const orb = document.getElementById("obRestore"), orf = document.getElementById("obRestoreFile");
+  if(!orb) return;
+  orb.onclick = () => { ui.noLockUntil = Date.now() + 120000; orf.click(); };
+  orf.onchange = () => {
+    const file = orf.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      let o; try{ o = JSON.parse(reader.result); }catch(e){ o = null; }
+      if(!validBackup(o)){ toast("הקובץ הזה אינו גיבוי של האפליקציה"); return; }
+      if(o.exportedAt) o.lastBackup = Date.parse(o.exportedAt) || o.lastBackup;
+      delete o.exportedAt; delete o.app; delete o.lock;
+      if(!Array.isArray(o.expenses)) o.expenses = [];
+      state = o; ob = null; migrate(); save(); ui.tab = "home"; ui.month = curYM(); ui.locked = false; render(); toast("הנתונים שוחזרו");
+    };
+    reader.readAsText(file);
+  };
+}
+
+/* ================= COACH MARKS ================= */
+const COACH = {
+  home: [
+    { sel:".hero2", t:"נשאר להוציא", what:"כמה עוד אפשר להוציא החודש, אחרי החיסכון וכל ההוצאות.", why:"זה המספר שעוזר להחליט אם לקנות משהו עכשיו.", act:"מתעדכן לבד עם כל הוצאה. מתחתיו: כמה זה יוצא ליום." },
+    { sel:"#sealBtn", t:"היעד לחיסכון", what:"הסכום שנשמר בצד ראשון, לפני כל ההוצאות.", why:"ככה החיסכון לא \"נבלע\" בהוצאות של החודש.", act:"לחיצה עליו עוברת לדף החיסכון." },
+    { sel:".spend, .chart", t:"לאן הלך הכסף", what:"כל ההוצאות של החודש, מהגדולה לקטנה.", why:"רואים מיד על מה יוצא הכי הרבה.", act:"סכום באפור עוד לא שולם בפועל, ונספר לפי התכנון." },
+    { sel:".wf", t:"סיכום החודש", what:"הכנסות, חיסכון והוצאות: מה תכננתם ומה קרה בפועל.", why:"מראה אם התכנון של החודש מחזיק.", act:"בתחתית הכרטיס נמצא ניתוח החודש." },
+    { sel:"#openSummary", t:"ניתוח החודש", what:"פירוט מלא: איפה חרגתם, כמה נחסך, והצעות לחודש הבא.", why:"כאן לומדים מהחודש ומשפרים את הבא.", act:"פותחים בסוף כל חודש, ומאשרים הצעות בלחיצה." },
+    { sel:"#editIncome", t:"הכנסות ויעד חיסכון", what:"ההכנסה של החודש ויעד החיסכון.", why:"מכאן מתחיל כל החישוב.", act:"כשהמשכורת נכנסת, לוחצים ומסמנים \"התקבל\"." },
+    { sel:"#fab", t:"הוספת הוצאה", what:"הכפתור שבו רושמים כל קנייה.", why:"מה שלא נרשם, לא נספר.", act:"סכום, \"על מה?\", קטגוריה ושמירה. כמה שניות." },
+    { sel:"[data-tab=settings]", t:"הלכתם לאיבוד?", what:"הסיור, בלוני ההסבר ומדריך השימוש נמצאים תמיד בהגדרות.", why:"אפשר לחזור אליהם בכל רגע.", act:"הגדרות ← סיור היכרות, או ← איך משתמשים?" }
+  ],
+  budget_var: [
+    { sel:".seg-top", t:"שלוש לשוניות", what:"משתנות (לפי קטגוריה), קבועות (תשלומים שחוזרים), ופירוט (כל ההוצאות ברשימה אחת).", why:"כל סוג הוצאה מנוהל אחרת.", act:"עוברים בין הלשוניות בלחיצה." },
+    { sel:".tsum", t:"סיכום ההוצאות המשתנות", what:"כמה הוצאתם החודש מתוך מה שתכננתם.", why:"רואים במבט אחד אם אתם בתוך התקציב.", act:"ירוק = בסדר. אדום = חריגה." },
+    { sel:"[data-catview]", t:"כרטיס קטגוריה", what:"כמה הוצא בקטגוריה, כמה נשאר, והממוצע מהחודשים הקודמים.", why:"כאן רואים איפה הכסף בורח.", act:"לחיצה מראה את כל ההוצאות שלה, גרף, ועריכת היעד." },
+    { sel:"#addEnv", t:"הוספת קטגוריה", what:"קטגוריה חדשה, למשל דלק או מתנות.", why:"כל אחד מוציא על דברים אחרים.", act:"שם ויעד חודשי, וזהו." }
+  ],
+  budget_fixed: [
+    { sel:".tsum", t:"סיכום ההוצאות הקבועות", what:"כמה מהתשלומים הקבועים כבר ירדו החודש, מתוך כל המתוכנן.", why:"רואים מה עוד צפוי לרדת מהחשבון.", act:"מתעדכן כשמסמנים תשלום." },
+    { sel:"[data-paid]", t:"סימון \"שולם\"", what:"העיגול ליד כל תשלום.", why:"ככה האפליקציה יודעת מה כבר ירד בפועל.", act:"כשהתשלום יורד מהחשבון, לוחצים. הוא הופך לווי ירוק." },
+    { sel:".frow", t:"שורת תשלום", what:"שם, סכום, ויום החיוב בחודש.", why:"תשלום שעבר את היום שלו ולא סומן, מסומן בכתום.", act:"לחיצה על השורה: עריכת סכום, יום חיוב או מחיקה." },
+    { sel:"[data-addline]", t:"הוספת תשלום קבוע", what:"שורה חדשה, למשל מנוי או חוג.", why:"כל תשלום קבוע צריך להיות כאן.", act:"הלוואות מוסיפים בדף החיסכון ← חובות, והן נכנסות לכאן לבד." }
+  ],
+  budget_list: [
+    { sel:"#listQ", t:"חיפוש", what:"מחפשים הוצאה לפי שם.", why:"\"כמה הוצאתי על קפה החודש?\"", act:"מקלידים, והרשימה מסתננת עם סכום כולל." },
+    { sel:".fchips", t:"סינון", what:"מסננים לפי סוג או לפי קטגוריה.", why:"רואים רק את מה שמעניין עכשיו.", act:"לחיצה על כפתור מסננת. \"הכול\" מחזיר." },
+    { sel:".lsort", t:"מיון", what:"לפי תאריך או לפי סכום.", why:"לפי סכום רואים מיד את ההוצאות הגדולות.", act:"לחיצה על ההוצאה עצמה פותחת עריכה." }
+  ],
+  sheet_add: [
+    { sel:"#sAmt", t:"1. הסכום", what:"כמה שילמתם.", why:"זה מה שיורד מ\"נשאר להוציא\".", act:"מקלידים את הסכום." },
+    { sel:"#sName", t:"2. על מה?", what:"שם קצר להוצאה, למשל \"קפה\" או \"סופר\".", why:"ככה תמצאו אותה אחר כך בחיפוש.", act:"שם שכבר הזנתם יוצע לבד, יחד עם הקטגוריה שלו." },
+    { sel:"#sheet .chips", t:"3. קטגוריה", what:"לאיזה תקציב ההוצאה שייכת.", why:"כל קטגוריה עם יעד משלה.", act:"לוחצים על אחת. הקטגוריה האחרונה נבחרת לבד." },
+    { sel:"#sDate", t:"תאריך", what:"היום של הקנייה. ברירת המחדל היא היום.", why:"שכחתם לרשום? משנים את התאריך, וההוצאה נכנסת לחודש הנכון.", act:"משנים רק אם צריך." },
+    { sel:"#sSave", t:"4. שמירה", what:"שומרים, והכול מתעדכן.", why:"טעיתם? כפתור \"ביטול\" מופיע לכמה שניות.", act:"לוחצים, וזהו." }
+  ],
+  saving_monthly: [
+    { sel:".seg-top", t:"שלוש לשוניות", what:"חודשי (כמה נחסך), מטרות (בשביל מה), וחובות (הלוואות ומינוס).", why:"כל מה שמתקדם לאורך זמן נמצא כאן.", act:"עוברים בין הלשוניות בלחיצה." },
+    { sel:".yr", t:"קופת החיסכון", what:"כמה נחסך השנה, וכמה מזה עבר למטרות.", why:"רואים את הכסף שנשאר אצלכם, חודש אחרי חודש.", act:"לא צריך להזין: מחושב לבד בסוף כל חודש." },
+    { sel:".seals", t:"חותמות החודשים", what:"עיגול לכל חודש: וי = עמדתם ביעד, ! = לא.", why:"רצף של וי מראה הרגל טוב.", act:"לחיצה על חודש פותחת את הפרטים שלו." },
+    { sel:".list .env", t:"שורת חודש", what:"יעד, כמה נחסך, ולאן הלך.", why:"רואים בדיוק מה קרה בכל חודש.", act:"העברתם לחיסכון סכום אחר? לוחצים ומעדכנים." }
+  ],
+  saving_goals: [
+    { sel:"#goalEmergency", t:"להתחיל בקרן חירום", what:"כסף בצד להוצאה לא צפויה, כמו תקלה ברכב.", why:"קרן חירום שומרת אתכם מחוץ למינוס.", act:"לחיצה אחת, עם הצעה של 3,000 ₪ ו-500 ₪ בחודש." },
+    { sel:".yr", t:"נצבר למטרות", what:"כמה כסף כבר מיועד לכל המטרות יחד.", why:"רואים את התמונה הגדולה.", act:"ההפרשות נכנסות לבד בסוף כל חודש." },
+    { sel:"[data-goal]", t:"מטרה", what:"כמה נצבר, כמה חסר, ומתי תגיעו.", why:"מטרה ברורה עוזרת להתמיד.", act:"לחיצה: עריכת סכום, הפרשה חודשית ועדיפות." },
+    { sel:".free-row", t:"חיסכון חופשי", what:"מה שנחסך ולא שויך לאף מטרה.", why:"כסף שאפשר לתת לו ייעוד.", act:"רוצים? מוסיפים לו מטרה חדשה." },
+    { sel:".flow", t:"מאיפה הגיע הכסף?", what:"איך החיסכון של החודש האחרון התחלק בין המטרות.", why:"שקיפות מלאה: כל שקל במקום.", act:"מתעדכן לבד." },
+    { sel:"#addGoal", t:"הוספת מטרה", what:"רכב, חופשה, דירה, לימודים.", why:"אפשר כמה מטרות במקביל.", act:"שם, סכום יעד והפרשה חודשית." }
+  ],
+  saving_debts: [
+    { sel:".empty-month", t:"מעקב חובות", what:"הלוואות, עסקאות בתשלומים ומינוס בבנק.", why:"רואים כל חוב יורד, ומתי הוא ייגמר.", act:"מוסיפים כל חוב פעם אחת." },
+    { sel:".db-hero", t:"סך החובות", what:"כמה אתם חייבים בסך הכול, וכמה ההחזרים בחודש.", why:"רואים כמה ירד מאז שהתחלתם.", act:"מתעדכן לבד מכל סימון \"שולם\"." },
+    { sel:".lc", t:"גרף החובות", what:"סך החובות לאורך החודשים.", why:"קו שיורד = התקדמות.", act:"מתעדכן לבד." },
+    { sel:"[data-debt]", t:"שורת חוב", what:"יתרה, החזר חודשי ומתי צפוי להסתיים.", why:"רואים כמה כל הלוואה עולה ומתי היא נגמרת.", act:"לחיצה: עריכה. מינוס: עדכון היתרה פעם בחודש." },
+    { sel:"#addDebt", t:"הוספת חוב", what:"הלוואה, עסקה בתשלומים או מינוס.", why:"ההחזר נכנס לבד להוצאות הקבועות.", act:"שם, יתרה, החזר חודשי וריבית." }
+  ],
+  debt_sheet: [
+    { sel:"#sheet .seg", t:"סוג החוב", what:"הלוואה, עסקה בתשלומים (טלפון, רהיט), או מינוס בבנק.", why:"כל סוג מתנהג אחרת.", act:"בוחרים את הסוג המתאים." },
+    { sel:"#dBal", t:"יתרה להחזר", what:"כמה עוד נשאר לשלם, לא הסכום המקורי.", why:"ממנה מחושב מתי החוב ייגמר.", act:"את היתרה רואים באפליקציית הבנק." },
+    { sel:"#dPay", t:"החזר חודשי", what:"כמה יורד כל חודש.", why:"נכנס לבד כשורה בהוצאות הקבועות.", act:"כל \"שולם\" על השורה מוריד את היתרה." },
+    { sel:"#dRate", t:"ריבית (לא חובה)", what:"הריבית השנתית באחוזים.", why:"עם ריבית, החישוב של מועד הסיום מדויק יותר.", act:"לא יודעים? משאירים ריק." }
+  ],
+  summary: [
+    { sel:".sm-hero", t:"השורה התחתונה", what:"עמדתם בתקציב או חרגתם, ובכמה.", why:"התשובה הכי חשובה של החודש.", act:"הוצאות בפועל מול התכנון, ומה נשאר." },
+    { sel:"[data-c=\"sm-save\"]", t:"החיסכון של החודש", what:"כמה נחסך, ואיך התחלק בין המטרות.", why:"מחושב לבד מההכנסות וההוצאות.", act:"העברתם סכום אחר? \"עדכון\"." },
+    { sel:"[data-c=\"sm-cats\"]", t:"הקטגוריות", what:"איפה חרגתם ואיפה נשאר.", why:"מראה בדיוק איפה הכסף ברח.", act:"החריגות מופיעות ראשונות." },
+    { sel:"[data-c=\"sm-sug\"]", t:"הצעות לחודש הבא", what:"שינויים מוצעים לפי מה שקרה.", why:"תקציב שמשתפר מחודש לחודש.", act:"לחיצה על הצעה מעדכנת את החודש הבא." }
+  ],
+  settings: [
+    { sel:"#openHelp", t:"איך משתמשים?", what:"מדריך קצר ושאלות נפוצות.", why:"תשובה מהירה כשמשהו לא ברור.", act:"פותחים בכל רגע." },
+    { sel:"#doBackup", t:"גיבוי", what:"שמירת כל הנתונים בקובץ.", why:"הנתונים נשמרים רק בטלפון. בלי גיבוי, החלפת טלפון מוחקת הכול.", act:"פעם בחודש: שמירה ב-iCloud Drive או ב\"קבצים\"." },
+    { sel:"[data-c=\"lock\"]", t:"נעילה בקוד", what:"קוד בן 4 ספרות לפתיחת האפליקציה.", why:"שומר על הנתונים אם מישהו אחר מחזיק את הטלפון.", act:"שוכחים את הקוד? חוזרים רק מגיבוי." },
+    { sel:"#remWeek", t:"תזכורות ביומן", what:"אירוע שבועי וחודשי ביומן של הטלפון.", why:"ההרגל הכי חשוב: בדיקה קבועה.", act:"בוחרים יום ולוחצים \"הוספה\"." }
+  ]
+};
+let coach = null;
+function coachKey(){
+  if(ui.help || ui.tourReplay) return null;
+  if(ui.summary) return "summary";
+  if(ui.tab === "home") return state.months[ui.month] || ui.month === curYM() ? "home" : null;
+  if(ui.tab === "budget") return state.months[ui.month] || ui.month === curYM() ? "budget_" + (ui.expTab || "var") : null;
+  if(ui.tab === "saving") return "saving_" + (ui.saveTab || "monthly");
+  if(ui.tab === "settings") return "settings";
+  return null;
+}
+function coachSeen(k){ return !!(state.coachSeen && state.coachSeen[k]); }
+function maybeCoach(k){
+  k = k || coachKey();
+  if(!k || coach || coachSeen(k) || !COACH[k]) return;
+  if(!k.startsWith("sheet") && k !== "debt_sheet" && document.querySelector(".sheet.open")) return;
+  clearTimeout(maybeCoach.t);
+  maybeCoach.t = setTimeout(() => startCoach(k), k.indexOf("sheet") >= 0 ? 420 : 300);
+}
+function startCoach(k){
+  if(coach || !COACH[k]) return;
+  const steps = COACH[k].filter(s => { const el = document.querySelector(s.sel); return el && el.offsetParent !== null; });
+  if(!steps.length) return;
+  coach = { k, steps, i:0 };
+  drawCoach();
+}
+function endCoach(){
+  if(!coach) return;
+  state.coachSeen = state.coachSeen || {}; state.coachSeen[coach.k] = true; save();
+  coach = null;
+  const ov = app.querySelector(".coach"); if(ov) ov.remove();
+}
+function drawCoach(){
+  if(!coach) return;
+  const s = coach.steps[coach.i], el = document.querySelector(s.sel);
+  if(!el){ endCoach(); return; }
+  const sc = el.closest("#main, .sheet");
+  if(sc){
+    const er = el.getBoundingClientRect(), cr = sc.getBoundingClientRect();
+    sc.scrollTop += (er.top - cr.top) - Math.max(16, (cr.height - er.height) / 2);
+  }
+  app.scrollTop = 0; document.documentElement.scrollTop = 0;
+  let ov = app.querySelector(".coach");
+  if(!ov){ ov = document.createElement("div"); ov.className = "coach"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-modal","true"); app.appendChild(ov); }
+  requestAnimationFrame(() => {
+    const ar = app.getBoundingClientRect(), r = el.getBoundingClientRect(), pad = 6;
+    const hole = { x: r.left - ar.left - pad, y: r.top - ar.top - pad, w: r.width + pad*2, h: r.height + pad*2 };
+    const n = coach.steps.length, i = coach.i, last = i === n - 1;
+    const radius = Math.min(22, hole.h / 2);
+    ov.innerHTML = `
+      <div class="c-hole" style="left:${hole.x}px;top:${hole.y}px;width:${hole.w}px;height:${hole.h}px;border-radius:${radius}px"></div>
+      <div class="c-bal" id="cBal" aria-labelledby="cT">
+        <div class="c-step"><span>${i + 1} מתוך ${n}</span><button id="cSkip">דלג על ההסבר</button></div>
+        <h4 id="cT">${s.t}</h4>
+        <div class="c-lines">
+          <div><b>מה זה</b><span>${s.what}</span></div>
+          <div><b>למה חשוב</b><span>${s.why}</span></div>
+          <div><b>מה עושים</b><span>${s.act}</span></div>
+        </div>
+        <div class="c-act">
+          ${i > 0 ? `<button class="btn btn-ghost" id="cPrev">הקודם</button>` : ""}
+          <button class="btn btn-primary" id="cNext">${last ? "סיום" : "הבא"}</button>
+          <span class="c-dots" aria-hidden="true">${coach.steps.map((_, j) => `<i class="${j === i ? "on" : ""}"></i>`).join("")}</span>
+        </div>
+      </div>`;
+    const bal = ov.querySelector("#cBal"), H = ar.height, bh = bal.offsetHeight, below = H - (hole.y + hole.h), above = hole.y;
+    let top, cls;
+    if(below >= bh + 18 || below >= above){ top = Math.min(hole.y + hole.h + 12, H - bh - 8); cls = "below"; }
+    else { top = Math.max(8, hole.y - bh - 12); cls = "above"; }
+    bal.style.top = top + "px"; bal.classList.add(cls);
+    const cx = hole.x + hole.w / 2, bl = bal.offsetLeft, bw = bal.offsetWidth;
+    bal.style.setProperty("--ax", Math.max(18, Math.min(bw - 34, cx - bl - 8)) + "px");
+    const coversHole = cls === "below" ? top < hole.y + hole.h : top + bh > hole.y;
+    if(coversHole) bal.classList.add("noarrow");
+    ov.querySelector("#cNext").onclick = () => { if(last) endCoach(); else { coach.i++; drawCoach(); } };
+    const pv = ov.querySelector("#cPrev"); if(pv) pv.onclick = () => { coach.i--; drawCoach(); };
+    ov.querySelector("#cSkip").onclick = endCoach;
+    ov.querySelector("#cNext").focus({ preventScroll:true });
+  });
+}
+window.addEventListener("resize", () => { if(coach) drawCoach(); });
+document.addEventListener("keydown", e => { if(coach && e.key === "Escape") endCoach(); });
+
+/* ================= ? HELP BALLOONS ================= */
+const HELP = {
+  hero:   ["נשאר להוציא", "כמה עוד אפשר להוציא החודש, אחרי החיסכון וכל ההוצאות שנרשמו. מתחתיו: כמה זה יוצא ליום עד המשכורת."],
+  spend:  ["לאן הלך הכסף", "כל ההוצאות של החודש, מהגדולה לקטנה. סכום באפור עוד לא שולם, ונספר לפי התכנון."],
+  wf:     ["סיכום החודש", "תכנון מול בפועל: הכנסות, פחות חיסכון, פחות הוצאות, שווה מה שנשאר. המספר הגדול זהה לזה שבראש הדף."],
+  tsvar:  ["הוצאות משתנות", "כמה הוצאתם החודש בכל הקטגוריות, מתוך מה שתכננתם. לחיצה על קטגוריה מראה את ההוצאות שלה."],
+  tsfix:  ["הוצאות קבועות", "כמה מהתשלומים הקבועים כבר ירדו מהחשבון. כשתשלום יורד, לוחצים על העיגול שלו."],
+  yrsave: ["קופת החיסכון", "מה שנחסך השנה, פחות מה שעבר למטרות. החיסכון מחושב לבד בסוף כל חודש: ההכנסה פחות כל ההוצאות."],
+  yrgoal: ["נצבר למטרות", "כמה כסף כבר מיועד למטרות. בסוף כל חודש, ההפרשה של כל מטרה נכנסת לבד מהחיסכון של החודש."],
+  yrdebt: ["סך החובות", "כל ההלוואות, התשלומים והמינוס יחד. כל סימון \"שולם\" בהוצאות הקבועות מוריד את היתרה."],
+  smsave: ["החיסכון של החודש", "ההכנסה פחות כל ההוצאות. אם בפועל העברתם סכום אחר, לוחצים \"עדכון\"."],
+  smsug:  ["הצעות לחודש הבא", "חריגה חודשיים ברצף? מוצע להעלות יעד. יעד שלא מנוצל? מוצע להוריד ולהעביר לחיסכון. חריגה חד-פעמית מקבלת הסבר בלבד."]
+};
+function qh(key, light){ return `<button type="button" class="qh${light ? " qh-l" : ""}" data-help="${key}" aria-label="הסבר: ${HELP[key][0]}">?</button>`; }
+function closeHelp(){ const t = app.querySelector(".qtip"); if(t) t.remove(); app.querySelectorAll(".qh.on").forEach(b => b.classList.remove("on")); }
+document.addEventListener("click", e => {
+  const b = e.target.closest && e.target.closest("[data-help]");
+  if(b && app.contains(b)){
+    e.stopPropagation(); e.preventDefault();
+    const was = b.classList.contains("on"); closeHelp(); if(was) return;
+    const [t, body] = HELP[b.dataset.help]; b.classList.add("on");
+    const tip = document.createElement("div"); tip.className = "qtip"; tip.setAttribute("role","tooltip");
+    tip.innerHTML = `<button type="button" class="qx" aria-label="סגירה">×</button><b>${t}</b>${body}`;
+    app.appendChild(tip);
+    const ar = app.getBoundingClientRect(), r = b.getBoundingClientRect();
+    const w = Math.min(300, ar.width - 24); tip.style.width = w + "px";
+    let left = r.left - ar.left + r.width / 2 - w / 2; left = Math.max(12, Math.min(ar.width - w - 12, left));
+    let top = r.bottom - ar.top + 10;
+    if(top + tip.offsetHeight > ar.height - 70){ top = r.top - ar.top - tip.offsetHeight - 10; tip.classList.add("up"); }
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+    tip.style.setProperty("--ax", (r.left - ar.left + r.width / 2 - left - 6) + "px");
+    tip.querySelector(".qx").onclick = ev => { ev.stopPropagation(); closeHelp(); };
+    return;
+  }
+  if(!(e.target.closest && e.target.closest(".qtip"))) closeHelp();
+}, true);
+app.addEventListener("scroll", closeHelp, true);
+
 function render(){
-  if(!state || !state.onboarded){ renderOnboarding(); return; }
+  coach = null;
+  if(!state || !state.onboarded){ if(intro.stage !== "done") renderIntro(); else renderOnboarding(); return; }
   if(ui.locked){ renderLock(); return; }
+  if(ui.tourReplay){ renderIntro(); return; }
   renderApp();
 }
 
@@ -1020,9 +1456,13 @@ function renderOnboarding(){
   if(!ob){
     ob = { step:0, income:"", saving:"",
       fixed: DEFAULT_FIXED.map(n => ({ id:uid(), name:n, on:true, budget:"" })),
-      cats: DEFAULT_ENVELOPES.map((n,i) => ({ id:uid(), name:n, on:true, budget:"", color:COLORS[i % COLORS.length] })) };
+      cats: DEFAULT_ENVELOPES.map((n,i) => ({ id:uid(), name:n, on:true, budget:"", color:COLORS[i % COLORS.length] })),
+      hasDebts: null, debts: [],
+      goals: [{ id:uid(), name:"קרן חירום", on:true, target:"3000", monthly:"500" }] };
   }
-  const s = ob.step, LAST = 3;
+  if(!ob.debts){ ob.debts = []; ob.hasDebts = null; }
+  if(!ob.goals) ob.goals = [{ id:uid(), name:"קרן חירום", on:true, target:"3000", monthly:"500" }];
+  const s = ob.step, LAST = 5, STEPS = 6;
   const listHTML = (key, items, placeholder, label) => `
       <div id="obList">${items.map(c => `
         <div class="ob-env" data-id="${c.id}">
@@ -1038,7 +1478,7 @@ function renderOnboarding(){
   let body = "";
   if(s === 0){
     body = `
-      <div class="ob-kicker">ברוכים הבאים לניהול תקציב</div>
+      <div class="ob-kicker">מתחילים: ההכנסה</div>
       <h1>מה ההכנסה החודשית שלכם?</h1>
       <p class="lead">הסכום נטו שנכנס לחשבון בחודש רגיל. אפשר לעדכן בכל חודש.</p>
       <div class="amount"><input id="obIn" inputmode="decimal" placeholder="0" value="${esc(ob.income)}" aria-label="הכנסה חודשית"><span>₪</span></div>
@@ -1046,8 +1486,7 @@ function renderOnboarding(){
       <label class="lbl" for="obDay" style="margin-top:18px">באיזה יום בחודש נכנסת המשכורת?</label>
       <select class="field" id="obDay">${Array.from({length:28}, (_, i) => `<option value="${i+1}" ${(ob.cycleDay || 1) === i+1 ? "selected" : ""}>${i+1} בחודש</option>`).join("")}</select>
       <p class="hint">החודש באפליקציה יתחיל ביום הזה, כך שהמשכורת וההוצאות שהיא מממנת יהיו באותו חודש.</p>
-      <button class="pin-link" id="obRestore" style="margin-top:18px">יש לי קובץ גיבוי? שחזור במקום הקמה</button>
-      <input type="file" id="obRestoreFile" accept=".json,application/json" hidden>`;
+      <button class="pin-link ob-back-tour" id="obTour">חזרה לסיור ההיכרות</button>`;
   } else if(s === 1){
     body = `
       <div class="ob-kicker">חיסכון קודם</div>
@@ -1062,6 +1501,53 @@ function renderOnboarding(){
       <h1>מה יוצא מהחשבון כל חודש?</h1>
       <p class="lead">תשלומים שחוזרים כל חודש. סמנו את מה שרלוונטי והזינו סכום משוער. אפשר לדייק אחר כך בדף ההוצאות.</p>
       ${listHTML("fixed", ob.fixed, "הוצאה קבועה נוספת, למשל ארנונה", "סכום")}`;
+  } else if(s === 3){
+    const typeOpts = d => [["loan","הלוואה"],["installments","תשלומים"],["overdraft","מינוס"]].map(([k,l]) => `<option value="${k}" ${d.type === k ? "selected" : ""}>${l}</option>`).join("");
+    body = `
+      <div class="ob-kicker">הלוואות ותשלומים</div>
+      <h1>יש לכם הלוואות, תשלומים או מינוס?</h1>
+      <p class="lead">כל חוב נוסף פעם אחת. ההחזר החודשי נכנס לבד להוצאות הקבועות, ותראו את היתרה יורדת מחודש לחודש.</p>
+      <div class="ob-yn" role="group" aria-label="יש חובות?">
+        <button type="button" data-yn="no" aria-pressed="${ob.hasDebts === false}">אין לי</button>
+        <button type="button" data-yn="yes" aria-pressed="${ob.hasDebts === true}">כן, יש</button>
+      </div>
+      ${ob.hasDebts ? `
+      <div id="obDebts">${ob.debts.map(d => `
+        <div class="ob-debt" data-id="${d.id}">
+          <div class="ob-debt-top">
+            <select class="field" data-f="type" aria-label="סוג">${typeOpts(d)}</select>
+            <input class="field" data-f="name" value="${esc(d.name)}" placeholder="${d.type === "overdraft" ? "מינוס בבנק" : d.type === "installments" ? "למשל טלפון" : "למשל הלוואת רכב"}" aria-label="שם">
+            <button type="button" class="ob-x" data-del="${d.id}" aria-label="מחיקה">×</button>
+          </div>
+          <div class="ob-debt-nums">
+            <label><span>${d.type === "overdraft" ? "יתרת המינוס" : "יתרה להחזר"}</span><input class="field" data-f="bal" inputmode="decimal" placeholder="₪" value="${esc(d.bal)}"></label>
+            ${d.type === "overdraft" ? `<label class="ob-od-note"><span>&nbsp;</span>מעדכנים פעם בחודש</label>` : `<label><span>החזר חודשי</span><input class="field" data-f="pay" inputmode="decimal" placeholder="₪" value="${esc(d.pay)}"></label>`}
+          </div>
+        </div>`).join("")}
+      </div>
+      <button type="button" class="ob-adddebt" id="obAddDebt">${PLUS_SM}הוספת חוב</button>
+      <p class="hint">שימו לב: אם כבר הזנתם החזר של הלוואה בהוצאות הקבועות, חזרו צעד אחד ובטלו אותו שם, כדי שלא ייספר פעמיים.</p>
+      <div class="ob-sum" id="obSum"></div>` : ob.hasDebts === false ? `<p class="hint" style="margin-top:14px">מעולה. אם ייווצר חוב בהמשך, מוסיפים אותו בדף החיסכון ← חובות.</p>` : ""}
+      <div class="err" id="obErr"></div>`;
+  } else if(s === 5){
+    body = `
+      <div class="ob-kicker">מטרות חיסכון</div>
+      <h1>בשביל מה אתם חוסכים?</h1>
+      <p class="lead">מתוך יעד החיסכון${num(ob.saving) > 0 ? ` (${money(num(ob.saving))} בחודש)` : ""}, כמה ייכנס לכל מטרה. ההפרשות נכנסות לבד בסוף כל חודש. אפשר לדלג ולהוסיף אחר כך.</p>
+      <div id="obGoals">${ob.goals.map(g => `
+        <div class="ob-goal" data-id="${g.id}">
+          <label class="ob-goal-name"><input type="checkbox" ${g.on ? "checked" : ""} data-g="on"><span>${goalIcon(g.name)} ${esc(g.name)}</span></label>
+          <div class="ob-debt-nums">
+            <label><span>סכום יעד</span><input class="field" data-g="target" inputmode="decimal" placeholder="₪" value="${esc(g.target)}" ${g.on ? "" : "disabled"}></label>
+            <label><span>הפרשה בחודש</span><input class="field" data-g="monthly" inputmode="decimal" placeholder="₪" value="${esc(g.monthly)}" ${g.on ? "" : "disabled"}></label>
+          </div>
+        </div>`).join("")}
+      </div>
+      <div class="ob-add">
+        <input class="field" id="obNewGoal" placeholder="מטרה נוספת, למשל רכב או חופשה" aria-label="מטרה חדשה">
+        <button type="button" id="obAddGoal">הוספה</button>
+      </div>
+      <div class="ob-sum" id="obSum"></div>`;
   } else {
     body = `
       <div class="ob-kicker">הוצאות משתנות</div>
@@ -1071,39 +1557,59 @@ function renderOnboarding(){
   }
   app.innerHTML = `
     <div class="ob">
-      <div class="ob-steps" aria-label="שלב ${s+1} מתוך 4">${[0,1,2,3].map(i => `<i class="${i<=s?"on":""}"></i>`).join("")}</div>
+      <div class="ob-steps" aria-label="שלב ${s+1} מתוך ${STEPS}">${Array.from({length:STEPS}, (_, i) => `<i class="${i<=s?"on":""}"></i>`).join("")}</div>
       ${body}
       <div class="ob-foot">
         ${s>0 ? `<button class="btn btn-ghost" id="obBack">חזרה</button>` : ""}
-        <button class="btn btn-primary" id="obNext">${s<LAST ? "המשך" : "סיום ומעבר לדף הבית"}</button>
+        <button class="btn btn-primary" id="obNext">${s<LAST ? (s === 5 || (s === 3 && ob.hasDebts === null) ? "דלג" : "המשך") : (ob.goals.some(g => g.on) ? "סיום ומעבר לדף הבית" : "דילוג וסיום")}</button>
       </div>
     </div>`;
 
   const od = document.getElementById("obDay"); if(od) od.onchange = () => ob.cycleDay = Number(od.value);
-  const orb = document.getElementById("obRestore"), orf = document.getElementById("obRestoreFile");
-  if(orb){
-    orb.onclick = () => orf.click();
-    orf.onchange = () => {
-      const file = orf.files[0]; if(!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        let o; try{ o = JSON.parse(reader.result); }catch(e){ o = null; }
-        if(!validBackup(o)){ toast("הקובץ הזה אינו גיבוי של האפליקציה"); return; }
-        if(o.exportedAt) o.lastBackup = Date.parse(o.exportedAt) || o.lastBackup;
-        delete o.exportedAt; delete o.app; delete o.lock;
-        if(!Array.isArray(o.expenses)) o.expenses = [];
-        state = o; ob = null; migrate(); save(); ui.tab = "home"; ui.month = curYM(); ui.locked = false; render(); toast("הנתונים שוחזרו");
-      };
-      reader.readAsText(file);
-    };
-  }
+  bindObRestore();
+  const obt = document.getElementById("obTour"); if(obt) obt.onclick = () => { intro = { stage:"tour", i:0 }; render(); };
   const inp = document.getElementById("obIn");
   if(inp){
     inp.addEventListener("input", () => { if(s===0) ob.income = inp.value; else ob.saving = inp.value; updateObNote(); });
     inp.addEventListener("keydown", e => { if(e.key === "Enter") next(); });
     setTimeout(() => inp.focus(), 50);
   }
-  if(s >= 2){
+  if(s === 3){
+    app.querySelectorAll("[data-yn]").forEach(b => b.onclick = () => {
+      ob.hasDebts = b.dataset.yn === "yes";
+      if(ob.hasDebts && !ob.debts.length) ob.debts.push({ id:uid(), type:"loan", name:"", bal:"", pay:"" });
+      renderOnboarding();
+    });
+    const dw = document.getElementById("obDebts");
+    if(dw){
+      const onD = e => {
+        const row = e.target.closest(".ob-debt"); if(!row) return;
+        const d = ob.debts.find(x => x.id === row.dataset.id), f = e.target.dataset.f; if(!f) return;
+        d[f] = e.target.value;
+        if(f === "type" && e.type === "change"){ renderOnboarding(); return; }
+        updateObSum();
+      };
+      dw.addEventListener("input", onD); dw.addEventListener("change", onD);
+      dw.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { ob.debts = ob.debts.filter(x => x.id !== b.dataset.del); if(!ob.debts.length) ob.hasDebts = null; renderOnboarding(); });
+      document.getElementById("obAddDebt").onclick = () => { ob.debts.push({ id:uid(), type:"loan", name:"", bal:"", pay:"" }); renderOnboarding(); const ns = app.querySelectorAll("[data-f=name]"); ns[ns.length-1].focus(); };
+    }
+    updateObSum();
+  }
+  if(s === 5){
+    const gw = document.getElementById("obGoals");
+    const onG = e => {
+      const row = e.target.closest(".ob-goal"); if(!row) return;
+      const g = ob.goals.find(x => x.id === row.dataset.id), f = e.target.dataset.g; if(!f) return;
+      if(f === "on"){ g.on = e.target.checked; renderOnboarding(); return; }
+      g[f] = e.target.value; updateObSum();
+    };
+    gw.addEventListener("input", onG); gw.addEventListener("change", onG);
+    const addG = () => { const f = document.getElementById("obNewGoal"), name = f.value.trim(); if(!name) return; ob.goals.push({ id:uid(), name, on:true, target:"", monthly:"" }); renderOnboarding(); const t = app.querySelectorAll("[data-g=target]"); t[t.length-1].focus(); };
+    document.getElementById("obAddGoal").onclick = addG;
+    document.getElementById("obNewGoal").addEventListener("keydown", e => { if(e.key === "Enter") addG(); });
+    updateObSum();
+  }
+  if(s === 2 || s === 4){
     const arr = s === 2 ? ob.fixed : ob.cats;
     const wrap = document.getElementById("obList");
     const onRow = e => {
@@ -1119,7 +1625,7 @@ function renderOnboarding(){
       const f = document.getElementById("obNew"); const name = f.value.trim();
       if(!name) return;
       const item = { id:uid(), name, on:true, budget:"" };
-      if(s === 3) item.color = COLORS[arr.length % COLORS.length];
+      if(s === 4) item.color = COLORS[arr.length % COLORS.length];
       arr.push(item);
       renderOnboarding();
       const fields = app.querySelectorAll("[data-act=budget]"); fields[fields.length-1].focus();
@@ -1143,6 +1649,12 @@ function renderOnboarding(){
       if(sv < 0){ err.textContent = "הסכום לא יכול להיות שלילי"; return; }
       if(sv >= num(ob.income)){ err.textContent = "יעד החיסכון צריך להיות נמוך מההכנסה"; return; }
     }
+    if(s === 3 && ob.hasDebts){
+      ob.debts = ob.debts.filter(d => d.name.trim() || num(d.bal) > 0 || num(d.pay) > 0);
+      const bad = ob.debts.find(d => num(d.bal) <= 0 || (d.type !== "overdraft" && num(d.pay) <= 0));
+      if(bad){ renderOnboarding(); document.getElementById("obErr").textContent = bad.type === "overdraft" ? "הזינו את יתרת המינוס" : "לכל חוב הזינו יתרה והחזר חודשי"; return; }
+      if(!ob.debts.length) ob.hasDebts = null;
+    }
     if(s < LAST){ ob.step++; renderOnboarding(); app.querySelector(".ob").scrollTop = 0; return; }
     finishOnboarding();
   }
@@ -1155,10 +1667,23 @@ function updateObNote(){
     n.innerHTML = num(ob.saving) > 0 && left > 0 ? `נשארים להוצאות <b>${money(left)}</b> בחודש` : "";
   }
 }
+function obDebtPay(){ return ob.hasDebts ? (ob.debts || []).filter(d => d.type !== "overdraft").reduce((a,d) => a + num(d.pay), 0) : 0; }
 function updateObSum(){
   const el = document.getElementById("obSum"); if(!el) return;
   const afterSaving = num(ob.income) - num(ob.saving);
-  const fixed = obFixedTotal();
+  const fixed = obFixedTotal() + (ob.step >= 4 ? obDebtPay() : 0);
+  if(ob.step === 3){
+    const pay = obDebtPay(), rest = afterSaving - obFixedTotal() - pay;
+    el.innerHTML = `החזרים חודשיים: <b>${money(pay)}</b>. אחרי החיסכון, הקבועות וההחזרים נשארים <b${rest < 0 ? ' style="color:var(--rose)"' : ""}>${money(rest)}</b> להוצאות משתנות.`;
+    return;
+  }
+  if(ob.step === 5){
+    const tot = ob.goals.filter(g => g.on).reduce((a,g) => a + num(g.monthly), 0), sv = num(ob.saving);
+    el.innerHTML = tot <= sv
+      ? `למטרות <b>${money(tot)}</b> בחודש מתוך יעד חיסכון של <b>${money(sv)}</b>${sv - tot > 0 ? `. ${money(sv - tot)} יישארו חיסכון חופשי` : ""}.`
+      : `ההפרשות (<b>${money(tot)}</b>) גבוהות מיעד החיסכון (<b style="color:var(--rose)">${money(sv)}</b>). המטרה הראשונה תתמלא קודם.`;
+    return;
+  }
   if(ob.step === 2){
     const rest = afterSaving - fixed;
     el.innerHTML = rest >= 0
@@ -1181,10 +1706,18 @@ function finishOnboarding(){
     fixed: ob.fixed.filter(f => f.on).map(f => mkLine(f.name, num(f.budget))).concat(DEFAULT_EXTRA.map(n => mkLine(n, 0))),
     extra: []
   };
+  const ym0 = (() => { const d = new Date(), cd = ob.cycleDay || 1; const t = new Date(d.getFullYear(), d.getMonth() - (d.getDate() < cd ? 1 : 0), 1); return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0"); })();
+  const debtsList = (ob.hasDebts ? ob.debts : []).filter(d => num(d.bal) > 0).map(d => {
+    const od = d.type === "overdraft", bal = num(d.bal);
+    const name = d.name.trim() || (od ? "מינוס בבנק" : d.type === "installments" ? "תשלומים" : "הלוואה");
+    return { id:uid(), type:d.type, name, original:bal, payment: od ? 0 : num(d.pay), rate:0, startYM:ym0, paid:{}, history: od ? { [ym0]: bal } : {}, done:false };
+  });
+  debtsList.filter(d => d.type !== "overdraft").forEach(d => lines.fixed.push(Object.assign(mkLine(d.name, d.payment), { debtId:d.id })));
+  const goalsList = ob.goals.filter(g => g.on && g.name.trim() && num(g.target) > 0).map((g, i) => ({ id:uid(), name:g.name.trim(), target:num(g.target), monthly:num(g.monthly), initial:0, date:null, order:i, startYM:ym0 }));
   state = {
     v:1, onboarded:true, hideInstall:false, cats, createdAt:Date.now(), lastBackup:null, theme:"auto", cycleDay: ob.cycleDay || 1,
     template:{ income:num(ob.income), saving:num(ob.saving), env, lines },
-    months:{}, expenses:[]
+    months:{}, expenses:[], debts:debtsList, goals:goalsList
   };
   save(); ob = null; ui.tab = "home"; ui.month = curYM();
   render(); toast("הכול מוכן");
@@ -1323,7 +1856,7 @@ function debtsHTML(){
   };
   return `
     <section class="yr db-hero">
-      <div class="yr-label">סך החובות</div>
+      <div class="yr-label">סך החובות${qh("yrdebt", true)}</div>
       <div class="yr-num">${money(total)}</div>
       <div class="yr-of">${monthly ? `החזרים חודשיים: ${money(monthly)}` : ""}</div>
       ${down > 0 ? `<div class="yr-msg">ירד ב-${money(down)} מאז ${monthNameOf(series[0].k)}. ממשיכים ככה.</div>` : `<div class="yr-msg">כל תשלום שמסומן "שולם" בהוצאות הקבועות מוריד את היתרה כאן.</div>`}
@@ -1469,7 +2002,7 @@ function goalsHTML(){
   };
   return `
     <section class="yr">
-      <div class="yr-label">נצבר למטרות</div>
+      <div class="yr-label">נצבר למטרות${qh("yrgoal", true)}</div>
       <div class="yr-num">${money(totalC)}</div>
       <div class="yr-of">מתוך ${money(totalT)}${allocSince > 0 ? `. ${money(allocSince)} מתוכם הגיעו מהחיסכון החודשי` : ""}</div>
       <div class="bar" aria-hidden="true"><i style="width:${totalT ? totalC / totalT * 100 : 0}%"></i></div>
@@ -1574,7 +2107,7 @@ function helpHTML(){
       </dl>`)}
     ${sec("🛟", "גיבוי ונעילה", `
       <p>הנתונים נשמרים רק בטלפון. פעם בחודש: <b>הגדרות ← שמירת גיבוי</b>. בהגדרות אפשר גם להפעיל נעילה בקוד, ולהוסיף ליומן תזכורת שבועית וחודשית.</p>`)}
-    ${BUILD === "pwa" ? `<a class="an-btn" href="guide.pdf" target="_blank" rel="noopener" style="margin-top:14px;text-decoration:none"><span class="an-ic">📘</span><span class="an-t"><b>המדריך המלא</b><small>איך בונים תקציב מאפס, ב-13 שלבים (PDF)</small></span>${ICONS.next}</a>` : ""}
+    ${BUILD === "pwa" ? `<a class="an-btn" href="guide.pdf" target="_blank" rel="noopener" style="margin-top:14px;text-decoration:none"><span class="an-ic">📘</span><span class="an-t"><b>המדריך המלא</b><small>איך בונים תקציב מאפס, ב-8 שלבים (PDF)</small></span>${ICONS.next}</a>` : ""}
     <button class="btn btn-primary sm-done" id="hpDone">סגירה</button>`;
 }
 function openSummary(ym){
@@ -1583,6 +2116,8 @@ function openSummary(ym){
   const mn = document.getElementById("main"); if(mn) mn.scrollTop = 0;
 }
 function renderApp(){
+  if(coach){ coach = null; }
+  closeHelp && app.querySelector && closeHelp();
   applyTheme();
   syncDebts(ui.month); if(ui.month !== curYM()) syncDebts(curYM());
   const tab = ui.tab;
@@ -1629,6 +2164,7 @@ function renderApp(){
       <div class="backdrop" id="backdrop"></div>
       <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>`;
     bindSummary();
+    maybeCoach();
     return;
   }
   app.innerHTML = `
@@ -1657,6 +2193,7 @@ function renderApp(){
     <div class="backdrop" id="backdrop"></div>
     <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>`;
   bindApp();
+  maybeCoach();
 }
 function tabBtn(id, label){
   return `<button class="tab" data-tab="${id}" ${ui.tab===id?'aria-current="page"':""}>${ICONS[id]}<span>${label}</span></button>`;
@@ -1744,7 +2281,7 @@ function spendBarsHTML(r){
   const total = fixedItems.concat(varItems).reduce((a,x) => a + x.amount, 0);
   if(total <= 0) return `
     <section class="card spend">
-      <div class="card-head"><h2>לאן הלך הכסף</h2></div>
+      <div class="card-head"><h2>לאן הלך הכסף${qh("spend")}</h2></div>
       <div class="empty" style="padding:10px 0 2px">עוד אין הוצאות החודש. אחרי שיירשמו הוצאות, כאן יופיע הפילוח שלהן.</div>
     </section>`;
   const max = Math.max(...fixedItems.concat(varItems).map(x => x.amount));
@@ -1758,7 +2295,7 @@ function spendBarsHTML(r){
     <ul class="sb-list">${items.map(x => row(x, colorFn(x))).join("")}</ul>` : "";
   return `
     <section class="card spend" aria-label="לאן הלך הכסף">
-      <div class="card-head"><h2>לאן הלך הכסף</h2><span>סך הכול ${money(total)}</span></div>
+      <div class="card-head"><h2>לאן הלך הכסף${qh("spend")}</h2><span>סך הכול ${money(total)}</span></div>
       ${group("הוצאות משתנות", varItems, x => x.color)}
       ${group("הוצאות קבועות", fixedItems, () => "var(--fixed-bar)")}
       ${byPlan ? `<p class="hint">סכום באפור נספר לפי התכנון, עד שיוזן סכום בפועל.</p>` : ""}
@@ -1784,7 +2321,7 @@ function summaryCardHTML(r, ym){
         : `<p class="wf-note over">התכנון חורג ב-${money(-planRem)}. כדי לשמור על יעד החיסכון צריך להקטין הוצאות.</p>`;
   return `
     <section class="card wf" aria-label="סיכום החודש">
-      <div class="card-head"><h2>סיכום ${monthNameOf(ym)}</h2><span>בפועל</span></div>
+      <div class="card-head"><h2>סיכום ${monthNameOf(ym)}${qh("wf")}</h2><span>בפועל</span></div>
       ${line("הכנסות", r.incomeEff, r.incomePlan, "", incomeEst)}
       ${line("חיסכון", r.savingEff, r.saving, "−", false)}
       ${line("הוצאות קבועות", fixedEff, fixedPlan, "−", fixedEst)}
@@ -1842,7 +2379,7 @@ function homeHTML(){
     ${bkNudge}
     <section class="hero2 ${avail < 0 ? "over" : ""}" aria-label="מצב החודש">
       <div class="h2-top">
-        <span class="h2-label">${avail < 0 ? "חריגה ב" + monthNameOf(ym) : isCurrent ? "נשאר להוציא עד " + shortDate(cycleEnd(ym)) : "נשאר ב" + monthNameOf(ym)}<small>${cycleDay() > 1 ? "חודש תקציבי " + rangeLabel(ym) : ""}</small></span>
+        <span class="h2-label">${avail < 0 ? "חריגה ב" + monthNameOf(ym) : isCurrent ? "נשאר להוציא עד " + shortDate(cycleEnd(ym)) : "נשאר ב" + monthNameOf(ym)}${qh("hero", true)}<small>${cycleDay() > 1 ? "חודש תקציבי " + rangeLabel(ym) : ""}</small></span>
         <button class="h2-save" id="sealBtn" aria-label="מעבר למעקב חיסכון">${ICONS.saving}<span>${money(r.savingEff)} ${r.savedActual != null ? "הועברו לחיסכון" : "לחיסכון"}</span></button>
       </div>
       <div class="h2-num">${smoney(avail)}</div>
@@ -1906,7 +2443,7 @@ function budgetHTML(){
     const ratio = r.envPlan > 0 ? Math.min(1, r.variable / r.envPlan) : 0;
     body = `
       <section class="card tsum">
-        <div class="ts-top"><span>הוצאות משתנות</span><span>${range}</span></div>
+        <div class="ts-top"><span>הוצאות משתנות${qh("tsvar")}</span><span>${range}</span></div>
         <div class="ts-num">${money(r.variable)}<small>מתוך ${money(r.envPlan)}</small></div>
         <div class="ts-bar"><i class="${left < 0 ? "over" : ""}" style="width:${ratio*100}%"></i></div>
         <div class="ts-foot">
@@ -1934,7 +2471,7 @@ function budgetHTML(){
     const ratio = planSum > 0 ? Math.min(1, paidSum / planSum) : 0;
     body = `
       <section class="card tsum">
-        <div class="ts-top"><span>הוצאות קבועות</span><span>${range}</span></div>
+        <div class="ts-top"><span>הוצאות קבועות${qh("tsfix")}</span><span>${range}</span></div>
         <div class="ts-num">${money(paidSum)}<small>שולמו מתוך ${money(planSum)}</small></div>
         <div class="ts-bar"><i style="width:${ratio*100}%"></i></div>
         <div class="ts-foot">${pending.length ? `<span class="st-none">${pending.length === 1 ? "תשלום אחד ממתין" : pending.length + " תשלומים ממתינים"}, ${money(pendSum)}</span>` : `<span class="st-ok">כל התשלומים סומנו</span>`}</div>
@@ -2252,8 +2789,8 @@ function monthSummaryHTML(ym){
       </div>
     </section>
 
-    <section class="card sm-card">
-      <div class="card-head"><h2>חיסכון</h2><span>יעד ${money(m.saving)}</span></div>
+    <section class="card sm-card" data-c="sm-save">
+      <div class="card-head"><h2>חיסכון${qh("smsave")}</h2><span>יעד ${money(m.saving)}</span></div>
       ${(() => {
         const r = d.r, manual = m.savedActual != null;
         const val = manual ? m.savedActual : r.autoSaved;
@@ -2274,7 +2811,7 @@ function monthSummaryHTML(ym){
 
     ${overdraftSummaryHTML(ym)}
 
-    <section class="card sm-card">
+    <section class="card sm-card" data-c="sm-cats">
       <div class="card-head"><h2>קטגוריות</h2><span>${over.length ? (over.length === 1 ? "אחת בחריגה" : over.length + " בחריגה") : "אין חריגות"}</span></div>
       ${d.cats.filter(x => x.budget > 0).length ? `<div class="list flat">${over.concat(under).map(catRow).join("")}</div>` : `<p class="hint">לא הוגדרו יעדים לקטגוריות.</p>`}
       ${d.prevCmp ? `<p class="sm-cmp">${d.prevCmp.diff === 0 ? `בהוצאות המשתנות הוצאת בדיוק כמו ב${d.prevCmp.name}.` : d.prevCmp.diff < 0 ? `בהוצאות המשתנות הוצאת <b class="st-ok">${money(-d.prevCmp.diff)} פחות</b> מאשר ב${d.prevCmp.name}.` : `בהוצאות המשתנות הוצאת <b class="st-over">${money(d.prevCmp.diff)} יותר</b> מאשר ב${d.prevCmp.name}.`}</p>` : ""}
@@ -2287,8 +2824,8 @@ function monthSummaryHTML(ym){
       ${!cur && d.unpaid.length ? `<p class="hint">${d.unpaid.length === 1 ? "תשלום אחד לא סומן כשולם" : d.unpaid.length + " תשלומים לא סומנו כשולמו"}: ${d.unpaid.map(l => esc(l.name)).join(", ")}. אם ירדו, כדאי לסמן אותם בדף ההוצאות.</p>` : ""}
     </section>` : ""}
 
-    <section class="card sm-card">
-      <div class="card-head"><h2>מה לשנות ב${nextName}?</h2></div>
+    <section class="card sm-card" data-c="sm-sug">
+      <div class="card-head"><h2>מה לשנות ב${nextName}?${qh("smsug")}</h2></div>
       ${d.sugg.length ? d.sugg.map(x => `
         <div class="sg">
           <p>${x.text}</p>
@@ -2310,6 +2847,7 @@ function applySuggestion(key, id, to, move, ym){
 }
 
 function openCatSheet(id){
+  
   const m = monthData(ui.month), c = catById(id);
   const exps = monthExpenses(ui.month).filter(e => e.catId === id);
   const used = exps.reduce((a,e) => a + e.amount, 0), budget = m.env[id] || 0, st = envStatus(budget, used);
@@ -2440,7 +2978,7 @@ function savingHTML(){
   return `
     <section class="yr" aria-label="סיכום שנתי">
       ${yearAlloc > 0 ? `
-      <div class="yr-label">בקופת החיסכון</div>
+      <div class="yr-label">בקופת החיסכון${qh("yrsave", true)}</div>
       <div class="yr-num">${money(Math.max(0, savedTotal - yearAlloc))}</div>
       <div class="yr-flow">
         <span>נחסכו ב-${y}<b>${money(savedTotal)}</b></span>
@@ -2450,7 +2988,7 @@ function savingHTML(){
         <span>נשאר בחיסכון<b>${money(Math.max(0, savedTotal - yearAlloc))}</b></span>
       </div>
       <div class="yr-of" style="margin-top:10px">${annual > 0 ? `יעד החיסכון השנתי: ${money(savedTotal)} מתוך ${money(annual)}` : "אין יעד שנתי"}</div>` : `
-      <div class="yr-label">נחסכו ב-${y}</div>
+      <div class="yr-label">נחסכו ב-${y}${qh("yrsave", true)}</div>
       <div class="yr-num">${money(savedTotal)}</div>
       <div class="yr-of">${annual > 0 ? `מתוך יעד שנתי של ${money(annual)}` : "אין יעד שנתי"}</div>`}
       <div class="bar" aria-hidden="true"><i style="width:${ratio*100}%"></i></div>
@@ -2523,6 +3061,11 @@ function settingsHTML(){
       <span class="an-t"><b>איך משתמשים?</b><small>מדריך קצר: יומיום, שבוע, סוף חודש, ושאלות נפוצות</small></span>
       ${ICONS.next}
     </button>
+    <button class="an-btn" id="replayTour" style="margin:0 0 14px;background:var(--surface);box-shadow:var(--shadow)">
+      <span class="an-ic">🧭</span>
+      <span class="an-t"><b>סיור היכרות</b><small>7 שקופיות על כל דפי האפליקציה, וכל בלוני ההסבר מההתחלה</small></span>
+      ${ICONS.next}
+    </button>
 
     <section class="set-card">
       <h2>גיבוי ושחזור</h2>
@@ -2533,7 +3076,7 @@ function settingsHTML(){
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </section>
 
-    <section class="set-card">
+    <section class="set-card" data-c="lock">
       <h2>נעילה בקוד</h2>
       ${lockOn() ? `
       <p>האפליקציה נפתחת רק עם קוד בן 4 ספרות.</p>
@@ -2715,6 +3258,7 @@ function bindApp(){
   const te = document.getElementById("toggleEmpty"); if(te) te.onclick = () => { ui.showEmpty = !ui.showEmpty; renderApp(); };
   const rb = document.getElementById("remAdd"); if(rb) rb.onclick = addReminder;
   const rw = document.getElementById("remWeekAdd"); if(rw) rw.onclick = addWeeklyReminder;
+  const rt = document.getElementById("replayTour"); if(rt) rt.onclick = () => { state.coachSeen = {}; save(); ui.tourReplay = true; intro = { stage:"tour", i:0 }; render(); };
   const oh = document.getElementById("openHelp"); if(oh) oh.onclick = () => { ui.help = true; renderApp(); const mn = document.getElementById("main"); if(mn) mn.scrollTop = 0; };
   const lo = document.getElementById("lockOn"); if(lo) lo.onclick = enableLockFlow;
   const la = document.getElementById("lockAfter"); if(la) la.onchange = () => { state.lock.after = Number(la.value); save(); toast("נשמר"); };
@@ -2940,6 +3484,8 @@ document.addEventListener("keydown", e => { if(e.key === "Escape") closeSheet();
 
 migrate();
 if(lockOn()) ui.locked = true;
+{ const _os = openSheet; openSheet = function(a, b){ _os(a, b); if(!a) maybeCoach("sheet_add"); }; }
+{ const _od = openDebtSheet; openDebtSheet = function(a){ _od(a); if(!a) maybeCoach("debt_sheet"); }; }
 render();
 })();
 </script>
