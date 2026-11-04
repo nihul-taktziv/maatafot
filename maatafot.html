@@ -440,6 +440,29 @@ main{padding:4px 16px 32px}
 .card-head h2{margin:0}
 .card-head span{font-size:13px;color:var(--ink-2)}
 .spend,.wf{margin-top:14px}
+.sc{margin-top:14px}
+.sc-svg{width:100%;height:auto;display:block;margin-top:6px}
+.sc-base{stroke:var(--line);stroke-width:1}
+.sc-bar.ok{fill:var(--seal)}
+.sc-bar.met{fill:var(--ok)}
+.sc-bar.proj{fill:var(--seal-soft);stroke:var(--seal);stroke-width:1.2;stroke-dasharray:3 2}
+.sc-goal{stroke:var(--amber);stroke-width:2;stroke-linecap:round}
+.sc-m{font:500 9.5px var(--font);fill:var(--ink-2)}
+.sc-m.now{fill:var(--seal);font-weight:700}
+.sc-legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2);margin-top:8px}
+.sc-legend span{display:inline-flex;align-items:center;gap:6px}
+.sc-legend i{width:12px;height:10px;border-radius:3px;display:inline-block}
+.sc-legend i.ok{background:var(--seal)} .sc-legend i.met{background:var(--ok)}
+.sc-legend i.proj{background:var(--seal-soft);border:1.2px dashed var(--seal)}
+.sc-legend i.goal{height:3px;border-radius:2px;background:var(--amber)}
+@keyframes barGrow{from{transform:scaleX(0)}to{transform:none}}
+@keyframes colGrow{from{transform:scaleY(0)}to{transform:none}}
+@keyframes donutIn{from{opacity:0;transform:rotate(-70deg) scale(.9)}to{opacity:1;transform:none}}
+main.anim .bar i,main.anim .cbar i,main.anim .ts-bar i{transform-origin:100% 50%;animation:barGrow .7s cubic-bezier(.2,.8,.2,1) both}
+main.anim .sc-bar{transform-box:fill-box;transform-origin:50% 100%;animation:colGrow .6s cubic-bezier(.2,.8,.2,1) both}
+main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion: reduce){ main.anim .bar i,main.anim .cbar i,main.anim .ts-bar i,main.anim .sc-bar,main.anim .sp-donut{animation:none} }
+
 .sp-row{display:flex;align-items:center;gap:16px;margin-top:8px}
 .sp-donut{width:132px;height:132px;flex:none}
 .sp-num{font:700 15px var(--font);fill:var(--ink)}
@@ -1362,9 +1385,9 @@ const HELP = {
   spend:  ["לאן הלך הכסף", "כל ההוצאות של החודש, מהגדולה לקטנה. סכום באפור עוד לא שולם, ונספר לפי התכנון."],
   wf:     ["סיכום החודש", "תכנון מול בפועל: הכנסות, פחות חיסכון, פחות הוצאות, שווה מה שנשאר. המספר הגדול זהה לזה שבראש הדף."],
   tsvar:  ["הוצאות משתנות", "כמה הוצאתם החודש בכל הקטגוריות, מתוך מה שתכננתם. לחיצה על קטגוריה מראה את ההוצאות שלה."],
-  tsfix:  ["הוצאות קבועות", "כמה מהתשלומים הקבועים כבר ירדו מהחשבון. כשתשלום יורד, לוחצים על העיגול שלו."],
-  yrsave: ["קופת החיסכון", "מה שנחסך השנה, פחות מה שעבר למטרות. החיסכון מחושב לבד בסוף כל חודש: ההכנסה פחות כל ההוצאות."],
-  yrgoal: ["נצבר למטרות", "כמה כסף כבר מיועד למטרות. בסוף כל חודש, ההפרשה של כל מטרה נכנסת לבד מהחיסכון של החודש."],
+  tsfix:  ["הוצאות קבועות", "כמה מהתשלומים הקבועים כבר ירדו מהחשבון. כשתשלום יורד, לוחצים על העיגול שלו. לחיצה על שורה פותחת עריכה, כולל יום החיוב בחודש."],
+  yrsave: ["קופת החיסכון", "מה שנחסך השנה, פחות מה שעבר למטרות. החיסכון מחושב לבד בסוף כל חודש: ההכנסה פחות כל ההוצאות. העברתם בפועל סכום אחר? מעדכנים בלחיצה על החודש."],
+  yrgoal: ["נצבר למטרות", "כמה כסף כבר מיועד למטרות. בסוף כל חודש, ההפרשה של כל מטרה נכנסת לבד מהחיסכון של החודש. ההפרשות נכנסות מהחודש שבו נוספה המטרה, והמטרה הראשונה ברשימה מתמלאת קודם."],
   yrdebt: ["סך החובות", "כל ההלוואות, התשלומים והמינוס יחד. כל סימון \"שולם\" בהוצאות הקבועות מוריד את היתרה."],
   smsave: ["החיסכון של החודש", "ההכנסה פחות כל ההוצאות. אם בפועל העברתם סכום אחר, לוחצים \"עדכון\"."],
   smsug:  ["הצעות לחודש הבא", "חריגה חודשיים ברצף? מוצע להעלות יעד. יעד שלא מנוצל? מוצע להוריד ולהעביר לחיסכון. חריגה חד-פעמית מקבלת הסבר בלבד."]
@@ -2150,7 +2173,7 @@ function goalsHTML(){
       </div>` : ""}
     </div>
     ${lastK ? `<div class="flow"><b>מאיפה הגיע הכסף?</b> ב${monthNameOf(lastK)} נחסכו ${money(saved[lastK])}. ${allocText(alloc[lastK], saved[lastK])}.</div>` : `<div class="flow">ההפרשה הראשונה תיכנס בסוף החודש הנוכחי, מתוך החיסכון שלו.</div>`}
-    <p class="sec-sub" style="margin-top:12px">ההפרשות נכנסות בסוף כל חודש מהחיסכון של אותו חודש, החל מהחודש שבו נוספה המטרה. המטרה הראשונה ברשימה מתמלאת קודם.</p>`;
+`;
 }
 function openGoalSheet(id, preset){
   const g = id ? goals().find(x => x.id === id) : null;
@@ -2326,7 +2349,29 @@ function renderApp(){
     <div class="backdrop" id="backdrop"></div>
     <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>`;
   bindApp();
+  animateIn(tab);
   maybeCoach();
+}
+/* Gentle motion: bars and charts grow when a page opens, the big number counts to its new value. */
+const reduceMotion = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+function animateIn(tab){
+  const main = document.getElementById("main");
+  const key = tab + "|" + (tab === "saving" ? (ui.saveTab || "monthly") : tab === "budget" ? (ui.expTab || "var") : "");
+  if(main && key !== animateIn.last && !reduceMotion()){ main.classList.add("anim"); setTimeout(() => main.classList.remove("anim"), 900); }
+  animateIn.last = key;
+  const el = document.querySelector(".h2-num[data-count]");
+  if(!el) return;
+  const to = Number(el.dataset.count), from = animateIn.hero;
+  animateIn.hero = to;
+  if(from == null || from === to || reduceMotion()) return;
+  const t0 = performance.now(), dur = 550, bdi = el.querySelector("bdi");
+  if(!bdi) return;
+  const step = now => {
+    const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3), v = Math.round(from + (to - from) * e);
+    bdi.innerHTML = (v < 0 ? "−" : "") + fmt(v) + "&nbsp;₪";
+    if(k < 1 && document.body.contains(bdi)) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
 }
 function tabBtn(id, label){
   return `<button class="tab" data-tab="${id}" ${ui.tab===id?'aria-current="page"':""}>${ICONS[id]}<span>${label}</span></button>`;
@@ -2450,7 +2495,6 @@ function spendBarsHTML(r){
         <summary><span>הוצאות קבועות</span><b class="${byPlan ? "est" : ""}">${money(fixedTotal)}</b>${ICONS.next}</summary>
         <ul>${fixedItems.map(x => `<li><i class="sp-dot" style="background:${x.color}"></i><span>${esc(x.name)}</span><b class="${x.est ? "est" : ""}">${money(x.amount)}</b></li>`).join("")}</ul>
       </details>` : ""}
-      ${byPlan ? `<p class="hint">סכום באפור נספר לפי התכנון, עד שיוזן סכום בפועל.</p>` : ""}
     </section>`;
 }
 function summaryCardHTML(r, ym){
@@ -2528,7 +2572,7 @@ function homeHTML(){
         <span class="h2-label">${avail < 0 ? "חריגה ב" + monthNameOf(ym) : isCurrent ? "נשאר להוציא עד " + shortDate(cycleEnd(ym)) : "נשאר ב" + monthNameOf(ym)}${qh("hero", true)}<small>${cycleDay() > 1 ? "חודש תקציבי " + rangeLabel(ym) : ""}</small></span>
         <button class="h2-save" id="sealBtn" aria-label="מעבר למעקב חיסכון">${ICONS.saving}<span>${money(r.savingEff)} ${r.savedActual != null ? "הועברו לחיסכון" : "לחיסכון"}</span></button>
       </div>
-      <div class="h2-num">${smoney(avail)}</div>
+      <div class="h2-num" data-count="${Math.round(avail)}">${smoney(avail)}</div>
       <div class="h2-sub">${sub}</div>
       <div class="h2-bar" aria-hidden="true"><i class="sv" style="width:${savRatio*100}%"></i><i class="sp" style="width:${Math.max(0, usedRatio - savRatio)*100}%"></i></div>
       <div class="h2-legend"><span><i class="sv"></i>חיסכון</span><span><i class="sp"></i>הוצאות</span><span><i></i>נשאר</span></div>
@@ -2622,7 +2666,6 @@ function budgetHTML(){
         <div class="ts-bar"><i style="width:${ratio*100}%"></i></div>
         <div class="ts-foot">${pending.length ? `<span class="st-none">${pending.length === 1 ? "תשלום אחד ממתין" : pending.length + " תשלומים ממתינים"}, ${money(pendSum)}</span>` : `<span class="st-ok">כל התשלומים סומנו</span>`}</div>
       </section>
-      <p class="sec-sub" style="margin-top:14px">הקישו על העיגול כשתשלום ירד. לחיצה על שורה פותחת עריכה, כולל יום החיוב בחודש.</p>
       <div class="list">
         ${lines.map(l => lineRowHTML(t, l, "שולם")).join("") || `<div class="empty">אין שורות עם סכום בחודש הזה.</div>`}
         ${hiddenN ? `<button class="more" id="toggleEmpty">${ui.showEmpty ? "הסתרת שורות ריקות" : `הצגת עוד ${hiddenN === 1 ? "שורה ריקה אחת" : hiddenN + " שורות ריקות"}`}</button>` : ""}
@@ -3089,6 +3132,28 @@ function quickHTML(ym, attr){
   return o.length ? `<div class="qs">${o.map(x => `<button type="button" class="qs-btn" ${attr}="${x.v}"><span>${x.t}</span><b>${x.s}</b></button>`).join("")}</div>` : "";
 }
 
+function saveChartHTML(rows, cur){
+  const vals = rows.map(r => r.saved != null ? Math.max(0, r.saved) : r.projected != null ? Math.max(0, r.projected) : null);
+  if(!rows.some((r, i) => vals[i] != null || (r.tracked && r.goal > 0))) return "";
+  const W = 360, H = 150, top = 12, plotH = 108, base = top + plotH, colW = W / 12, barW = colW * 0.56;
+  const maxV = Math.max(1, ...rows.map((r, i) => Math.max(r.tracked ? r.goal : 0, vals[i] || 0)));
+  const y = v => base - v / maxV * plotH;
+  const cols = rows.map((r, i) => {
+    const x = W - (r.i + 1) * colW + (colW - barW) / 2, v = vals[i];
+    const kind = r.saved == null ? "proj" : r.tracked && r.goal > 0 && r.saved >= r.goal ? "met" : "ok";
+    const bar = v > 0 ? `<rect class="sc-bar ${kind}" x="${x.toFixed(1)}" y="${y(v).toFixed(1)}" width="${barW.toFixed(1)}" height="${(base - y(v)).toFixed(1)}" rx="4"/>` : "";
+    const goal = r.tracked && r.goal > 0 ? `<line class="sc-goal" x1="${(x - 3).toFixed(1)}" x2="${(x + barW + 3).toFixed(1)}" y1="${y(r.goal).toFixed(1)}" y2="${y(r.goal).toFixed(1)}"/>` : "";
+    return `${bar}${goal}<text class="sc-m${r.ym === cur ? " now" : ""}" x="${(x + barW / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle">${MONTHS[r.i].slice(0, 3)}</text>`;
+  }).join("");
+  return `
+    <section class="card sc" aria-label="חיסכון לפי חודש">
+      <div class="card-head"><h2>חיסכון לפי חודש</h2></div>
+      <svg class="sc-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="עמודות של החיסכון בכל חודש, וקו של היעד">
+        <line class="sc-base" x1="0" x2="${W}" y1="${base}" y2="${base}"/>${cols}
+      </svg>
+      <div class="sc-legend"><span><i class="ok"></i>נחסך</span><span><i class="met"></i>עמד ביעד</span><span><i class="proj"></i>צפוי</span><span><i class="goal"></i>יעד</span></div>
+    </section>`;
+}
 function savingHTML(){
   const y = ui.year, cur = curYM(), first = firstTracked();
   const yms = MONTHS.map((_, i) => y + "-" + pad(i+1));
@@ -3145,8 +3210,9 @@ function savingHTML(){
       <div class="yr-msg">${msg}</div>
     </section>
 
+    ${saveChartHTML(rows, cur)}
+
     <div class="sec-head"><h2>חודש אחר חודש</h2><span>נשאר ליעד ${money(left)}</span></div>
-    <p class="sec-sub">החיסכון מחושב לבד בסוף כל חודש: ההכנסה פחות כל ההוצאות שנרשמו. אם בפועל העברתם סכום אחר, אפשר לעדכן בלחיצה על החודש.</p>
     <div class="list">
       ${rows.filter(r => r.tracked || r.saved != null).map(r => `
         <button class="env" data-sv="${r.ym}">
