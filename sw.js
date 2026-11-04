@@ -1,6 +1,6 @@
 // ניהול תקציב – Service Worker
 // בכל עדכון של index.html מעלים את מספר הגרסה כאן, כדי שהטלפונים יקבלו את העדכון.
-const CACHE = "maatafot-v26";
+const CACHE = "maatafot-v27";
 const ASSETS = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
 
 self.addEventListener("install", e => {
