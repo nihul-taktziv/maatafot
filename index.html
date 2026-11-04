@@ -682,6 +682,10 @@ main{padding:4px 16px 32px}
 .wl-points div{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.13);border-radius:14px;padding:12px 14px;font-size:15px;text-align:right;line-height:1.4}
 .wl-points span{font-size:19px}
 .wl-go{margin-top:auto;width:100%;max-width:400px;border:0;border-radius:16px;background:#fff;color:var(--hero-a);font-size:18px;font-weight:700;min-height:56px;position:relative;z-index:1}
+.calc-box{background:var(--seal-soft);border-radius:14px;padding:4px 12px 2px;margin-top:10px}
+.calc-box .hint{margin:6px 0 8px}
+.tgl-row{display:flex;gap:10px;align-items:flex-start;margin:12px 2px 0;font-size:14.5px;line-height:1.45;cursor:pointer}
+.tgl-row input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--seal)}
 .wl-copy{font-size:12.5px;opacity:.72;margin-top:10px;position:relative;z-index:1}
 .wl-link{border:0;background:none;color:#fff;opacity:.88;font-size:15px;margin-top:12px;padding:8px;position:relative;z-index:1;text-decoration:underline;text-underline-offset:3px}
 /* ---------- tour ---------- */
@@ -1800,6 +1804,32 @@ function addDebtLine(d, day){
   });
   if(!state.months[curYM()]) monthData(curYM());
 }
+/* Loan payments are marked "paid" automatically once their charge day arrives
+   (or at the start of the month when no day is set), so the balance goes down by itself. */
+function debtAutoOn(d){ return d && d.type !== "overdraft" && d.autoPay !== false; }
+function loanPayment(bal, ratePct, months){
+  if(!(bal > 0) || !(months > 0)) return 0;
+  const r = (ratePct || 0) / 1200;
+  const P = r > 0 ? bal * r / (1 - Math.pow(1 + r, -months)) : bal / months;
+  return Math.round(P * 100) / 100;
+}
+function autoPayDebts(){
+  if(!state.debts || !state.debts.length) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const cur = curYM(), touched = [];
+  Object.keys(state.months).filter(ym => ym <= cur).forEach(ym => {
+    let hit = false;
+    (state.months[ym].lines.fixed || []).forEach(l => {
+      if(!l.debtId || l.actual != null || l.noAuto) return;
+      const d = state.debts.find(x => x.id === l.debtId);
+      if(!debtAutoOn(d) || d.done || (d.startYM && ym < d.startYM)) return;
+      const due = chargeDate(ym, l.day) || cycleStart(ym);
+      if(ym < cur || today >= due){ l.actual = l.plan || 0; l.autoPaid = true; hit = true; }
+    });
+    if(hit) touched.push(ym);
+  });
+  if(touched.length){ save(); touched.forEach(ym => syncDebts(ym)); }
+}
 function removeDebtLines(d){
   Object.keys(state.months).filter(k => k >= curYM()).forEach(k => {
     const m = state.months[k];
@@ -1885,8 +1915,14 @@ function openDebtSheet(id){
         ${od ? "" : `<div><label class="lbl" for="dPay">החזר חודשי</label><input class="field" id="dPay" inputmode="decimal" placeholder="₪" value="${d ? d.payment : ""}"></div>`}
       </div>
       ${t === "loan" ? `<label class="lbl" for="dRate">ריבית שנתית % (לא חובה)</label><input class="field" id="dRate" inputmode="decimal" placeholder="למשל 6.5" value="${d && d.rate ? d.rate : ""}">` : ""}
+      ${od ? "" : `<div class="calc-box">
+        <label class="lbl" for="dMonths">🧮 לא יודעים את ההחזר? כמה חודשים נשארו?</label>
+        <input class="field" id="dMonths" inputmode="numeric" placeholder="${t === "installments" ? "למשל 12 תשלומים" : "למשל 36"}">
+        <p class="hint" id="dCalc">ממלאים יתרה${t === "loan" ? ", ריבית" : ""} ומספר חודשים, וההחזר החודשי יחושב לבד.</p>
+      </div>
+      <label class="tgl-row"><input type="checkbox" id="dAuto" ${!d || d.autoPay !== false ? "checked" : ""}><span>לסמן "שולם" אוטומטית ביום החיוב, כך שהיתרה תרד לבד</span></label>`}
       ${!od && !d ? `<label class="lbl" for="dDay">יום חיוב בחודש (לא חובה)</label><select class="field" id="dDay"><option value="">לא מוגדר</option>${Array.from({length:31}, (_, i) => `<option value="${i+1}">${i+1} בחודש</option>`).join("")}</select>
-        <p class="hint">ההחזר החודשי יתווסף לבד להוצאות הקבועות. כשמסמנים אותו "שולם", היתרה כאן יורדת.</p>` : ""}
+        <p class="hint">ההחזר החודשי יתווסף לבד להוצאות הקבועות, ויסומן "שולם" ביום החיוב (או בתחילת החודש אם לא נבחר יום).</p>` : ""}
       ${od ? `<p class="hint">מינוס לא יורד מעצמו. מעדכנים את היתרה פעם בחודש, ורואים אותה יורדת בגרף.</p>` : ""}
       <div class="err" id="sErr" style="margin-top:8px"></div>
       <div class="actions" style="margin-top:8px">
@@ -1894,6 +1930,19 @@ function openDebtSheet(id){
         <button class="btn btn-primary" id="dSave">שמירה</button>
       </div>`);
     document.querySelectorAll("#sheet [data-dt]").forEach(b => b.onclick = () => { sel.type = b.dataset.dt; draw(); });
+    const mIn = document.getElementById("dMonths");
+    if(mIn){
+      const recalc = () => {
+        const n = Math.round(num(mIn.value)), bal = num(document.getElementById("dBal").value);
+        const rate = num((document.getElementById("dRate") || {}).value || 0), out = document.getElementById("dCalc");
+        if(!(n > 0) || !(bal > 0)) return;
+        const P = loanPayment(bal, rate, n);
+        document.getElementById("dPay").value = P;
+        const interest = Math.max(0, P * n - bal);
+        out.innerHTML = `החזר חודשי: <b>${money(P)}</b>${interest >= 1 ? ` · ריבית כוללת בערך ${money(Math.round(interest))}` : ""}`;
+      };
+      ["dMonths","dBal","dRate"].forEach(id => { const el = document.getElementById(id); if(el) el.addEventListener("input", () => { if(mIn.value.trim()) recalc(); }); });
+    }
     const del = document.getElementById("dDel");
     if(del) armDelete(del, "למחוק?", () => { removeDebtLines(d); state.debts = debts().filter(x => x !== d); save(); closeSheet(); renderApp(); toast("החוב נמחק"); });
     document.getElementById("dSave").onclick = () => {
@@ -1908,13 +1957,15 @@ function openDebtSheet(id){
       if(d){
         const B = debtBalance(d);
         d.name = name; d.payment = pay; d.rate = rate;
+        const au = document.getElementById("dAuto"); if(au) d.autoPay = au.checked;
         if(od){ d.history = d.history || {}; d.history[curYM()] = bal; }
         else if(Math.abs(bal - B) > 0.5) d.original += (bal - B);
         Object.keys(state.months).filter(k => k >= curYM()).forEach(k => state.months[k].lines.fixed.forEach(l => { if(l.debtId === d.id && l.actual == null){ l.name = name; l.plan = pay; } }));
         d.done = debtBalance(d) <= 0.5;
         save(); closeSheet(); renderApp(); toast("נשמר");
       } else {
-        const nd = { id:uid(), type:t, name, original:bal, payment:pay, rate, startYM:curYM(), paid:{}, history: od ? { [curYM()]: bal } : {}, done:false };
+        const au = document.getElementById("dAuto");
+        const nd = { id:uid(), type:t, name, original:bal, payment:pay, rate, startYM:curYM(), paid:{}, history: od ? { [curYM()]: bal } : {}, done:false, autoPay: au ? au.checked : true };
         debts().push(nd);
         if(!od){ const dd = document.getElementById("dDay"); addDebtLine(nd, dd && dd.value ? Number(dd.value) : null); }
         save(); closeSheet(); renderApp(); toast(od ? "המינוס נוסף למעקב" : "החוב נוסף, וההחזר נכנס להוצאות הקבועות");
@@ -2122,6 +2173,7 @@ function renderApp(){
   if(coach){ coach = null; }
   closeHelp && app.querySelector && closeHelp();
   applyTheme();
+  autoPayDebts();
   syncDebts(ui.month); if(ui.month !== curYM()) syncDebts(curYM());
   const tab = ui.tab;
   if(ui.summary && (tab !== "home" || !state.months[ui.summary])) ui.summary = null;
@@ -2540,15 +2592,15 @@ function lineRowHTML(k, l, paidLabel){
 function markUnpaid(key, inSheet){
   const [k, id] = key.split(":"), m = monthData(ui.month), l = m.lines[k].find(x => x.id === id);
   if(!l) return;
-  const before = l.actual; l.actual = null; save();
+  const before = l.actual, beforeNo = l.noAuto; l.actual = null; if(l.debtId) l.noAuto = true; save();
   const redraw = () => { renderApp(); if(inSheet) openIncomeSheet(); };
   redraw();
-  toast(`${l.name}: הסימון בוטל`, () => { l.actual = before; save(); redraw(); toast("הסימון הוחזר"); });
+  toast(`${l.name}: הסימון בוטל`, () => { l.actual = before; l.noAuto = beforeNo; save(); redraw(); toast("הסימון הוחזר"); });
 }
 function markPaid(key, inSheet){
   const [k, id] = key.split(":"), m = monthData(ui.month), l = m.lines[k].find(x => x.id === id);
   if(!l) return;
-  l.actual = l.plan || 0; save();
+  l.actual = l.plan || 0; delete l.noAuto; save();
   const redraw = () => { renderApp(); if(inSheet) openIncomeSheet(); };
   redraw();
   toast(`${l.name}: ${k === "income" ? "התקבל" : "שולם"} ${fmt(l.actual)} ₪`, () => { l.actual = null; save(); redraw(); toast("הסימון בוטל"); });
@@ -3432,6 +3484,7 @@ function openLineSheet(k, id){
     const dSel = document.getElementById("lDay");
     const data = { name, plan:num(document.getElementById("lPlan").value), actual: actRaw === "" ? null : num(actRaw), note:document.getElementById("lNote").value.trim() };
     if(dSel) data.day = dSel.value ? Number(dSel.value) : null;
+    if(l && l.debtId){ if(data.actual == null && l.actual != null) data.noAuto = true; else if(data.actual != null) data.noAuto = false; }
     if(l) Object.assign(l, data); else m.lines[k].push(Object.assign({ id:uid() }, data));
     save(); closeSheet(); renderApp(); toast(l ? "השינוי נשמר" : "השורה נוספה");
   };
