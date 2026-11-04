@@ -237,6 +237,32 @@ select.field{appearance:none;-webkit-appearance:none}
 .set-card p{margin:0;color:var(--ink-2);font-size:14px}
 .set-card .btn{width:100%;margin-top:12px;font-size:16px;min-height:50px}
 .btn-outline{background:none;border:1.5px solid var(--seal) !important;color:var(--seal)}
+.set-title{font-size:26px;font-weight:700;letter-spacing:-.4px;margin:4px 4px 14px}
+.set-alert{display:flex;align-items:center;gap:12px;background:var(--amber-soft);color:var(--amber);border-radius:18px;padding:12px 14px;margin-bottom:18px}
+.set-alert>span:first-child{font-size:20px}
+.set-alert-t{flex:1;min-width:0;font-weight:600;font-size:15px;line-height:1.35}
+.set-alert-t small{display:block;font-weight:400;font-size:13px;color:var(--ink-2);margin-top:2px}
+.set-alert .btn{min-height:40px;padding:0 16px;font-size:15px;flex:none;width:auto;margin:0}
+.set-grp{margin-bottom:18px}
+.set-grp>h3{font-size:13px;font-weight:600;color:var(--ink-2);margin:0 8px 7px}
+.set-list{background:var(--surface);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.set-row{width:100%;display:flex;align-items:center;gap:12px;border:0;background:none;padding:11px 14px;min-height:58px;text-align:right;color:var(--ink);font:inherit;position:relative}
+.set-row+.set-row::before{content:"";position:absolute;top:0;right:62px;left:0;border-top:1px solid var(--line)}
+.set-row>svg{color:var(--ink-2);opacity:.6;flex:none}
+.set-ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex:none;background:var(--seal-soft)}
+.set-t{flex:1;min-width:0;font-weight:600;font-size:16px}
+.set-v{color:var(--ink-2);font-size:14px;white-space:nowrap}
+.set-v.warn{color:var(--amber);font-weight:600}
+.set-row-static{cursor:default}
+.set-seg{flex:none;margin:0;min-width:0}
+.set-row .set-seg{grid-auto-columns:auto;display:grid;grid-auto-flow:column;grid-template-columns:none}
+.set-row .set-seg button{padding:6px 12px;font-size:13.5px;white-space:nowrap}
+.set-danger{display:block;margin:4px auto 6px;background:none;border:0;color:var(--rose);font-weight:600;font-size:15px;font-family:inherit;padding:12px 18px;border-radius:12px}
+.set-sheet p{margin:0;color:var(--ink-2);font-size:14.5px}
+.set-sheet .btn{width:100%;margin-top:12px;font-size:16px;min-height:50px}
+.set-sheet .btn-ghost#sCancel{margin-top:10px}
+.set-sheet .last-bk{margin-top:12px}
+.set-reset-btn{background:var(--rose-soft);color:var(--rose)}
 .last-bk{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;padding:10px 12px;border-radius:12px;background:var(--seal-soft);color:var(--seal)}
 .last-bk.warn{background:var(--amber-soft);color:var(--amber)}
 .seg{display:grid;grid-template-columns:repeat(3,1fr);background:var(--track);border-radius:12px;padding:3px;margin-top:12px}
@@ -1192,10 +1218,10 @@ const COACH = {
     { sel:"[data-c=\"sm-sug\"]", t:"הצעות לחודש הבא", what:"שינויים מוצעים לפי מה שקרה.", why:"תקציב שמשתפר מחודש לחודש.", act:"לחיצה על הצעה מעדכנת את החודש הבא." }
   ],
   settings: [
-    { sel:"#openHelp", t:"איך משתמשים?", what:"מדריך קצר ושאלות נפוצות.", why:"תשובה מהירה כשמשהו לא ברור.", act:"פותחים בכל רגע." },
-    { sel:"#doBackup", t:"גיבוי", what:"שמירת כל הנתונים בקובץ.", why:"הנתונים נשמרים רק בטלפון. בלי גיבוי, החלפת טלפון מוחקת הכול.", act:"פעם בחודש: שמירה ב-iCloud Drive או ב\"קבצים\"." },
+    { sel:"[data-set=\"backup\"]", t:"גיבוי", what:"שמירת כל הנתונים בקובץ, ושחזור ממנו.", why:"הנתונים נשמרים רק בטלפון. בלי גיבוי, החלפת טלפון מוחקת הכול.", act:"פעם בחודש: שמירה ב-iCloud Drive או ב\"קבצים\"." },
     { sel:"[data-c=\"lock\"]", t:"נעילה בקוד", what:"קוד בן 4 ספרות לפתיחת האפליקציה.", why:"שומר על הנתונים אם מישהו אחר מחזיק את הטלפון.", act:"שוכחים את הקוד? חוזרים רק מגיבוי." },
-    { sel:"#remWeek", t:"תזכורות ביומן", what:"אירוע שבועי וחודשי ביומן של הטלפון.", why:"ההרגל הכי חשוב: בדיקה קבועה.", act:"בוחרים יום ולוחצים \"הוספה\"." }
+    { sel:"[data-set=\"rem\"]", t:"תזכורות ביומן", what:"אירוע שבועי וחודשי ביומן של הטלפון.", why:"ההרגל הכי חשוב: בדיקה קבועה.", act:"פותחים, בוחרים יום ולוחצים \"הוספה\"." },
+    { sel:"#openHelp", t:"איך משתמשים?", what:"מדריך קצר ושאלות נפוצות.", why:"תשובה מהירה כשמשהו לא ברור.", act:"פותחים בכל רגע." }
   ]
 };
 let coach = null;
@@ -3107,34 +3133,60 @@ function openSaveSheet(ym){
 }
 
 function settingsHTML(){
-  const due = backupDue();
+  const due = backupDue(), never = !state.lastBackup;
+  const bkDays = never ? null : daysSince(state.lastBackup);
+  const bkVal = never ? "עוד לא נשמר" : bkDays === 0 ? "היום" : bkDays === 1 ? "אתמול" : `לפני ${bkDays} ימים`;
+  const wd = WEEKDAYS.find(([k]) => k === state.reminderWeekday);
+  const remVal = wd ? `יום ${wd[1]}` : state.reminderDay ? `${state.reminderDay} בחודש` : "לא הוגדרו";
+  const standalone = isStandalone();
+  const row = (key, ic, t, v, extra) => `<button class="set-row" data-set="${key}"${extra || ""}><span class="set-ic">${ic}</span><span class="set-t">${t}</span>${v ? `<span class="set-v${v.warn ? " warn" : ""}">${v.t}</span>` : ""}${ICONS.next}</button>`;
+  return `
+    <h2 class="set-title">הגדרות</h2>
+    ${due || never ? `<div class="set-alert"><span aria-hidden="true">⚠️</span><span class="set-alert-t">${never ? "עוד לא נשמר גיבוי." : `הגיבוי האחרון לפני ${bkDays} ימים.`}<small>הנתונים שמורים רק בטלפון הזה.</small></span><button class="btn btn-primary" id="bkNow">שמירה</button></div>` : ""}
+
+    <section class="set-grp"><h3>הנתונים שלי</h3><div class="set-list">
+      ${row("backup", "🛟", "גיבוי ושחזור", { t: bkVal, warn: due || never })}
+      ${row("lock", "🔒", "נעילה בקוד", { t: lockOn() ? "פעילה" : "כבויה" }, ' data-c="lock"')}
+      ${row("privacy", "🔐", "פרטיות", { t: "רק במכשיר" })}
+    </div></section>
+
+    <section class="set-grp"><h3>חודש ותזכורות</h3><div class="set-list">
+      ${row("cycle", "📅", "חודש תקציבי", { t: cycleDay() === 1 ? "חודש קלנדרי" : `מתחיל ב-${cycleDay()}` })}
+      ${row("rem", "⏰", "תזכורות ביומן", { t: remVal })}
+      <button class="set-row" id="goBudget"><span class="set-ic">🧾</span><span class="set-t">עריכת התקציב</span><span class="set-v">בדף ההוצאות</span>${ICONS.next}</button>
+    </div></section>
+
+    <section class="set-grp"><h3>תצוגה</h3><div class="set-list">
+      <div class="set-row set-row-static"><span class="set-ic">🎨</span><span class="set-t">מראה</span>
+        <div class="seg set-seg" role="group" aria-label="ערכת צבעים">${[["auto","אוטומטי"],["light","בהיר"],["dark","כהה"]].map(([k,l]) => `<button data-theme-set="${k}" aria-pressed="${(state.theme || "auto") === k}">${l}</button>`).join("")}</div>
+      </div>
+    </div></section>
+
+    <section class="set-grp"><h3>עזרה ומידע</h3><div class="set-list">
+      <button class="set-row" id="openHelp"><span class="set-ic">❓</span><span class="set-t">איך משתמשים?</span><span class="set-v">מדריך ושאלות</span>${ICONS.next}</button>
+      <button class="set-row" id="replayTour"><span class="set-ic">🧭</span><span class="set-t">סיור היכרות</span><span class="set-v">7 שקופיות</span>${ICONS.next}</button>
+      ${BUILD === "file" ? row("install", "💻", "גרסת מחשב", { t: "טיפים" }) : row("install", "📲", "התקנה באייפון", { t: standalone ? "מותקנת ✓" : "איך מתקינים" })}
+    </div></section>
+
+    <button class="set-danger" data-set="reset">מחיקת כל הנתונים</button>
+    <div class="ver">ניהול פיננסי, גרסה 1.1<br>© 2026 בנימין אמבאו · כל הזכויות שמורות</div>`;
+}
+function openSettingsSheet(key){
+  const close = `<button class="btn btn-ghost" id="sCancel">סגירה</button>`;
   const bkText = state.lastBackup
     ? (daysSince(state.lastBackup) === 0 ? "גיבוי אחרון: היום" : `גיבוי אחרון: לפני ${daysSince(state.lastBackup)} ימים`)
     : "עוד לא נשמר גיבוי";
   const standalone = isStandalone();
-  return `
-    <button class="an-btn" id="openHelp" style="margin:2px 0 14px;background:var(--surface);box-shadow:var(--shadow)">
-      <span class="an-ic">?</span>
-      <span class="an-t"><b>איך משתמשים?</b><small>מדריך קצר: יומיום, שבוע, סוף חודש, ושאלות נפוצות</small></span>
-      ${ICONS.next}
-    </button>
-    <button class="an-btn" id="replayTour" style="margin:0 0 14px;background:var(--surface);box-shadow:var(--shadow)">
-      <span class="an-ic">🧭</span>
-      <span class="an-t"><b>סיור היכרות</b><small>7 שקופיות על כל דפי האפליקציה, וכל בלוני ההסבר מההתחלה</small></span>
-      ${ICONS.next}
-    </button>
-
-    <section class="set-card">
-      <h2>גיבוי ושחזור</h2>
+  const S = {
+    backup: () => `
+      <h3 id="sheetTitle">גיבוי ושחזור</h3>
       <p>הנתונים שמורים רק בטלפון הזה. קובץ גיבוי שומר אותם מחוץ לאפליקציה, למשל ב-iCloud Drive או ב״קבצים״, ומאפשר להעביר אותם למכשיר אחר.</p>
-      <div class="last-bk ${due || !state.lastBackup ? "warn" : ""}">${bkText}. מומלץ לגבות פעם בחודש.</div>
+      <div class="last-bk ${backupDue() || !state.lastBackup ? "warn" : ""}">${bkText}. מומלץ לגבות פעם בחודש.</div>
       <button class="btn btn-primary" id="doBackup">שמירת גיבוי</button>
       <button class="btn btn-outline" id="doRestore">שחזור מגיבוי</button>
-      <input type="file" id="restoreFile" accept=".json,application/json" hidden>
-    </section>
-
-    <section class="set-card" data-c="lock">
-      <h2>נעילה בקוד</h2>
+      <input type="file" id="restoreFile" accept=".json,application/json" hidden>${close}`,
+    lock: () => `
+      <h3 id="sheetTitle">נעילה בקוד</h3>
       ${lockOn() ? `
       <p>האפליקציה נפתחת רק עם קוד בן 4 ספרות.</p>
       <label class="lbl" for="lockAfter">נעילה אוטומטית</label>
@@ -3142,50 +3194,32 @@ function settingsHTML(){
         ${[[0,"מיד כשיוצאים מהאפליקציה"],[1,"אחרי דקה מחוץ לאפליקציה"],[5,"אחרי 5 דקות מחוץ לאפליקציה"]].map(([v,l]) => `<option value="${v}" ${(state.lock.after || 0) === v ? "selected" : ""}>${l}</option>`).join("")}
       </select>
       <button class="btn btn-outline" id="lockChange">שינוי קוד</button>
-      <button class="btn btn-ghost" id="lockOff" style="width:100%;margin-top:10px">ביטול הנעילה</button>` : `
+      <button class="btn btn-ghost" id="lockOff">ביטול הנעילה</button>` : `
       <p>מסך קוד בכל פתיחה, כדי שמי שמחזיק את הטלפון לא יראה את הנתונים. אם שוכחים את הקוד, אפשר לחזור לנתונים רק מקובץ גיבוי.</p>
-      <button class="btn btn-primary" id="lockOn">הפעלת נעילה בקוד</button>`}
-    </section>
-
-    <section class="set-card">
-      <h2>חודש תקציבי</h2>
+      <button class="btn btn-primary" id="lockOn">הפעלת נעילה בקוד</button>`}${close}`,
+    privacy: () => `
+      <h3 id="sheetTitle">פרטיות</h3>
+      <p>אין חשבון, אין שרת ואין שליחה של נתונים לשום מקום. כל מה שמוזן נשאר במכשיר הזה בלבד.</p>
+      <p id="persistInfo" style="margin-top:8px"></p>${close}`,
+    cycle: () => `
+      <h3 id="sheetTitle">חודש תקציבי</h3>
       <p>החודש באפליקציה מתחיל ביום שבו נכנסת המשכורת ונגמר יום לפני המשכורת הבאה. כל הוצאה נספרת לפי יום הקנייה שלה.</p>
       <label class="lbl" for="cycleSel">המשכורת נכנסת ב:</label>
       <select class="field" id="cycleSel">${Array.from({length:28}, (_, i) => `<option value="${i+1}" ${cycleDay() === i+1 ? "selected" : ""}>${i+1} בחודש${i === 0 ? " (חודש קלנדרי רגיל)" : ""}</option>`).join("")}</select>
-      <p class="hint">החודש הנוכחי: ${monthNameOf(curYM())}, ${rangeLabel(curYM())}.</p>
-    </section>
-
-    <section class="set-card">
-      <h2>תזכורות ביומן</h2>
+      <p class="hint">החודש הנוכחי: ${monthNameOf(curYM())}, ${rangeLabel(curYM())}.</p>${close}`,
+    rem: () => `
+      <h3 id="sheetTitle">תזכורות ביומן</h3>
       <p>האפליקציה לא שולחת התראות, כי אין לה שרת. במקום זה מוסיפים ליומן של הטלפון אירועים חוזרים.</p>
       <label class="lbl" for="remWeek">בדיקה שבועית: באיזה יום?</label>
       <select class="field" id="remWeek">${WEEKDAYS.map(([k,l]) => `<option value="${k}" ${(state.reminderWeekday || "SU") === k ? "selected" : ""}>יום ${l}, בשעה 20:00</option>`).join("")}</select>
       <button class="btn btn-outline" id="remWeekAdd">הוספת תזכורת שבועית</button>
       <label class="lbl" for="remDay" style="margin-top:16px">סגירת חודש: באיזה יום בחודש?</label>
       <select class="field" id="remDay">${Array.from({length:28}, (_, i) => `<option value="${i+1}" ${(state.reminderDay || cycleDay()) === i+1 ? "selected" : ""}>${i+1} בחודש, בשעה 20:00</option>`).join("")}</select>
-      <button class="btn btn-outline" id="remAdd">הוספת תזכורת חודשית</button>
-    </section>
-
-    <section class="set-card">
-      <h2>תקציב והוצאות</h2>
-      <p>הוצאות משתנות וקבועות מנוהלות בדף ההוצאות. הכנסות ויעד החיסכון נערכים בדף הבית. חודש חדש נפתח עם התכנון של החודש הקודם.</p>
-      <button class="linkrow" id="goBudget"><span>מעבר להוצאות</span>${ICONS.next}</button>
-    </section>
-
-    <section class="set-card">
-      <h2>מראה</h2>
-      <div class="seg" role="group" aria-label="ערכת צבעים">
-        ${[["auto","אוטומטי"],["light","בהיר"],["dark","כהה"]].map(([k,l]) => `<button data-theme-set="${k}" aria-pressed="${(state.theme || "auto") === k}">${l}</button>`).join("")}
-      </div>
-    </section>
-
-    ${BUILD === "file" ? `
-    <section class="set-card">
-      <h2>גרסת מחשב</h2>
-      <p>הנתונים נשמרים בדפדפן שבו נפתח הקובץ. כדאי לפתוח אותו תמיד באותו דפדפן ומאותה תיקייה, ולשמור גיבוי פעם בחודש. כדי לעבור לאייפון, שומרים גיבוי כאן ומשחזרים אותו באפליקציה.</p>
-    </section>` : `
-    <section class="set-card">
-      <h2>התקנה באייפון</h2>
+      <button class="btn btn-outline" id="remAdd">הוספת תזכורת חודשית</button>${close}`,
+    install: () => BUILD === "file" ? `
+      <h3 id="sheetTitle">גרסת מחשב</h3>
+      <p>הנתונים נשמרים בדפדפן שבו נפתח הקובץ. כדאי לפתוח אותו תמיד באותו דפדפן ומאותה תיקייה, ולשמור גיבוי פעם בחודש. כדי לעבור לאייפון, שומרים גיבוי כאן ומשחזרים אותו באפליקציה.</p>${close}` : `
+      <h3 id="sheetTitle">התקנה באייפון</h3>
       ${standalone ? `<p>האפליקציה מותקנת במסך הבית. כדאי לפתוח אותה תמיד מהאייקון, כי שם נשמרים הנתונים.</p>` : `
       <p>התקנה למסך הבית שומרת על הנתונים לאורך זמן ופותחת את האפליקציה במסך מלא.</p>
       <ol class="steps">
@@ -3193,21 +3227,39 @@ function settingsHTML(){
         <li>מקישים על כפתור השיתוף בתחתית המסך.</li>
         <li>בוחרים <b>הוסף למסך הבית</b> ומאשרים.</li>
         <li>מעכשיו פותחים רק מהאייקון. אם כבר הוזנו נתונים בספארי, שומרים גיבוי ומשחזרים אותו באפליקציה.</li>
-      </ol>`}
-    </section>`}
-
-    <section class="set-card">
-      <h2>פרטיות</h2>
-      <p>אין חשבון, אין שרת ואין שליחה של נתונים לשום מקום. כל מה שמוזן נשאר במכשיר הזה בלבד.</p>
-      <p id="persistInfo" style="margin-top:8px"></p>
-    </section>
-
-    <section class="set-card danger">
-      <h2>מחיקת כל הנתונים</h2>
+      </ol>`}${close}`,
+    reset: () => `
+      <h3 id="sheetTitle" style="color:var(--rose)">מחיקת כל הנתונים</h3>
       <p>מוחק את כל ההוצאות, התקציבים והחיסכון מהמכשיר ומתחיל מההתחלה. לא ניתן לבטל, לכן כדאי לשמור גיבוי קודם.</p>
-      <button class="btn" id="reset">מחיקת כל הנתונים</button>
-    </section>
-    <div class="ver">ניהול פיננסי, גרסה 1.1<br>© 2026 בנימין אמבאו · כל הזכויות שמורות</div>`;
+      <button class="btn btn-outline" id="doBackup">שמירת גיבוי קודם</button>
+      <button class="btn set-reset-btn" id="reset">מחיקת כל הנתונים</button>${close}`
+  };
+  if(!S[key]) return;
+  const sheet = showSheet(S[key]());
+  sheet.classList.add("set-sheet");
+  bindSettingsControls();
+}
+function bindSettingsControls(){
+  const rb = document.getElementById("remAdd"); if(rb) rb.onclick = addReminder;
+  const rw = document.getElementById("remWeekAdd"); if(rw) rw.onclick = addWeeklyReminder;
+  const lo = document.getElementById("lockOn"); if(lo) lo.onclick = () => { closeSheet(); setTimeout(enableLockFlow, 0); };
+  const la = document.getElementById("lockAfter"); if(la) la.onchange = () => { state.lock.after = Number(la.value); save(); toast("נשמר"); };
+  const lc = document.getElementById("lockChange"); if(lc) lc.onclick = () => { closeSheet(); verifyThen("שינוי קוד", () => startPinSetup(true)); };
+  const lf = document.getElementById("lockOff"); if(lf) lf.onclick = () => { closeSheet(); verifyThen("ביטול הנעילה", () => { state.lock = { enabled:false }; save(); ui.tab = "settings"; renderApp(); toast("הנעילה בוטלה"); }); };
+  const cs = document.getElementById("cycleSel");
+  if(cs) cs.onchange = () => { state.cycleDay = Number(cs.value); save(); ui.month = curYM(); renderApp(); toast(`החודש התקציבי מתחיל עכשיו ב-${state.cycleDay} לחודש`); };
+  const reset = document.getElementById("reset");
+  if(reset) reset.onclick = () => {
+    if(reset.dataset.armed){ try{ localStorage.removeItem(KEY); }catch(e){} state = null; ob = null; document.documentElement.removeAttribute("data-theme"); render(); return; }
+    reset.dataset.armed = "1"; reset.textContent = "בטוח? הקישו שוב למחיקה";
+  };
+  const bk = document.getElementById("doBackup"); if(bk) bk.onclick = doBackup;
+  const rs = document.getElementById("doRestore"), rf = document.getElementById("restoreFile");
+  if(rs){ rs.onclick = () => { ui.noLockUntil = Date.now() + 120000; rf.click(); }; rf.onchange = () => { if(rf.files[0]) restoreFrom(rf.files[0]); rf.value = ""; }; }
+  const pi = document.getElementById("persistInfo");
+  if(pi && navigator.storage && navigator.storage.persisted){
+    navigator.storage.persisted().then(v => { pi.textContent = v ? "האחסון במכשיר מסומן כקבוע, והדפדפן לא ימחק אותו מעצמו." : "האחסון לא מסומן כקבוע. התקנה למסך הבית וגיבוי חודשי שומרים על הנתונים."; }).catch(() => {});
+  }
 }
 function backupFileName(){ return "budget-backup-" + todayISO() + ".json"; }
 async function doBackup(){
@@ -3313,16 +3365,10 @@ function bindApp(){
   app.querySelectorAll("main [data-paid]").forEach(b => b.onclick = () => markPaid(b.dataset.paid, false));
   app.querySelectorAll("main [data-unpaid]").forEach(b => b.onclick = () => markUnpaid(b.dataset.unpaid, false));
   const te = document.getElementById("toggleEmpty"); if(te) te.onclick = () => { ui.showEmpty = !ui.showEmpty; renderApp(); };
-  const rb = document.getElementById("remAdd"); if(rb) rb.onclick = addReminder;
-  const rw = document.getElementById("remWeekAdd"); if(rw) rw.onclick = addWeeklyReminder;
   const rt = document.getElementById("replayTour"); if(rt) rt.onclick = () => { state.coachSeen = {}; save(); ui.tourReplay = true; intro = { stage:"tour", i:0 }; render(); };
   const oh = document.getElementById("openHelp"); if(oh) oh.onclick = () => { ui.help = true; renderApp(); const mn = document.getElementById("main"); if(mn) mn.scrollTop = 0; };
-  const lo = document.getElementById("lockOn"); if(lo) lo.onclick = enableLockFlow;
-  const la = document.getElementById("lockAfter"); if(la) la.onchange = () => { state.lock.after = Number(la.value); save(); toast("נשמר"); };
-  const lc = document.getElementById("lockChange"); if(lc) lc.onclick = () => verifyThen("שינוי קוד", () => startPinSetup(true));
-  const lf = document.getElementById("lockOff"); if(lf) lf.onclick = () => verifyThen("ביטול הנעילה", () => { state.lock = { enabled:false }; save(); ui.tab = "settings"; renderApp(); toast("הנעילה בוטלה"); });
-  const cs = document.getElementById("cycleSel");
-  if(cs) cs.onchange = () => { state.cycleDay = Number(cs.value); save(); ui.month = curYM(); renderApp(); toast(`החודש התקציבי מתחיל עכשיו ב-${state.cycleDay} לחודש`); };
+  app.querySelectorAll("main [data-set]").forEach(b => b.onclick = () => openSettingsSheet(b.dataset.set));
+  const bkNow = document.getElementById("bkNow"); if(bkNow) bkNow.onclick = doBackup;
   const oc = document.getElementById("openCopy"); if(oc) oc.onclick = () => { openMonth(ui.month, false); renderApp(); toast(`${monthNameOf(ui.month)} נפתח`); };
   const oe = document.getElementById("openEmpty"); if(oe) oe.onclick = () => { openMonth(ui.month, true); renderApp(); toast(`${monthNameOf(ui.month)} נפתח`); };
   const bc = document.getElementById("backCur"); if(bc) bc.onclick = () => { ui.month = curYM(); renderApp(); };
@@ -3348,21 +3394,9 @@ function bindApp(){
   if(seal){ const go = () => { ui.tab = "saving"; ui.year = Number(ui.month.slice(0,4)); renderApp(); }; seal.onclick = go; seal.onkeydown = e => { if(e.key === "Enter" || e.key === " ") go(); }; }
   const nd = document.getElementById("nudge"); if(nd) nd.onclick = () => openSummary(shiftYM(curYM(), -1));
   const os = document.getElementById("openSummary"); if(os) os.onclick = () => openSummary(ui.month);
-  const reset = document.getElementById("reset");
-  if(reset) reset.onclick = () => {
-    if(reset.dataset.armed){ try{ localStorage.removeItem(KEY); }catch(e){} state = null; ob = null; document.documentElement.removeAttribute("data-theme"); render(); return; }
-    reset.dataset.armed = "1"; reset.textContent = "בטוח? הקישו שוב למחיקה";
-  };
-  const bk = document.getElementById("doBackup"); if(bk) bk.onclick = doBackup;
   const bkn = document.getElementById("bkNudge"); if(bkn) bkn.onclick = doBackup;
-  const rs = document.getElementById("doRestore"), rf = document.getElementById("restoreFile");
-  if(rs){ rs.onclick = () => { ui.noLockUntil = Date.now() + 120000; rf.click(); }; rf.onchange = () => { if(rf.files[0]) restoreFrom(rf.files[0]); rf.value = ""; }; }
   const gb = document.getElementById("goBudget"); if(gb) gb.onclick = () => { ui.tab = "budget"; renderApp(); };
   app.querySelectorAll("[data-theme-set]").forEach(b => b.onclick = () => { state.theme = b.dataset.themeSet; save(); renderApp(); });
-  const pi = document.getElementById("persistInfo");
-  if(pi && navigator.storage && navigator.storage.persisted){
-    navigator.storage.persisted().then(v => { pi.textContent = v ? "האחסון במכשיר מסומן כקבוע, והדפדפן לא ימחק אותו מעצמו." : "האחסון לא מסומן כקבוע. התקנה למסך הבית וגיבוי חודשי שומרים על הנתונים."; }).catch(() => {});
-  }
   document.getElementById("backdrop").onclick = closeSheet;
 }
 
@@ -3446,6 +3480,7 @@ function openSheet(expId, presetCat){
 
 function showSheet(html){
   const sheet = document.getElementById("sheet");
+  sheet.classList.remove("set-sheet");
   sheet.innerHTML = '<div class="handle"></div>' + html;
   document.getElementById("backdrop").classList.add("open");
   sheet.classList.add("open");
