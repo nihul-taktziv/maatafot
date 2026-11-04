@@ -1,4 +1,4 @@
-# ניהול תקציב (maatafot)
+# ניהול פיננסי (maatafot)
 
 Budget PWA in Hebrew (RTL). Data lives only on the device (localStorage), no server. Hosted on GitHub Pages from `main` at https://nihul-taktziv.github.io/maatafot/.
 

@@ -8,7 +8,7 @@
   const newPage = () => {
     n++;
     page = document.createElement("section"); page.className = "page";
-    page.innerHTML = '<div class="pg-body"></div><footer><span>מדריך לקובץ האקסל · ניהול תקציב</span><span>© 2026 בנימין אמבאו · כל הזכויות שמורות</span><span>עמוד ' + n + '</span></footer>';
+    page.innerHTML = '<div class="pg-body"></div><footer><span>מדריך לקובץ האקסל · ניהול פיננסי</span><span>© 2026 בנימין אמבאו · כל הזכויות שמורות</span><span>עמוד ' + n + '</span></footer>';
     flow.before(page); bodyEl = page.querySelector(".pg-body");
   };
   for(const b of blocks){

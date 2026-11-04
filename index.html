@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ניהול תקציב · © 2026 בנימין אמבאו · כל הזכויות שמורות. אין להעתיק, להפיץ או לשנות ללא אישור בכתב. -->
+<!-- ניהול פיננסי · © 2026 בנימין אמבאו · כל הזכויות שמורות. אין להעתיק, להפיץ או לשנות ללא אישור בכתב. -->
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -7,14 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="ניהול תקציב">
+<meta name="apple-mobile-web-app-title" content="ניהול פיננסי">
 <meta name="theme-color" content="#F4F5F9" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0E1020" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <script>window.__BUILD="pwa";</script>
-<title>ניהול תקציב</title>
+<title>ניהול פיננסי</title>
 <style>
 :root{
   --paper:#F5F7F4; --surface:#FFFFFF; --ink:#1E2A28; --ink-2:#5C6B68; --line:#E3E8E4;
@@ -1046,7 +1046,7 @@ function renderIntro(){
       <div class="wl">
         <div class="wl-logo"><svg viewBox="212 212 600 600" aria-hidden="true"><defs><linearGradient id="wlG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE6A6"/><stop offset="1" stop-color="#D9A93F"/></linearGradient><linearGradient id="wlGH" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#E0B24A"/><stop offset="1" stop-color="#FCE8AC"/></linearGradient></defs><path class="wl-arc" pathLength="500" d="M 690 300 A 282 282 0 1 0 794 512" fill="none" stroke="url(#wlGH)" stroke-width="30" stroke-linecap="round"/><rect x="352" y="520" width="78" height="170" rx="14" fill="url(#wlG)"/><rect x="456" y="440" width="78" height="250" rx="14" fill="url(#wlG)"/><rect x="560" y="350" width="78" height="340" rx="14" fill="url(#wlG)"/><path d="M 300 470 C 420 440 560 380 690 262" fill="none" stroke="url(#wlGH)" stroke-width="30" stroke-linecap="round"/><path d="M 610 250 L 724 230 L 700 344 Z" fill="#FCE8AC" stroke="#FCE8AC" stroke-width="14" stroke-linejoin="round"/><circle cx="676" cy="652" r="104" fill="url(#wlG)" stroke="#5A63CF" stroke-width="12"/><g fill="none" stroke="#3A44A8" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M 628 702 L 628 604 L 676 604 Q 700 604 700 628 L 700 668"/><path d="M 724 602 L 724 700 L 676 700 Q 652 700 652 676 L 652 636"/></g></svg></div>
         <div class="wl-kick">ברוכים הבאים ל</div>
-        <h1>ניהול תקציב</h1>
+        <h1>ניהול פיננסי</h1>
         <p class="wl-sub">לדעת כמה נשאר, לאן הכסף הולך, ולחסוך בכל חודש.</p>
         <div class="wl-points">
           <div><span>📊</span>רואים בכל רגע כמה נשאר להוציא החודש</div>
@@ -1391,7 +1391,7 @@ async function checkPin(pin){
   save(); return false;
 }
 function renderLock(){
-  pinScreen({ mode:"verify", title:"הזינו קוד", sub:"ניהול תקציב נעול", forgot:true, onComplete: async pin => {
+  pinScreen({ mode:"verify", title:"הזינו קוד", sub:"ניהול פיננסי נעול", forgot:true, onComplete: async pin => {
     if(await checkPin(pin)){ ui.locked = false; pinCtx = null; renderApp(); return true; }
     const L = state.lock;
     return (L.until || 0) > Date.now() ? "" : (L.failed >= 3 ? `קוד שגוי. נשארו ${5 - L.failed} ניסיונות לפני המתנה.` : "קוד שגוי");
@@ -2224,7 +2224,7 @@ function renderApp(){
   }
   app.innerHTML = `
     <header class="top">
-      <div class="brand">ניהול תקציב</div>
+      <div class="brand">ניהול פיננסי</div>
       ${tab === "home" || tab === "budget" ? `
       <div class="month" role="group" aria-label="בחירת חודש">
         <button id="mPrev" aria-label="החודש הקודם">${ICONS.prev}</button>
@@ -2616,9 +2616,9 @@ function icsFor(day){
     "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Maatafot//HE","CALSCALE:GREGORIAN","BEGIN:VEVENT",
     "UID:maatafot-" + uid() + "@local","DTSTAMP:" + stamp,"DTSTART:" + dt,"DURATION:PT15M",
     "RRULE:FREQ=MONTHLY;BYMONTHDAY=" + day,
-    "SUMMARY:סגירת חודש – ניהול תקציב",
+    "SUMMARY:סגירת חודש – ניהול פיננסי",
     "DESCRIPTION:להזין הכנסות והוצאות בפועל\\, לסמן כמה הועבר לחיסכון ולשמור גיבוי.",
-    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:סגירת חודש – ניהול תקציב","END:VALARM",
+    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:סגירת חודש – ניהול פיננסי","END:VALARM",
     "END:VEVENT","END:VCALENDAR"];
   return L.join("\r\n");
 }
@@ -2631,9 +2631,9 @@ function icsWeekly(wd){
   return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Maatafot//HE","CALSCALE:GREGORIAN","BEGIN:VEVENT",
     "UID:maatafot-w-" + uid() + "@local","DTSTAMP:" + stamp,"DTSTART:" + dt,"DURATION:PT10M",
     "RRULE:FREQ=WEEKLY;BYDAY=" + wd,
-    "SUMMARY:בדיקה שבועית – ניהול תקציב",
+    "SUMMARY:בדיקה שבועית – ניהול פיננסי",
     "DESCRIPTION:לבדוק כמה נשאר בכל קטגוריה ולרשום הוצאות שנשכחו.",
-    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:בדיקה שבועית – ניהול תקציב","END:VALARM",
+    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:בדיקה שבועית – ניהול פיננסי","END:VALARM",
     "END:VEVENT","END:VCALENDAR"].join("\r\n");
 }
 function openIcs(ics, name){
@@ -3205,7 +3205,7 @@ function settingsHTML(){
       <p>מוחק את כל ההוצאות, התקציבים והחיסכון מהמכשיר ומתחיל מההתחלה. לא ניתן לבטל, לכן כדאי לשמור גיבוי קודם.</p>
       <button class="btn" id="reset">מחיקת כל הנתונים</button>
     </section>
-    <div class="ver">ניהול תקציב, גרסה 1.1<br>© 2026 בנימין אמבאו · כל הזכויות שמורות</div>`;
+    <div class="ver">ניהול פיננסי, גרסה 1.1<br>© 2026 בנימין אמבאו · כל הזכויות שמורות</div>`;
 }
 function backupFileName(){ return "budget-backup-" + todayISO() + ".json"; }
 async function doBackup(){
@@ -3217,7 +3217,7 @@ async function doBackup(){
   try{
     const file = new File([blob], name, { type:"application/json" });
     if(navigator.canShare && navigator.canShare({ files:[file] })){
-      await navigator.share({ files:[file], title:"גיבוי ניהול תקציב" });
+      await navigator.share({ files:[file], title:"גיבוי ניהול פיננסי" });
       ok = true;
     }
   }catch(e){ if(e && e.name === "AbortError") return; }

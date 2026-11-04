@@ -383,13 +383,13 @@ cover = f"""<section class="page cover"><div class="cv-in">
 <h1>בונים תקציב<br>עם קובץ החישוב</h1>
 <p class="cv-sub">מה ממלאים בכל גיליון, מה הקובץ מחשב לבד, ואיך קוראים את התוצאות. גיליון אחר גיליון, עם צילומים ודוגמה.</p>
 <div class="chips"><span>9 גיליונות</span><span>צילום של כל גיליון</span><span>הודעות ומה עושים</span><span>טעויות נפוצות</span></div>
-<div class="cv-foot"><b>ניהול תקציב</b><small><bdi dir="ltr">{SITE_URL}</bdi></small><small>© 2026 בנימין אמבאו · כל הזכויות שמורות</small></div>
+<div class="cv-foot"><b>ניהול פיננסי</b><small><bdi dir="ltr">{SITE_URL}</bdi></small><small>© 2026 בנימין אמבאו · כל הזכויות שמורות</small></div>
 </div></section>"""
 
 CSS = (Path(__file__).resolve().parent / "style.css").read_text(encoding="utf-8")
 body = "".join(f'<div class="blk{" np" if np else ""}">{h}</div>' for h, np in blocks)
 doc = f"""<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8">
-<title>מדריך לקובץ האקסל · ניהול תקציב</title>
+<title>מדריך לקובץ האקסל · ניהול פיננסי</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
