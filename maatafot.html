@@ -637,10 +637,14 @@ main{padding:4px 16px 32px}
 
 /* narrow phones (iPhone SE / mini) */
 .brand{white-space:nowrap}
+.app-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand-logo{width:36px;height:36px;border-radius:10px;flex:none;box-shadow:0 2px 6px rgba(40,48,140,.22)}
 .h2-save span{white-space:nowrap}
 @media (max-width:360px){
   .top{padding:12px 14px 8px;gap:8px}
   .brand{font-size:18px}
+  .brand-logo{width:30px;height:30px;border-radius:8px}
+  .app-brand{gap:8px}
   .month span{min-width:80px;font-size:14px}
   .month button{width:30px;height:30px}
   main{padding:4px 12px 28px}
@@ -2222,7 +2226,7 @@ function renderApp(){
   }
   app.innerHTML = `
     <header class="top">
-      <div class="brand">ניהול פיננסי</div>
+      <div class="brand app-brand"><svg class="brand-logo" viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="hbBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4450C2"/><stop offset="1" stop-color="#727CE4"/></linearGradient><linearGradient id="hbG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE6A6"/><stop offset="1" stop-color="#D9A93F"/></linearGradient><linearGradient id="hbGH" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#E0B24A"/><stop offset="1" stop-color="#FCE8AC"/></linearGradient></defs><rect width="1024" height="1024" fill="url(#hbBg)"/><circle cx="512" cy="512" r="300" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="34"/><g id="mark"><path d="M 690 300 A 282 282 0 1 0 794 512" fill="none" stroke="url(#hbGH)" stroke-width="30" stroke-linecap="round"/><rect x="352" y="520" width="78" height="170" rx="14" fill="url(#hbG)"/><rect x="456" y="440" width="78" height="250" rx="14" fill="url(#hbG)"/><rect x="560" y="350" width="78" height="340" rx="14" fill="url(#hbG)"/><path d="M 300 470 C 420 440 560 380 690 262" fill="none" stroke="url(#hbGH)" stroke-width="30" stroke-linecap="round"/><path d="M 610 250 L 724 230 L 700 344 Z" fill="#FCE8AC" stroke="#FCE8AC" stroke-width="14" stroke-linejoin="round"/><circle cx="676" cy="652" r="104" fill="url(#hbG)"/><circle cx="676" cy="652" r="104" fill="none" stroke="#4A54C6" stroke-width="12"/><circle cx="676" cy="652" r="80" fill="none" stroke="#B8862A" stroke-opacity=".55" stroke-width="5"/><g fill="none" stroke="#3A44A8" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M 628 702 L 628 604 L 676 604 Q 700 604 700 628 L 700 668"/><path d="M 724 602 L 724 700 L 676 700 Q 652 700 652 676 L 652 636"/></g></g></svg><span>ניהול פיננסי</span></div>
       ${tab === "home" || tab === "budget" ? `
       <div class="month" role="group" aria-label="בחירת חודש">
         <button id="mPrev" aria-label="החודש הקודם">${ICONS.prev}</button>
