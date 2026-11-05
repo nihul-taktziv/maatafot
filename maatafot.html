@@ -1612,7 +1612,7 @@ function coachKey(){
 function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 57;
+const APP_VERSION = 58;
 const WHATS_NEW = [
   { v:57, ic:"piggy-bank", t:"סך הכול בחיסכון", d:"בחיסכון ← חודשי המספר הגדול כולל עכשיו גם את מה שהיה בחיסכון לפני שהתחלתם. חודש קודם שפתחתם ידנית נספר בחיסכון לפי היעד שלו." },
   { v:56, ic:"calendar-check", t:"יום חיוב לכל הוצאה קבועה", d:"בהקמה בוחרים יום חיוב לכל הוצאה קבועה. בדף ההוצאות כתוב מתחת לשם \"עדיין לא חויב\" או \"חויב אוטומטית\", והתשלום מסומן לבד ביום החיוב. בלי יום? לוחצים על השורה ובוחרים." },
@@ -3603,7 +3603,7 @@ function markPaid(key, inSheet){
   toast(`${l.name}: ${k === "income" ? "התקבל" : "שולם"} ${fmt(l.actual)} ₪`, () => { l.actual = null; save(); redraw(); toast("הסימון בוטל"); });
 }
 /* Bump when a guide or the workbook changes, so phones fetch the new file instead of a cached one. */
-const DOCS_V = "20261105";
+const DOCS_V = "20261105b";
 const WEEKDAYS = [["SU","ראשון"],["MO","שני"],["TU","שלישי"],["WE","רביעי"],["TH","חמישי"],["FR","שישי"],["SA","שבת"]];
 const WD_SHORT = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
 function parseHM(v){ const m = /^(\d{1,2}):(\d{2})$/.exec(v || ""); return m ? [Math.min(23, +m[1]), Math.min(59, +m[2])] : [20, 0]; }

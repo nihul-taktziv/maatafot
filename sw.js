@@ -1,7 +1,7 @@
 // ניהול פיננסי · © 2026 בנימין אמבאו · כל הזכויות שמורות
 // ניהול פיננסי – Service Worker
 // בכל עדכון של index.html מעלים את מספר הגרסה כאן, כדי שהטלפונים יקבלו את העדכון.
-const CACHE = "maatafot-v57";
+const CACHE = "maatafot-v58";
 const ASSETS = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
 
 self.addEventListener("install", e => {
