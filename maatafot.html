@@ -1014,6 +1014,18 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 .ob-adddebt svg{width:16px;height:16px}
 .ob-goal-name{display:flex;align-items:center;gap:10px;font-weight:600;font-size:16px}
 .ob-goal-name input{width:20px;height:20px;accent-color:var(--seal)}
+.ob-goal-top{display:flex;align-items:center;gap:4px}
+.ob-goal-top .ob-goal-name{flex:1;min-width:0}
+.ob-goal-top .field{flex:1;min-width:0;min-height:44px}
+.ob-goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.ob-goal-grid label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink-2)}
+.ob-goal-grid .field{min-height:44px;padding:9px 10px;font-size:16px}
+.ob-goal-grid select.field{font-size:15px}
+.ob-goal-calc{margin:8px 2px 0;font-size:13px;color:var(--ink-2);min-height:0}
+.ob-goal-calc:empty{display:none}
+.ob-goal-calc b{color:var(--seal)}
+#gCalc b{color:var(--seal)}
+.g-fixed{display:flex;align-items:center;color:var(--ink-2)}
 </style>
 </head>
 <body>
@@ -1033,7 +1045,8 @@ const PREV_COLORS = ["#5A63D8","#E0843F","#2E9E83","#D4507E","#3B8FD9","#8E5CD6"
 const DEFAULT_ENVELOPES = ["מסעדות והזמנות אוכל","בגדים וקניות","בילויים ויציאות","טיפוח והוצאות אישיות","קניות לבית","משתנות נוספות"];
 const DEFAULT_FIXED = ["שכירות / משכנתא","חשבונות הבית","תקשורת ומנויים","ביטוח בריאות","ביטוח רכב","לימודים","חדר כושר"];
 /* One-tap suggestions under the fixed-expenses list in onboarding. */
-const FIXED_SUGGEST = ["ביטוח רכב","ביטוח חיים","ביטוח דירה","ארנונה","ועד בית","קופת חולים","טיפולים ואגרת רכב"];
+const FIXED_SUGGEST = ["ביטוח רכב","ביטוח חיים","ביטוח דירה","ארנונה","ועד בית","קופת חולים"];
+const GOAL_SUGGEST = [["אגרת רכב וטיפולים",1440],["חופשה",6000],["חגים ומתנות",2400],["ביטוחים שנתיים",1200],["קנייה גדולה",5000]];
 const CAT_SUGGEST = ["דלק","חניה","תחבורה ציבורית","בריאות ותרופות","מתנות","חיות מחמד","תחביבים"];
 const DEFAULT_EXTRA = ["טיפולים ואגרת רכב","מתנות ואירועים","הוצאות בלתי צפויות"];
 const SECTIONS = {
@@ -1465,12 +1478,17 @@ const COACH = {
   budget_var: [
     { sel:".seg-top", t:"שלוש לשוניות", what:"משתנות (לפי קטגוריה), קבועות (תשלומים שחוזרים), ופירוט (כל ההוצאות ברשימה אחת).", why:"כל סוג הוצאה מנוהל אחרת.", act:"עוברים בין הלשוניות בלחיצה." },
     { sel:".tsum", t:"סיכום ההוצאות המשתנות", what:"כמה הוצאתם החודש מתוך מה שתכננתם.", why:"רואים במבט אחד אם אתם בתוך התקציב.", act:"ירוק = בסדר. אדום = חריגה." },
-    { sel:"[data-catview]", t:"כרטיס קטגוריה", what:"כמה הוצא בקטגוריה, כמה נשאר, והממוצע מהחודשים הקודמים.", why:"כאן רואים איפה הכסף בורח.", act:"לחיצה מראה את כל ההוצאות שלה וגרף. בכפתור \"עריכה\" משנים שם ויעד, או מוחקים קטגוריה שלא שייכת לכם." },
+    { sel:"[data-catview]", t:"כרטיס קטגוריה", what:"כמה הוצא בקטגוריה, כמה נשאר, והממוצע מהחודשים הקודמים.", why:"כאן רואים איפה הכסף בורח.", act:"לחיצה מראה את כל ההוצאות שלה וגרף. בכפתור \"עריכה\" משנים שם ויעד, או מסירים קטגוריה שלא שייכת לכם." },
     { sel:"#addEnv", t:"הוספת קטגוריה", what:"קטגוריה חדשה, למשל דלק או מתנות.", why:"כל אחד מוציא על דברים אחרים.", act:"שם ויעד חודשי, וזהו." }
   ],
   ob_fixed: [
     { sel:"#obList .ob-fx", t:"רק מה שאתם באמת משלמים", what:"הזינו סכום ליד כל הוצאה שיורדת מהחשבון כל חודש. השורה מסתמנת לבד.", why:"מה שנשאר בלי סכום לא ייכנס להוצאות הקבועות.", act:"העיפרון משנה את השם, ה־× מוחק את השורה." },
     { sel:".ob-sug", t:"להוסיף עוד", what:"הוצאות נפוצות כמו ביטוח רכב, ביטוח חיים או ארנונה.", why:"לכל אחד יש הוצאות אחרות.", act:"לחיצה מוסיפה שורה. משהו אחר? כותבים שם ולוחצים \"הוספה\"." }
+  ],
+  ob_goals: [
+    { sel:"#obGoals .ob-goal", t:"מטרת חיסכון", what:"קופה שכסף נכנס אליה כל חודש: קרן חירום, או הוצאה שיודעים שתגיע, כמו אגרת רכב.", why:"כשההוצאה מגיעה, הכסף כבר מחכה ולא יוצא מהחודש השוטף.", act:"העיפרון משנה את השם, ה־× מוחק את המטרה." },
+    { sel:"#obGoals .ob-goal-grid", t:"יעד ותקופה", what:"כמה צריך, מתי מתחילים לחסוך ומתי צריך את הכסף.", why:"ככה האפליקציה יודעת כמה לשים בצד כל חודש.", act:"ההפרשה מחושבת לבד: 1,440 ₪ ל־12 חודשים = 120 ₪ בחודש. אפשר לשנות אותה ידנית." },
+    { sel:".ob-sug", t:"להוסיף עוד", what:"מטרות נפוצות כמו חופשה, חגים או ביטוחים שנתיים.", why:"הוצאה גדולה שמחולקת לחודשים לא מפילה את התקציב.", act:"לחיצה מוסיפה מטרה. משהו אחר? כותבים שם ולוחצים \"הוספה\". הכסף נכנס למטרות רק מתוך מה שבאמת נחסך." }
   ],
   ob_cats: [
     { sel:"#obList .ob-fx", t:"תקציב לכל סוג הוצאה", what:"כמה אתם מוציאים בערך בחודש על כל קטגוריה. מזינים סכום והשורה מסתמנת לבד.", why:"רק קטגוריות עם סכום ייכנסו לאפליקציה.", act:"העיפרון משנה את השם, ה־× מוחק את השורה." },
@@ -1547,8 +1565,9 @@ function coachKey(){
 function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 50;
+const APP_VERSION = 51;
 const WHATS_NEW = [
+  { v:51, ic:"target", t:"מטרות עם תקופה", d:"לכל מטרה מזינים יעד, חודש התחלה וחודש סיום, וההפרשה החודשית מחושבת לבד. למשל אגרת רכב: 1,440 ₪ ל־12 חודשים = 120 ₪ בחודש." },
   { v:50, ic:"pen-line", t:"הקמה שמתאימה רק לך", d:"בהקמת התקציב שום הוצאה לא מסומנת מראש. מזינים סכום רק למה שבאמת משלמים, משנים שם, מוחקים, ומוסיפים בלחיצה הצעות כמו ביטוח רכב או דלק. מה שנשאר בלי סכום לא נכנס לאפליקציה." },
   { v:48, ic:"circle-help", t:"הסבר בכל מקום", d:"כפתור ? ליד כל כרטיס באפליקציה, ופס צבעוני ברור בדף הבית: ירוק חיסכון, אדום הוצאות, לבן מה שנשאר." },
   { v:47, ic:"user-round", t:"הפרופיל שלי", d:"שם, מי גר איתך, איך מגיעה ההכנסה ומה הכי חשוב לך. האפליקציה פונה אליך בשם ומתאימה את עצמה. הגדרות ← הפרופיל שלי." },
@@ -1990,19 +2009,28 @@ function renderProfileStep(){
     renderOnboarding(); const o = app.querySelector(".ob"); if(o) o.scrollTop = 0;
   }
 }
+/* Onboarding goals: target, first and last month; the monthly amount is worked out from them. */
+function obStartYM(){ const d = new Date(), cd = (ob && ob.cycleDay) || 1; const t = new Date(d.getFullYear(), d.getMonth() - (d.getDate() < cd ? 1 : 0), 1); return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0"); }
+function obGoalMonths(g){ return g.start && g.end && g.end >= g.start ? monthsBetween(g.start, g.end) + 1 : 0; }
+function obGoalCalc(g){ const n = obGoalMonths(g), t = num(g.target); if(n && t > 0) g.monthly = String(Math.ceil(t / n)); }
+function obNewGoal(name, target, months){
+  const start = obStartYM();
+  const g = { id:uid(), name, on: target > 0, target: target ? String(target) : "", monthly:"", start, end: months ? shiftYM(start, months - 1) : "" };
+  obGoalCalc(g); return g;
+}
 function renderOnboarding(){
   if(!ob){
     ob = { step:0, income:"", saving:"",
       fixed: DEFAULT_FIXED.map(n => ({ id:uid(), name:n, on:false, budget:"" })),
       cats: DEFAULT_ENVELOPES.map((n,i) => ({ id:uid(), name:n, on:false, budget:"", color:COLORS[i % COLORS.length] })),
       hasDebts: null, debts: [],
-      goals: [{ id:uid(), name:"קרן חירום", on:true, target:"3000", monthly:"500" }] };
+      goals: [obNewGoal("קרן חירום", 3000, 6)] };
   }
   if(!ob.profile) ob.profile = {};
   if(ob.pstep == null) ob.pstep = 0;
   if(ob.pstep < 2){ renderProfileStep(); return; }
   if(!ob.debts){ ob.debts = []; ob.hasDebts = null; }
-  if(!ob.goals) ob.goals = [{ id:uid(), name:"קרן חירום", on:true, target:"3000", monthly:"500" }];
+  if(!ob.goals) ob.goals = [obNewGoal("קרן חירום", 3000, 6)];
   const s = ob.step, LAST = 5, STEPS = 6;
   const editListHTML = key => {
     const items = key === "fixed" ? ob.fixed : ob.cats;
@@ -2090,18 +2118,34 @@ function renderOnboarding(){
       <div class="ob-ill">${ill("goals")}</div>
       <div class="ob-kicker">מטרות חיסכון</div>
       <h1>בשביל מה אתם חוסכים?</h1>
-      <p class="lead">מתוך יעד החיסכון${num(ob.saving) > 0 ? ` (${money(num(ob.saving))} בחודש)` : ""}, כמה ייכנס לכל מטרה. ההפרשות נכנסות לבד בסוף כל חודש. אפשר לדלג ולהוסיף אחר כך.</p>
-      <div id="obGoals">${ob.goals.map(g => `
+      <p class="lead">קרן חירום, וגם הוצאות שיודעים שיגיעו, כמו אגרת רכב או חופשה. מזינים יעד ותקופה, וההפרשה החודשית מחושבת לבד. הכסף נכנס למטרות רק מתוך מה שבאמת נחסך${num(ob.saving) > 0 ? ` (יעד החיסכון: ${money(num(ob.saving))} בחודש)` : ""}.</p>
+      <div id="obGoals">${ob.goals.map(g => {
+        const st = obStartYM(), n = obGoalMonths(g);
+        const startOpts = Array.from({length:24}, (_, i) => shiftYM(st, i));
+        if(g.start && !startOpts.includes(g.start)) startOpts.unshift(g.start);
+        const endOpts = Array.from({length:60}, (_, i) => shiftYM(g.start || st, i));
+        const opt = (v, cur) => `<option value="${v}" ${v === cur ? "selected" : ""}>${ymLabel(v)}</option>`;
+        return `
         <div class="ob-goal" data-id="${g.id}">
-          <label class="ob-goal-name"><input type="checkbox" ${g.on ? "checked" : ""} data-g="on"><span>${goalIcon(g.name)} ${esc(g.name)}</span></label>
-          <div class="ob-debt-nums">
-            <label><span>סכום יעד</span><input class="field" data-g="target" inputmode="decimal" placeholder="₪" value="${esc(g.target)}" ${g.on ? "" : "disabled"}></label>
-            <label><span>הפרשה בחודש</span><input class="field" data-g="monthly" inputmode="decimal" placeholder="₪" value="${esc(g.monthly)}" ${g.on ? "" : "disabled"}></label>
+          <div class="ob-goal-top">
+            ${ob.renaming === g.id
+              ? `<input class="field" data-g="name" value="${esc(g.name)}" aria-label="שם המטרה">`
+              : `<label class="ob-goal-name"><input type="checkbox" ${g.on ? "checked" : ""} data-g="on"><span>${goalIcon(g.name)} ${esc(g.name)}</span></label>
+            <button type="button" class="ob-ic" data-g="rename" aria-label="שינוי השם ${esc(g.name)}">${svgIcon("pen-line", 17)}</button>`}
+            <button type="button" class="ob-ic" data-g="del" aria-label="מחיקת ${esc(g.name)}">×</button>
           </div>
-        </div>`).join("")}
+          <div class="ob-goal-grid">
+            <label class="g-target"><span>סכום יעד</span><input class="field" data-g="target" inputmode="decimal" placeholder="₪" value="${esc(g.target)}"></label>
+            <label><span>מתחיל</span><select class="field" data-g="start">${startOpts.map(v => opt(v, g.start)).join("")}</select></label>
+            <label><span>מסתיים</span><select class="field" data-g="end"><option value="" ${g.end ? "" : "selected"}>בלי תאריך</option>${endOpts.map(v => opt(v, g.end)).join("")}</select></label>
+            <label class="g-monthly"><span>הפרשה בחודש</span><input class="field" data-g="monthly" inputmode="decimal" placeholder="₪" value="${esc(g.monthly)}"></label>
+          </div>
+          <p class="ob-goal-calc">${n && num(g.target) > 0 ? `${money(num(g.target))} ÷ ${n} חודשים = <b>${money(Math.ceil(num(g.target) / n))}</b> בחודש` : num(g.target) > 0 ? "בלי תאריך סיום: הזינו כמה להפריש בחודש" : ""}</p>
+        </div>`; }).join("")}
       </div>
+      ${(() => { const have = new Set(ob.goals.map(g => g.name)); const sug = GOAL_SUGGEST.filter(([n]) => !have.has(n) && !(ob.noCar && /רכב/.test(n))); return sug.length ? `<div class="ob-sug"><span>עוד מטרות נפוצות, לחיצה מוסיפה:</span><div class="ob-chips">${sug.map(([n]) => `<button type="button" data-gsug="${esc(n)}">+ ${esc(n)}</button>`).join("")}</div></div>` : ""; })()}
       <div class="ob-add">
-        <input class="field" id="obNewGoal" placeholder="מטרה נוספת, למשל רכב או חופשה" aria-label="מטרה חדשה">
+        <input class="field" id="obNewGoal" placeholder="שם של מטרה אחרת" aria-label="מטרה חדשה">
         <button type="button" id="obAddGoal">הוספה</button>
       </div>
       <div class="ob-sum" id="obSum"></div>`;
@@ -2160,11 +2204,35 @@ function renderOnboarding(){
     const onG = e => {
       const row = e.target.closest(".ob-goal"); if(!row) return;
       const g = ob.goals.find(x => x.id === row.dataset.id), f = e.target.dataset.g; if(!f) return;
-      if(f === "on"){ g.on = e.target.checked; renderOnboarding(); return; }
-      g[f] = e.target.value; updateObSum();
+      if(f === "on"){ g.on = e.target.checked; updateObSum(); return; }
+      if(f === "name"){ if(e.type === "change"){ const v = e.target.value.trim(); if(v) g.name = v; ob.renaming = null; renderOnboarding(); } return; }
+      if(f === "rename" || f === "del") return;
+      g[f] = e.target.value;
+      if(f === "start" && g.end && g.end < g.start) g.end = "";
+      if(f !== "monthly") obGoalCalc(g);
+      if(f === "target" || f === "monthly"){
+        g.on = num(g.target) > 0; const cb = row.querySelector("[data-g=on]"); if(cb) cb.checked = g.on;
+        if(f === "target"){ const m = row.querySelector("[data-g=monthly]"); if(m) m.value = g.monthly; const n = obGoalMonths(g), t = num(g.target); row.querySelector(".ob-goal-calc").innerHTML = n && t > 0 ? `${money(t)} ÷ ${n} חודשים = <b>${money(Math.ceil(t / n))}</b> בחודש` : t > 0 ? "בלי תאריך סיום: הזינו כמה להפריש בחודש" : ""; }
+        updateObSum(); return;
+      }
+      if(e.type === "change"){ const y = window.scrollY, o = app.querySelector(".ob"), top = o ? o.scrollTop : 0; renderOnboarding(); const o2 = app.querySelector(".ob"); if(o2) o2.scrollTop = top; window.scrollTo(0, y); }
     };
     gw.addEventListener("input", onG); gw.addEventListener("change", onG);
-    const addG = () => { const f = document.getElementById("obNewGoal"), name = f.value.trim(); if(!name) return; ob.goals.push({ id:uid(), name, on:true, target:"", monthly:"" }); renderOnboarding(); const t = app.querySelectorAll("[data-g=target]"); t[t.length-1].focus(); };
+    gw.addEventListener("click", e => {
+      const b = e.target.closest("[data-g=rename],[data-g=del]"); if(!b) return;
+      const id = b.closest(".ob-goal").dataset.id;
+      if(b.dataset.g === "del"){ ob.goals = ob.goals.filter(x => x.id !== id); ob.renaming = null; renderOnboarding(); return; }
+      ob.renaming = id; renderOnboarding();
+      const f = app.querySelector("[data-g=name]"); if(f){ f.focus(); f.select(); f.addEventListener("keydown", ev => { if(ev.key === "Enter") f.blur(); }); }
+    });
+    app.querySelectorAll("[data-gsug]").forEach(b => b.onclick = () => {
+      const sg = GOAL_SUGGEST.find(([n]) => n === b.dataset.gsug);
+      ob.goals.push(obNewGoal(sg[0], sg[1], 12));
+      renderOnboarding();
+      const t = app.querySelectorAll("[data-g=target]"); t[t.length-1].focus();
+    });
+    maybeCoach("ob_goals");
+    const addG = () => { const f = document.getElementById("obNewGoal"), name = f.value.trim(); if(!name) return; ob.goals.push(obNewGoal(name, 0, 12)); renderOnboarding(); const t = app.querySelectorAll("[data-g=target]"); t[t.length-1].focus(); };
     document.getElementById("obAddGoal").onclick = addG;
     document.getElementById("obNewGoal").addEventListener("keydown", e => { if(e.key === "Enter") addG(); });
     updateObSum();
@@ -2297,7 +2365,7 @@ function finishOnboarding(){
     return { id:uid(), type:d.type, name, original:bal, payment: od ? 0 : num(d.pay), rate:0, startYM:ym0, paid:{}, history: od ? { [ym0]: bal } : {}, done:false };
   });
   debtsList.filter(d => d.type !== "overdraft").forEach(d => lines.fixed.push(Object.assign(mkLine(d.name, d.payment), { debtId:d.id })));
-  const goalsList = ob.goals.filter(g => g.on && g.name.trim() && num(g.target) > 0).map((g, i) => ({ id:uid(), name:g.name.trim(), target:num(g.target), monthly:num(g.monthly), initial:0, date:null, order:i, startYM:ym0 }));
+  const goalsList = ob.goals.filter(g => g.on && g.name.trim() && num(g.target) > 0).map((g, i) => ({ id:uid(), name:g.name.trim(), target:num(g.target), monthly:num(g.monthly), initial:0, date:g.end || null, order:i, startYM: g.start && g.start > ym0 ? g.start : ym0 }));
   state = {
     v:1, onboarded:true, seenVersion:APP_VERSION, incomeVariable: !!ob.incomeVar, profile: ob.profile && ob.profile.first ? Object.assign({}, ob.profile) : null, hideInstall:false, cats, createdAt:Date.now(), lastBackup:null, theme:"auto", cycleDay: ob.cycleDay || 1,
     template:{ income:num(ob.income), saving:num(ob.saving), env, lines },
@@ -2664,6 +2732,8 @@ function openGoalSheet(id, preset){
   const g = id ? goals().find(x => x.id === id) : null;
   const p = preset || {};
   const n = goals().length;
+  const startNow = g ? (g.startYM || curYM()) : curYM(), startLocked = !!g && startNow < curYM();
+  const savedNow = g ? (goalProgress().cur[g.id] || 0) - (g.initial || 0) : 0;
   showSheet(`
     <h3 id="sheetTitle">${g ? "עריכת מטרה" : "מטרה חדשה"}</h3>
     <label class="lbl" for="gName">שם המטרה</label>
@@ -2674,8 +2744,12 @@ function openGoalSheet(id, preset){
     </div>
     <div class="row2" style="grid-template-columns:1fr 1fr">
       <div><label class="lbl" for="gInit">כבר יש לי</label><input class="field" id="gInit" inputmode="decimal" placeholder="₪" value="${g ? (g.initial || "") : ""}"></div>
-      <div><label class="lbl" for="gDate">תאריך יעד (לא חובה)</label><input class="field" id="gDate" type="month" value="${g && g.date ? g.date : ""}"></div>
+      ${startLocked ? `<div><label class="lbl">התחיל</label><div class="field g-fixed">${ymLabel(startNow)}</div></div>` : `<div><label class="lbl" for="gStart">מתחיל</label><select class="field" id="gStart">${Array.from({length:24}, (_, i) => shiftYM(curYM(), i)).map(v => `<option value="${v}" ${v === startNow ? "selected" : ""}>${ymLabel(v)}</option>`).join("")}</select></div>`}
     </div>
+    <div class="row2" style="grid-template-columns:1fr">
+      <div><label class="lbl" for="gDate">מסתיים (לא חובה)</label><select class="field" id="gDate"></select></div>
+    </div>
+    <p class="hint" id="gCalc"></p>
     ${(g ? n > 1 : n > 0) ? `<label class="lbl" for="gOrder">עדיפות</label><select class="field" id="gOrder">${Array.from({length: g ? n : n + 1}, (_, i) => `<option value="${i}" ${(g ? goals().slice().sort((a,b) => a.order - b.order).indexOf(g) : n) === i ? "selected" : ""}>${i === 0 ? "ראשונה" : "מקום " + (i + 1)}</option>`).join("")}</select>` : ""}
     ${p.hint ? `<p class="hint">${p.hint}</p>` : ""}
     <div class="err" id="sErr" style="margin-top:8px"></div>
@@ -2683,6 +2757,25 @@ function openGoalSheet(id, preset){
       ${g ? `<button class="btn btn-danger" id="gDel">מחיקה</button>` : `<button class="btn btn-ghost" id="sCancel">ביטול</button>`}
       <button class="btn btn-primary" id="gSave">שמירה</button>
     </div>`);
+  /* Monthly amount = what is still missing, spread over the months left until the end month. */
+  const gS = document.getElementById("gStart"), gD = document.getElementById("gDate"), gT = document.getElementById("gTarget"), gM = document.getElementById("gMonthly"), gI = document.getElementById("gInit"), gC = document.getElementById("gCalc");
+  const startVal = () => gS ? gS.value : startNow;
+  const fillEnd = keep => {
+    const from = startVal() > curYM() ? startVal() : curYM();
+    const opts = Array.from({length:60}, (_, i) => shiftYM(from, i));
+    if(keep && keep < from) opts.unshift(keep);
+    gD.innerHTML = `<option value="">בלי תאריך</option>` + opts.map(v => `<option value="${v}" ${v === keep ? "selected" : ""}>${ymLabel(v)}</option>`).join("");
+  };
+  const calc = () => {
+    const end = gD.value, from = startVal() > curYM() ? startVal() : curYM();
+    const left = Math.max(0, num(gT.value) - num(gI.value) - savedNow);
+    const m = end && end >= from ? monthsBetween(from, end) + 1 : 0;
+    if(m && left > 0){ gM.value = Math.ceil(left / m); gC.innerHTML = `${money(left)} ÷ ${m} חודשים = <b>${money(Math.ceil(left / m))}</b> בחודש. אפשר לשנות ידנית.`; }
+    else gC.textContent = num(gT.value) > 0 && !end ? "בלי תאריך סיום: הזינו כמה להפריש בחודש." : "";
+  };
+  fillEnd(g && g.date ? g.date : ""); gC.textContent = "";
+  if(gS) gS.onchange = () => { fillEnd(gD.value && gD.value >= gS.value ? gD.value : ""); calc(); };
+  gD.onchange = calc; gT.oninput = calc; gI.oninput = calc;
   const del = document.getElementById("gDel");
   if(del) armDelete(del, "למחוק?", () => { state.goals = goals().filter(x => x !== g); renumberGoals(); save(); closeSheet(); renderApp(); toast("המטרה נמחקה"); });
   document.getElementById("gSave").onclick = () => {
@@ -2693,6 +2786,7 @@ function openGoalSheet(id, preset){
     const data = { name, target, monthly: Math.max(0, num(document.getElementById("gMonthly").value)), initial: Math.max(0, num(document.getElementById("gInit").value)), date: document.getElementById("gDate").value || null };
     const os = document.getElementById("gOrder"), want = os ? Number(os.value) : 0;
     let goal = g;
+    if(!startLocked) data.startYM = startVal();
     if(g) Object.assign(g, data); else { goal = Object.assign({ id:uid(), startYM:curYM(), order: 999 }, data); goals().push(goal); }
     const arr = goals().slice().sort((a,b) => a.order - b.order).filter(x => x !== goal);
     arr.splice(Math.min(want, arr.length), 0, goal); arr.forEach((x, i) => x.order = i);
