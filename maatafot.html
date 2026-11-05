@@ -1024,6 +1024,8 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 .ob-goal-calc{margin:8px 2px 0;font-size:13px;color:var(--ink-2);min-height:0}
 .ob-goal-calc:empty{display:none}
 .ob-goal-calc b{color:var(--seal)}
+.yr-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:12px;border:1px solid rgba(255,255,255,.45);background:rgba(255,255,255,.14);color:#fff;border-radius:12px;padding:11px;font-size:15px;font-weight:600}
+.yr-btn:active{background:rgba(255,255,255,.24)}
 .ob-main label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink-2)}
 .ob-main .field{min-height:44px;padding:9px 10px;font-size:16px}
 .ob-main .mg-monthly{margin-top:8px}
@@ -1542,7 +1544,13 @@ const COACH = {
     { sel:".seg-top", t:"שלוש לשוניות", what:"חודשי (כמה נחסך), מטרות (בשביל מה), וחובות (הלוואות ומינוס).", why:"כל מה שמתקדם לאורך זמן נמצא כאן.", act:"עוברים בין הלשוניות בלחיצה." },
     { sel:".yr", t:"קופת החיסכון", what:"כמה נחסך השנה, וכמה מזה עבר למטרות.", why:"רואים את הכסף שנשאר אצלכם, חודש אחרי חודש.", act:"לא צריך להזין: מחושב לבד בסוף כל חודש." },
     { sel:".seals", t:"חותמות החודשים", what:"עיגול לכל חודש: וי = עמדתם ביעד, ! = לא.", why:"רצף של וי מראה הרגל טוב.", act:"לחיצה על חודש פותחת את הפרטים שלו." },
-    { sel:".list .env", t:"שורת חודש", what:"יעד, כמה נחסך, ולאן הלך.", why:"רואים בדיוק מה קרה בכל חודש.", act:"העברתם לחיסכון סכום אחר? לוחצים ומעדכנים." }
+    { sel:".list .env", t:"שורת חודש", what:"יעד, כמה נחסך, ולאן הלך.", why:"רואים בדיוק מה קרה בכל חודש.", act:"העברתם לחיסכון סכום אחר? לוחצים ומעדכנים." },
+    { sel:"#saveTarget", t:"שינוי יעד החיסכון", what:"כמה לחסוך בכל חודש, מהחודש הזה והלאה.", why:"כשהמטרות משתנות, גם היעד צריך להשתנות.", act:"יש שם כפתור \"לפי המטרות\", ותיקון של מה שהיה בחיסכון לפני." }
+  ],
+  sheet_savetarget: [
+    { sel:"#stAmt", t:"יעד חודשי", what:"הסכום שנשמר בצד בכל חודש, לפני ההוצאות.", why:"ממנו מתמלאות המטרות, ומה שנשאר הוא חיסכון חופשי.", act:"מתחת רואים כמה הולך למטרות וכמה נשאר חופשי." },
+    { sel:"#stUse", t:"לפי המטרות", what:"קובע את היעד בדיוק לסכום ההפרשות של כל המטרות.", why:"ככה כל מטרה מקבלת את מה שתוכנן לה.", act:"לחיצה אחת, ואז \"שמירה\"." },
+    { sel:"#stBefore", t:"היה בחיסכון לפני", what:"כסף שהיה בצד לפני שהתחלתם להשתמש באפליקציה.", why:"ככה התמונה של החיסכון שלמה.", act:"מתקנים ושומרים." }
   ],
   saving_goals: [
     { sel:"#goalEmergency", t:"להתחיל בקרן חירום", what:"כסף בצד להוצאה לא צפויה, כמו תקלה ברכב.", why:"קרן חירום שומרת אתכם מחוץ למינוס.", act:"לחיצה אחת, עם הצעה של 3,000 ₪ ו-500 ₪ בחודש." },
@@ -1593,8 +1601,9 @@ function coachKey(){
 function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 54;
+const APP_VERSION = 55;
 const WHATS_NEW = [
+  { v:55, ic:"piggy-bank", t:"יעד החיסכון והמטרות מחוברים", d:"כשמוסיפים, משנים או מוחקים מטרה, האפליקציה מציעה לעדכן את יעד החיסכון החודשי. בחיסכון ← חודשי יש כפתור \"שינוי יעד החיסכון\", ושם גם מתקנים כמה היה בחיסכון לפני." },
   { v:54, ic:"piggy-bank", t:"חיסכון עם מטרה", d:"בהקמה מזינים בשביל מה חוסכים, סכום יעד, תאריך התחלה וסיום, וכמה כבר יש בצד. הסכום לחסוך בחודש מחושב לבד, וכל מטרה נוספת מתווספת אליו." },
   { v:53, ic:"pen-line", t:"עריכת חוב לפי פרטי ההלוואה", d:"בעריכת הלוואה או עסקה בתשלומים רואים ומשנים את כל הפרטים: סכום, ריבית, מסלול, תאריכים, כמה שולם ויום החיוב. ההחזר והיתרה מתעדכנים לבד." },
   { v:52, ic:"landmark", t:"הלוואות לפי פרטי ההלוואה", d:"מזינים סכום, ריבית, מסלול (או מסלול אחר), חודש התחלה וחודש סיום, וכמה כבר שילמתם, ויום החיוב. ההחזר החודשי והיתרה מחושבים לבד, וההחזר מסומן \"שולם\" ביום החיוב." },
@@ -2974,7 +2983,7 @@ function openGoalSheet(id, preset){
   if(gS) gS.onchange = () => { fillEnd(gD.value && gD.value >= gS.value ? gD.value : ""); calc(); };
   gD.onchange = calc; gT.oninput = calc; gI.oninput = calc;
   const del = document.getElementById("gDel");
-  if(del) armDelete(del, "למחוק?", () => { state.goals = goals().filter(x => x !== g); renumberGoals(); save(); closeSheet(); renderApp(); toast("המטרה נמחקה"); });
+  if(del) armDelete(del, "למחוק?", () => { state.goals = goals().filter(x => x !== g); renumberGoals(); save(); closeSheet(); renderApp(); offerSavingSync("המטרה נמחקה"); });
   document.getElementById("gSave").onclick = () => {
     const err = document.getElementById("sErr");
     const name = document.getElementById("gName").value.trim(), target = num(document.getElementById("gTarget").value);
@@ -2987,7 +2996,7 @@ function openGoalSheet(id, preset){
     if(g) Object.assign(g, data); else { goal = Object.assign({ id:uid(), startYM:curYM(), order: 999 }, data); goals().push(goal); }
     const arr = goals().slice().sort((a,b) => a.order - b.order).filter(x => x !== goal);
     arr.splice(Math.min(want, arr.length), 0, goal); arr.forEach((x, i) => x.order = i);
-    save(); closeSheet(); renderApp(); toast(g ? "נשמר" : "המטרה נוספה");
+    save(); closeSheet(); renderApp(); offerSavingSync(g ? "נשמר" : "המטרה נוספה");
   };
 }
 function renumberGoals(){ goals().slice().sort((a,b) => a.order - b.order).forEach((x, i) => x.order = i); }
@@ -4087,7 +4096,7 @@ function savingHTML(){
   const left = Math.max(0, annual - savedTotal);
   const monthsLeft = yms.filter(ym => ym >= first && (ym > cur || (ym === cur && !(state.months[ym] && state.months[ym].closed)))).length;
   let msg;
-  if(annual <= 0) msg = "עוד לא הוגדר יעד חיסכון. מגדירים אותו בדף הבית.";
+  if(annual <= 0) msg = "עוד לא הוגדר יעד חיסכון. מגדירים אותו בכפתור למטה.";
   else if(savedTotal >= annual) msg = `הגעתם ליעד השנתי של ${y}. כל שקל נוסף הוא בונוס.`;
   else {
     const parts = [];
@@ -4123,6 +4132,7 @@ function savingHTML(){
           <i>${r.st.key === "met" ? CHECK : r.st.key === "miss" ? "!" : ""}</i><span>${MONTHS[r.i].slice(0,3)}</span></button>`).join("")}
       </div>
       <div class="yr-msg">${msg}</div>
+      ${y === new Date().getFullYear() ? `<button type="button" class="yr-btn" id="saveTarget">${svgIcon("pen-line", 16)} שינוי יעד החיסכון</button>` : ""}
     </section>
 
     ${saveChartHTML(rows, cur)}
@@ -4464,6 +4474,7 @@ function bindApp(){
   app.querySelectorAll("#addDebt").forEach(b => b.onclick = () => openDebtSheet());
   app.querySelectorAll("[data-debt]").forEach(b => b.onclick = () => { const d = debts().find(x => x.id === b.dataset.debt); if(d.type === "overdraft" && !d.done) openOverdraftSheet(d); else openDebtSheet(d.id); });
   app.querySelectorAll("#addGoal").forEach(b => b.onclick = () => openGoalSheet());
+  const stb = document.getElementById("saveTarget"); if(stb) stb.onclick = openSavingTargetSheet;
   const ge = document.getElementById("goalEmergency"); if(ge) ge.onclick = () => openGoalSheet(null, { name:"קרן חירום", target:3000, monthly:500, hint:"המדריך ממליץ להתחיל בסכום קטן, למשל 3,000 ₪, ולהגדיל בהמשך." });
   app.querySelectorAll("[data-goal]").forEach(b => b.onclick = () => openGoalSheet(b.dataset.goal));
   const yp = document.getElementById("yPrev"), yn = document.getElementById("yNext");
@@ -4638,6 +4649,58 @@ function openEnvSheet(catId){
     m.env[id] = b;
     save(); closeSheet(); renderApp(); toast(c ? "השינוי נשמר" : "הקטגוריה נוספה");
   };
+}
+/* Saving target ↔ goals: the monthly target should cover what the goals take each month. */
+function goalsMonthlyNow(){ const GP = goalProgress(); return goals().filter(g => (GP.cur[g.id] || 0) < g.target).reduce((a, g) => a + (g.monthly || 0), 0); }
+function setSavingFrom(ym, amt){
+  amt = Math.max(0, Math.round(amt));
+  monthData(ym);
+  Object.keys(state.months).filter(k => k >= ym && !state.months[k].closed).forEach(k => state.months[k].saving = amt);
+  state.template.saving = amt;
+}
+function offerSavingSync(done){
+  const ym = curYM(), target = goalFor(ym), need = goalsMonthlyNow();
+  if(Math.abs(need - target) < 1){ if(done) toast(done); return; }
+  const up = need > target;
+  setTimeout(() => {
+    showSheet(`
+      <h3 id="sheetTitle">${svgIcon("piggy-bank", 20)} לעדכן את יעד החיסכון?</h3>
+      <p class="hint" style="text-align:center;margin:-4px 0 12px">${done ? esc(done) + ". " : ""}${up
+        ? `ההפרשות למטרות הן עכשיו <b>${money(need)}</b> בחודש, ויעד החיסכון הוא <b>${money(target)}</b>. בלי עדכון, המטרות האחרונות יקבלו פחות.`
+        : `ההפרשות למטרות ירדו ל-<b>${money(need)}</b> בחודש, ויעד החיסכון הוא <b>${money(target)}</b>. אם תשאירו, ${money(target - need)} יישארו חיסכון חופשי.`}</p>
+      <div class="actions">
+        <button class="btn btn-ghost" id="sCancel">להשאיר<br>${money(target)}</button>
+        <button class="btn btn-primary" id="syncSave">עדכון היעד<br>${money(need)}</button>
+      </div>
+      <p class="hint" style="text-align:center">העדכון חל מהחודש הזה והלאה. אפשר לשנות תמיד: חיסכון ← חודשי ← "שינוי יעד החיסכון".</p>`);
+    document.getElementById("syncSave").onclick = () => { setSavingFrom(ym, need); save(); closeSheet(); renderApp(); toast("יעד החיסכון עודכן"); };
+  }, 380);
+}
+function openSavingTargetSheet(){
+  const ym = curYM(), target = goalFor(ym), need = goalsMonthlyNow();
+  const parts = a => need > 0 ? (a >= need ? `למטרות ${money(need)} בחודש${a - need > 0 ? `, ועוד ${money(a - need)} חיסכון חופשי` : ""}.` : `<span style="color:var(--rose)">פחות מההפרשות למטרות (${money(need)}). המטרות האחרונות יקבלו פחות.</span>`) : "אין מטרות פעילות: כל הסכום הוא חיסכון חופשי.";
+  showSheet(`
+    <h3 id="sheetTitle">יעד החיסכון החודשי</h3>
+    <div class="amount"><input id="stAmt" inputmode="decimal" placeholder="0" value="${target || ""}" aria-label="יעד חיסכון חודשי"><span>₪</span></div>
+    <p class="hint" style="text-align:center" id="stParts">${parts(target)}</p>
+    ${need > 0 && Math.abs(need - target) >= 1 ? `<button type="button" class="ob-adddebt" id="stUse">${svgIcon("target", 16)} לפי המטרות: ${money(need)} בחודש</button>` : ""}
+    <label class="lbl" for="stBefore" style="margin-top:14px">היה בחיסכון לפני שהתחלתם</label>
+    <input class="field" id="stBefore" inputmode="decimal" placeholder="₪" value="${state.savedBefore || ""}">
+    <p class="hint">רק להצגה בלשונית הזו. כסף שכבר יש למטרה מסוימת מזינים במטרה עצמה, ב"כבר יש לי".</p>
+    <p class="hint">היעד חל על ${monthNameOf(ym)} ועל החודשים הבאים. חודשים שנסגרו לא משתנים.</p>
+    <div class="actions">
+      <button class="btn btn-ghost" id="sCancel">ביטול</button>
+      <button class="btn btn-primary" id="stSave">שמירה</button>
+    </div>`);
+  const a = document.getElementById("stAmt");
+  a.addEventListener("input", () => document.getElementById("stParts").innerHTML = parts(num(a.value)));
+  const u = document.getElementById("stUse"); if(u) u.onclick = () => { a.value = need; document.getElementById("stParts").innerHTML = parts(need); };
+  document.getElementById("stSave").onclick = () => {
+    setSavingFrom(ym, num(a.value));
+    state.savedBefore = Math.max(0, num(document.getElementById("stBefore").value));
+    save(); closeSheet(); renderApp(); toast("נשמר");
+  };
+  maybeCoach("sheet_savetarget");
 }
 function openSavingSheet(){
   const m = monthData(ui.month);
