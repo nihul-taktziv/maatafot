@@ -538,11 +538,11 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 .sp-sub{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--ink-2);margin-bottom:6px}
 .sp-sub b{font-weight:600}
 .sp-legend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
-.sp-legend li{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.sp-legend li{display:flex;align-items:center;gap:8px;font-size:14.5px;color:var(--ink)}
 .sp-legend span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sp-legend b{font-weight:600;white-space:nowrap}
+.sp-legend b{font-weight:700;white-space:nowrap}
 .sp-legend .sp-none{color:var(--ink-2);font-size:13.5px}
-.sp-dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.sp-dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
 .sp-fixed{margin-top:14px;border-top:1px solid var(--line)}
 .sp-fixed summary{list-style:none;display:flex;align-items:center;gap:8px;padding:12px 0 6px;cursor:pointer;font-size:15px}
 .sp-fixed summary::-webkit-details-marker{display:none}
@@ -551,9 +551,9 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 .sp-fixed summary svg{color:var(--ink-2);transition:transform .2s;flex:none}
 .sp-fixed[open] summary svg{transform:rotate(-90deg)}
 .sp-fixed ul{list-style:none;margin:4px 0 2px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}
-.sp-fixed li{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--ink-2);min-width:0}
+.sp-fixed li{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink);min-width:0}
 .sp-fixed li span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sp-fixed li b{font-weight:600;color:var(--ink);white-space:nowrap}
+.sp-fixed li b{font-weight:700;color:var(--ink);white-space:nowrap}
 .sp-fixed b.est,.sp-fixed li b.est{color:var(--ink-2)}
 .wf-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
 .wf-tile{background:var(--paper);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:1px;min-width:0}
@@ -974,7 +974,10 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 const KEY = "budget-envelopes-v1";
 const MONTHS = ["ינואר","פברואר","מרץ","אפריל","מאי","יוני","יולי","אוגוסט","ספטמבר","אוקטובר","נובמבר","דצמבר"];
 const OLD_COLORS = ["#2F7D62","#B9801C","#5B6FB0","#B4465A","#3E8EA0","#8A5A9E","#6B7F3A","#9A6A4F"];
-const COLORS = ["#5A63D8","#E0843F","#2E9E83","#D4507E","#3B8FD9","#8E5CD6","#C9A227","#64809A"];
+/* Category colors: vivid, deep tones, ordered so neighbours stay apart for color-blind readers
+   (checked with the dataviz palette validator, light and dark). PREV_COLORS maps saved categories. */
+const COLORS = ["#4F5BEA","#E2651A","#0FA37F","#8B5CF6","#C97F08","#1495E0","#E8457C","#0F9BA8"];
+const PREV_COLORS = ["#5A63D8","#E0843F","#2E9E83","#D4507E","#3B8FD9","#8E5CD6","#C9A227","#64809A"];
 const DEFAULT_ENVELOPES = ["מסעדות והזמנות אוכל","בגדים וקניות","בילויים ויציאות","טיפוח והוצאות אישיות","קניות לבית","משתנות נוספות"];
 const DEFAULT_FIXED = ["שכירות / משכנתא","חשבונות הבית","תקשורת ומנויים","ביטוחים","רכב ודלק","לימודים","חדר כושר"];
 const DEFAULT_EXTRA = ["טיפולים ואגרת רכב","מתנות ואירועים","הוצאות בלתי צפויות"];
@@ -1142,6 +1145,7 @@ function defaultLines(income){
 }
 function migrate(){
   if(!state || !state.onboarded) return;
+  (state.cats || []).forEach(c => { const i = PREV_COLORS.indexOf((c.color || "").toUpperCase()); if(i >= 0) c.color = COLORS[i]; });
   if(!state.template.lines){ state.template.lines = defaultLines(state.template.income || 0); }
   if(!state.createdAt) state.createdAt = Date.now();
   if(!Array.isArray(state.expenses)) state.expenses = [];
@@ -1462,7 +1466,7 @@ function coachKey(){
 function coachSeen(k){ return !!(state.coachSeen && state.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 45;
+const APP_VERSION = 46;
 const WHATS_NEW = [
   { v:45, ic:"piggy-bank", t:"הכנסה שמשתנה", d:"מסמנים \"ההכנסה שלי משתנה\", מתכננים לפי החודש הנמוך, ומה שנכנס מעבר לזה מציע לכם להעביר לחיסכון." },
   { v:44, ic:"circle-check", t:"הוצאות קבועות מסומנות לבד", d:"הוצאה קבועה עם יום חיוב מסומנת \"שולם\" ביום הזה, בלי ללחוץ. בלי יום חיוב מסמנים כמו קודם." },
@@ -2648,7 +2652,7 @@ function lineStatus(sec, l){
 const PENCIL = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4"/></svg>';
 
 function monthNameOf(ym){ return MONTHS[Number(ym.slice(5))-1]; }
-const FIXED_COLORS = ["#3D5A80","#8C6A5A","#5E7F6E","#6B6F9E","#A08F5C","#4F7A8A","#996B80","#7A8C99"];
+const FIXED_COLORS = ["#2F4FD0","#D2531A","#008C7A","#B02BC0","#1E8E46","#7A3BE6","#0A79B8","#CC2350"];
 function donutHTML(r){
   const m = r.m, fixedItems = [], varItems = [];
   let byPlan = false;
