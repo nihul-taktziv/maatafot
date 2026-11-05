@@ -405,6 +405,10 @@ select.field{appearance:none;-webkit-appearance:none}
 .ob-fx label{min-width:0}
 .ob-fx label span{overflow:hidden;text-overflow:ellipsis}
 .ob-fx .field[data-act=budget]{width:96px}
+.ob-fx{flex-wrap:wrap}
+.ob-env .fx-day{flex:0 0 100%;min-height:0;display:flex;align-items:center;gap:10px;padding-inline-start:32px;font-size:13px;color:var(--ink-2);margin-top:-2px}
+.ob-env .fx-day .field{flex:1;width:auto;min-height:40px;padding:7px 10px;font-size:15px}
+.ob-env .fx-day[hidden]{display:none}
 .ob-fx .field[data-act=name]{flex:1;min-width:0;width:auto;text-align:start}
 .ob-ic{border:0;background:none;color:var(--ink-3, var(--ink-2));width:34px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none;font-size:20px;line-height:1}
 .ob-ic:active{background:var(--track)}
@@ -695,6 +699,7 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 .chk.on svg{width:14px;height:14px}
 .chk.off{border-style:dashed;opacity:.5}
 .frow.is-paid .cmain b{color:var(--ink-2)}
+.frow.no-chk .fmain{padding-right:16px}
 .chip span{font-size:15px}
 .h2-label small{display:block;font-size:12px;opacity:.8;margin-top:1px}
 
@@ -1501,7 +1506,7 @@ const COACH = {
     { sel:"#addEnv", t:"הוספת קטגוריה", what:"קטגוריה חדשה, למשל דלק או מתנות.", why:"כל אחד מוציא על דברים אחרים.", act:"שם ויעד חודשי, וזהו." }
   ],
   ob_fixed: [
-    { sel:"#obList .ob-fx", t:"רק מה שאתם באמת משלמים", what:"הזינו סכום ליד כל הוצאה שיורדת מהחשבון כל חודש. השורה מסתמנת לבד.", why:"מה שנשאר בלי סכום לא ייכנס להוצאות הקבועות.", act:"העיפרון משנה את השם, ה־× מוחק את השורה." },
+    { sel:"#obList .ob-fx", t:"רק מה שאתם באמת משלמים", what:"הזינו סכום ליד כל הוצאה שיורדת מהחשבון כל חודש. השורה מסתמנת לבד, ומתחתיה בוחרים יום חיוב.", why:"מה שנשאר בלי סכום לא ייכנס להוצאות הקבועות.", act:"העיפרון משנה את השם, ה־× מוחק את השורה." },
     { sel:".ob-sug", t:"להוסיף עוד", what:"הוצאות נפוצות כמו ביטוח רכב, ביטוח חיים או ארנונה.", why:"לכל אחד יש הוצאות אחרות.", act:"לחיצה מוסיפה שורה. משהו אחר? כותבים שם ולוחצים \"הוספה\"." }
   ],
   ob_saving: [
@@ -1525,8 +1530,8 @@ const COACH = {
     { sel:".ob-sug", t:"להוסיף עוד", what:"קטגוריות נפוצות כמו דלק, חניה או בריאות ותרופות.", why:"כל משפחה מוציאה על דברים אחרים.", act:"לחיצה מוסיפה שורה. משהו אחר? כותבים שם ולוחצים \"הוספה\"." }
   ],
   budget_fixed: [
-    { sel:".tsum", t:"סיכום ההוצאות הקבועות", what:"כמה מהתשלומים הקבועים כבר ירדו החודש, מתוך כל המתוכנן.", why:"רואים מה עוד צפוי לרדת מהחשבון.", act:"מתעדכן כשמסמנים תשלום." },
-    { sel:"[data-paid], [data-unpaid]", t:"סימון \"שולם\"", what:"העיגול ליד כל תשלום.", why:"ככה האפליקציה יודעת מה כבר ירד בפועל.", act:"תשלום עם יום חיוב מסומן לבד ביום הזה. בלי יום חיוב, לוחצים כשהוא יורד." },
+    { sel:".tsum", t:"סיכום ההוצאות הקבועות", what:"כמה מהתשלומים הקבועים כבר ירדו החודש, מתוך כל המתוכנן.", why:"רואים מה עוד צפוי לרדת מהחשבון.", act:"מתעדכן לבד ביום החיוב של כל תשלום." },
+    { sel:".frow .cmain small", t:"חויב או עדיין לא", what:"מתחת לשם: \"עדיין לא חויב · יחויב ב-...\", ואחרי יום החיוב \"חויב אוטומטית\".", why:"ככה רואים מה כבר ירד מהחשבון ומה עוד צפוי.", act:"אין יום חיוב? לוחצים על השורה ובוחרים יום." },
     { sel:".frow", t:"שורת תשלום", what:"שם, סכום, ויום החיוב בחודש.", why:"מתחת לשם רואים אם כבר ירד, ומתי הוא יורד.", act:"לחיצה על השורה: שינוי שם, סכום, יום חיוב, או מחיקה של תשלום שלא שייך לכם." },
     { sel:"[data-addline]", t:"הוספת תשלום קבוע", what:"שורה חדשה, למשל מנוי או חוג.", why:"כל תשלום קבוע צריך להיות כאן.", act:"הלוואות מוסיפים בדף החיסכון ← חובות, והן נכנסות לכאן לבד." }
   ],
@@ -1603,8 +1608,9 @@ function coachKey(){
 function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 55;
+const APP_VERSION = 56;
 const WHATS_NEW = [
+  { v:56, ic:"calendar-check", t:"יום חיוב לכל הוצאה קבועה", d:"בהקמה בוחרים יום חיוב לכל הוצאה קבועה. בדף ההוצאות כתוב מתחת לשם \"עדיין לא חויב\" או \"חויב אוטומטית\", והתשלום מסומן לבד ביום החיוב. בלי יום? לוחצים על השורה ובוחרים." },
   { v:55, ic:"piggy-bank", t:"יעד החיסכון והמטרות מחוברים", d:"כשמוסיפים, משנים או מוחקים מטרה, האפליקציה מציעה לעדכן את יעד החיסכון החודשי. בחיסכון ← חודשי יש כפתור \"שינוי יעד החיסכון\", ושם גם מתקנים כמה היה בחיסכון לפני." },
   { v:54, ic:"piggy-bank", t:"חיסכון עם מטרה", d:"בהקמה מזינים בשביל מה חוסכים, סכום יעד, תאריך התחלה וסיום, וכמה כבר יש בצד. הסכום לחסוך בחודש מחושב לבד, וכל מטרה נוספת מתווספת אליו." },
   { v:53, ic:"pen-line", t:"עריכת חוב לפי פרטי ההלוואה", d:"בעריכת הלוואה או עסקה בתשלומים רואים ומשנים את כל הפרטים: סכום, ריבית, מסלול, תאריכים, כמה שולם ויום החיוב. ההחזר והיתרה מתעדכנים לבד." },
@@ -2095,6 +2101,7 @@ function renderOnboarding(){
           <button type="button" class="ob-ic" data-act="rename" aria-label="שינוי השם ${esc(c.name)}">${svgIcon("pen-line", 17)}</button>`}
           <input class="field" inputmode="decimal" placeholder="₪" value="${esc(c.budget)}" data-act="budget" aria-label="${key === "fixed" ? "סכום" : "תקציב"} ${esc(c.name)}">
           <button type="button" class="ob-ic" data-act="del" aria-label="מחיקת ${esc(c.name)}">×</button>
+          ${key === "fixed" ? `<label class="fx-day" ${c.on ? "" : "hidden"}><span>יום חיוב</span><select class="field" data-act="day"><option value="">בחרו יום</option>${Array.from({length:31}, (_, i) => `<option value="${i + 1}" ${String(c.day) === String(i + 1) ? "selected" : ""}>${i + 1} בחודש</option>`).join("")}</select></label>` : ""}
         </div>`).join("")}
       </div>
       ${sug.length ? `<div class="ob-sug"><span>${key === "fixed" ? "עוד הוצאות נפוצות" : "עוד קטגוריות נפוצות"}, לחיצה מוסיפה:</span><div class="ob-chips">${sug.map(n => `<button type="button" data-sug="${esc(n)}">+ ${esc(n)}</button>`).join("")}</div></div>` : ""}
@@ -2335,9 +2342,10 @@ function renderOnboarding(){
       const c = arr.find(x => x.id === row.dataset.id);
       if(e.target.dataset.act === "budget"){
         c.budget = e.target.value;
-        { c.on = num(c.budget) > 0; const cb = row.querySelector("[data-act=toggle]"); if(cb) cb.checked = c.on; }
+        { c.on = num(c.budget) > 0; const cb = row.querySelector("[data-act=toggle]"); if(cb) cb.checked = c.on; const dy = row.querySelector(".fx-day"); if(dy) dy.hidden = !c.on; }
       }
-      if(e.target.dataset.act === "toggle") c.on = e.target.checked;
+      if(e.target.dataset.act === "toggle"){ c.on = e.target.checked; const dy = row.querySelector(".fx-day"); if(dy) dy.hidden = !c.on; }
+      if(e.target.dataset.act === "day") c.day = e.target.value ? Number(e.target.value) : null;
       if(e.target.dataset.act === "name" && e.type === "change"){ const v = e.target.value.trim(); if(v) c.name = v; ob.renaming = null; renderOnboarding(); return; }
       updateObSum();
     };
@@ -2456,7 +2464,7 @@ function finishOnboarding(){
   const env = {}; used.forEach(c => env[c.id] = num(c.budget));
   const lines = {
     income:[mkLine(({ self:"הכנסה מהעסק", pension:"קצבה" })[(ob.profile || {}).incomeType] || "משכורת", num(ob.income))],
-    fixed: ob.fixed.filter(f => f.on && num(f.budget) > 0).map(f => mkLine(f.name, num(f.budget))),
+    fixed: ob.fixed.filter(f => f.on && num(f.budget) > 0).map(f => Object.assign(mkLine(f.name, num(f.budget)), { day: f.day || null })),
     extra: []
   };
   const ym0 = (() => { const d = new Date(), cd = ob.cycleDay || 1; const t = new Date(d.getFullYear(), d.getMonth() - (d.getDate() < cd ? 1 : 0), 1); return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0"); })();
@@ -3536,27 +3544,27 @@ function lineMeta(k, l, ym){
   const today = new Date(); today.setHours(0,0,0,0);
   if(l.actual != null){
     const d = l.actual - (l.plan || 0);
-    const base = k === "income" ? "התקבל" : "שולם";
+    const base = k === "income" ? "התקבל" : "חויב";
     if(d > 0 && k !== "income") return { cls:"over", text:`${base}, ${money(d)} יותר מהתכנון` };
     if(d < 0 && k === "income") return { cls:"over", text:`${base}, חסרו ${money(-d)}` };
-    return { cls:"ok", text: (l.autoPaid && k !== "income" ? "שולם אוטומטית" : base) + (cd ? " ב-" + shortDate(cd) : "") };
+    return { cls:"ok", text: (k === "income" ? base : l.autoPaid ? "חויב אוטומטית" : "חויב") + (cd ? " ב-" + shortDate(cd) : "") };
   }
   if(!(l.plan > 0)) return { cls:"none", text:"ללא סכום" };
   if(k === "income"){
     if(cd) return { cls:"none", text:`צפוי ב-${shortDate(cd)}` };
     return { cls:"none", text:"עוד לא התקבל" };
   }
-  if(cd && cd <= today) return { cls:"warn", text:`סומן שלא ירד ב-${shortDate(cd)}` };
-  if(cd) return { cls:"none", text:`עוד לא ירד · יורד ב-${shortDate(cd)}` };
-  return { cls:"none", text:"אין יום חיוב · מסמנים ידנית" };
+  if(cd && cd <= today) return { cls:"warn", text:`סומן שלא חויב ב-${shortDate(cd)}` };
+  if(cd) return { cls:"none", text:`עדיין לא חויב · יחויב ב-${shortDate(cd)}` };
+  return { cls:"warn", text:"אין יום חיוב · לחצו כדי להגדיר" };
 }
 function lineRowHTML(k, l, paidLabel){
   const meta = lineMeta(k, l, ui.month);
   const paid = l.actual != null, canPay = !paid && (l.plan || 0) > 0;
   const amt = paid ? l.actual : (l.plan || 0);
   return `
-    <div class="frow ${paid ? "is-paid" : ""}">
-      ${canPay ? `<button class="chk" data-paid="${k}:${l.id}" aria-label="סימון ${esc(l.name)} כ${paidLabel}"></button>`
+    <div class="frow ${paid ? "is-paid" : ""}${k === "income" ? "" : " no-chk"}">
+      ${k !== "income" ? "" : canPay ? `<button class="chk" data-paid="${k}:${l.id}" aria-label="סימון ${esc(l.name)} כ${paidLabel}"></button>`
         : paid ? `<button class="chk on" data-unpaid="${k}:${l.id}" aria-label="ביטול הסימון של ${esc(l.name)}">${CHECK}</button>`
         : `<span class="chk off"></span>`}
       <button class="fmain" data-line="${k}:${l.id}">
