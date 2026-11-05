@@ -401,6 +401,17 @@ select.field{appearance:none;-webkit-appearance:none}
 .ob-env input[type=checkbox]{width:22px;height:22px;accent-color:var(--seal);flex:none}
 .ob-env .field{width:110px;text-align:center;flex:none}
 .ob-env .field:disabled{opacity:.4}
+.ob-fx{gap:6px}
+.ob-fx label{min-width:0}
+.ob-fx label span{overflow:hidden;text-overflow:ellipsis}
+.ob-fx .field[data-act=budget]{width:96px}
+.ob-fx .field[data-act=name]{flex:1;min-width:0;width:auto;text-align:start}
+.ob-ic{border:0;background:none;color:var(--ink-3, var(--ink-2));width:34px;height:40px;border-radius:10px;display:grid;place-items:center;flex:none;font-size:20px;line-height:1}
+.ob-ic:active{background:var(--track)}
+.ob-sug{margin-top:14px}
+.ob-sug > span{display:block;font-size:13px;color:var(--ink-2);margin-bottom:8px}
+.ob-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ob-chips button{border:1px dashed var(--line);background:none;color:var(--seal);border-radius:999px;padding:7px 12px;font-size:14px;font-weight:500}
 .ob-add{display:flex;gap:8px;margin-top:14px}
 .ob-add button{border:1px solid var(--seal);color:var(--seal);background:none;border-radius:12px;padding:0 16px;min-height:46px;font-weight:500;flex:none}
 .ob-sum{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px;color:var(--ink-2)}
@@ -1022,7 +1033,10 @@ const OLD_COLORS = ["#2F7D62","#B9801C","#5B6FB0","#B4465A","#3E8EA0","#8A5A9E",
 const COLORS = ["#4F5BEA","#E2651A","#0FA37F","#8B5CF6","#C97F08","#1495E0","#E8457C","#0F9BA8"];
 const PREV_COLORS = ["#5A63D8","#E0843F","#2E9E83","#D4507E","#3B8FD9","#8E5CD6","#C9A227","#64809A"];
 const DEFAULT_ENVELOPES = ["מסעדות והזמנות אוכל","בגדים וקניות","בילויים ויציאות","טיפוח והוצאות אישיות","קניות לבית","משתנות נוספות"];
-const DEFAULT_FIXED = ["שכירות / משכנתא","חשבונות הבית","תקשורת ומנויים","ביטוחים","רכב ודלק","לימודים","חדר כושר"];
+const DEFAULT_FIXED = ["שכירות / משכנתא","חשבונות הבית","תקשורת ומנויים","ביטוח בריאות","ביטוח רכב","לימודים","חדר כושר"];
+/* One-tap suggestions under the fixed-expenses list in onboarding. */
+const FIXED_SUGGEST = ["ביטוח רכב","ביטוח חיים","ביטוח דירה","ארנונה","ועד בית","קופת חולים","טיפולים ואגרת רכב"];
+const CAT_SUGGEST = ["דלק","חניה","תחבורה ציבורית","בריאות ותרופות","מתנות","חיות מחמד","תחביבים"];
 const DEFAULT_EXTRA = ["טיפולים ואגרת רכב","מתנות ואירועים","הוצאות בלתי צפויות"];
 const SECTIONS = {
   income:{ title:"הכנסות", add:"הוספת מקור הכנסה", isIncome:true },
@@ -1453,13 +1467,21 @@ const COACH = {
   budget_var: [
     { sel:".seg-top", t:"שלוש לשוניות", what:"משתנות (לפי קטגוריה), קבועות (תשלומים שחוזרים), ופירוט (כל ההוצאות ברשימה אחת).", why:"כל סוג הוצאה מנוהל אחרת.", act:"עוברים בין הלשוניות בלחיצה." },
     { sel:".tsum", t:"סיכום ההוצאות המשתנות", what:"כמה הוצאתם החודש מתוך מה שתכננתם.", why:"רואים במבט אחד אם אתם בתוך התקציב.", act:"ירוק = בסדר. אדום = חריגה." },
-    { sel:"[data-catview]", t:"כרטיס קטגוריה", what:"כמה הוצא בקטגוריה, כמה נשאר, והממוצע מהחודשים הקודמים.", why:"כאן רואים איפה הכסף בורח.", act:"לחיצה מראה את כל ההוצאות שלה, גרף, ועריכת היעד." },
+    { sel:"[data-catview]", t:"כרטיס קטגוריה", what:"כמה הוצא בקטגוריה, כמה נשאר, והממוצע מהחודשים הקודמים.", why:"כאן רואים איפה הכסף בורח.", act:"לחיצה מראה את כל ההוצאות שלה וגרף. בכפתור \"עריכה\" משנים שם ויעד, או מסירים קטגוריה שלא שייכת לכם." },
     { sel:"#addEnv", t:"הוספת קטגוריה", what:"קטגוריה חדשה, למשל דלק או מתנות.", why:"כל אחד מוציא על דברים אחרים.", act:"שם ויעד חודשי, וזהו." }
+  ],
+  ob_fixed: [
+    { sel:"#obList .ob-fx", t:"רק מה שאתם באמת משלמים", what:"הזינו סכום ליד כל הוצאה שיורדת מהחשבון כל חודש. השורה מסתמנת לבד.", why:"מה שנשאר בלי סכום לא ייכנס להוצאות הקבועות.", act:"העיפרון משנה את השם, ה־× מוחק את השורה." },
+    { sel:".ob-sug", t:"להוסיף עוד", what:"הוצאות נפוצות כמו ביטוח רכב, ביטוח חיים או ארנונה.", why:"לכל אחד יש הוצאות אחרות.", act:"לחיצה מוסיפה שורה. משהו אחר? כותבים שם ולוחצים \"הוספה\"." }
+  ],
+  ob_cats: [
+    { sel:"#obList .ob-fx", t:"תקציב לכל סוג הוצאה", what:"כמה אתם מוציאים בערך בחודש על כל קטגוריה. מזינים סכום והשורה מסתמנת לבד.", why:"רק קטגוריות עם סכום ייכנסו לאפליקציה.", act:"העיפרון משנה את השם, ה־× מוחק את השורה." },
+    { sel:".ob-sug", t:"להוסיף עוד", what:"קטגוריות נפוצות כמו דלק, חניה או בריאות ותרופות.", why:"כל משפחה מוציאה על דברים אחרים.", act:"לחיצה מוסיפה שורה. משהו אחר? כותבים שם ולוחצים \"הוספה\"." }
   ],
   budget_fixed: [
     { sel:".tsum", t:"סיכום ההוצאות הקבועות", what:"כמה מהתשלומים הקבועים כבר ירדו החודש, מתוך כל המתוכנן.", why:"רואים מה עוד צפוי לרדת מהחשבון.", act:"מתעדכן כשמסמנים תשלום." },
     { sel:"[data-paid], [data-unpaid]", t:"סימון \"שולם\"", what:"העיגול ליד כל תשלום.", why:"ככה האפליקציה יודעת מה כבר ירד בפועל.", act:"תשלום עם יום חיוב מסומן לבד ביום הזה. בלי יום חיוב, לוחצים כשהוא יורד." },
-    { sel:".frow", t:"שורת תשלום", what:"שם, סכום, ויום החיוב בחודש.", why:"מתחת לשם רואים אם כבר ירד, ומתי הוא יורד.", act:"לחיצה על השורה: עריכת סכום, יום חיוב או מחיקה." },
+    { sel:".frow", t:"שורת תשלום", what:"שם, סכום, ויום החיוב בחודש.", why:"מתחת לשם רואים אם כבר ירד, ומתי הוא יורד.", act:"לחיצה על השורה: שינוי שם, סכום, יום חיוב, או מחיקה של תשלום שלא שייך לכם." },
     { sel:"[data-addline]", t:"הוספת תשלום קבוע", what:"שורה חדשה, למשל מנוי או חוג.", why:"כל תשלום קבוע צריך להיות כאן.", act:"הלוואות מוסיפים בדף החיסכון ← חובות, והן נכנסות לכאן לבד." }
   ],
   budget_list: [
@@ -1524,11 +1546,12 @@ function coachKey(){
   if(ui.tab === "settings") return "settings";
   return null;
 }
-function coachSeen(k){ return !!(state.coachSeen && state.coachSeen[k]); }
+function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 49;
+const APP_VERSION = 50;
 const WHATS_NEW = [
+  { v:50, ic:"pen-line", t:"הקמה שמתאימה רק לך", d:"בהקמת התקציב שום הוצאה לא מסומנת מראש. מזינים סכום רק למה שבאמת משלמים, משנים שם, מוחקים, ומוסיפים בלחיצה הצעות כמו ביטוח רכב או דלק. מה שנשאר בלי סכום לא נכנס לאפליקציה." },
   { v:48, ic:"circle-help", t:"הסבר בכל מקום", d:"כפתור ? ליד כל כרטיס באפליקציה, ופס צבעוני ברור בדף הבית: ירוק חיסכון, אדום הוצאות, לבן מה שנשאר." },
   { v:47, ic:"user-round", t:"הפרופיל שלי", d:"שם, מי גר איתך, איך מגיעה ההכנסה ומה הכי חשוב לך. האפליקציה פונה אליך בשם ומתאימה את עצמה. הגדרות ← הפרופיל שלי." },
   { v:45, ic:"piggy-bank", t:"הכנסה שמשתנה", d:"מסמנים \"ההכנסה שלי משתנה\", מתכננים לפי החודש הנמוך, ומה שנכנס מעבר לזה מציע לכם להעביר לחיסכון." },
@@ -1576,7 +1599,7 @@ function startCoach(k){
 }
 function endCoach(){
   if(!coach) return;
-  state.coachSeen = state.coachSeen || {}; state.coachSeen[coach.k] = true; save();
+  const src = state || ob; if(src){ src.coachSeen = src.coachSeen || {}; src.coachSeen[coach.k] = true; } if(state) save();
   coach = null;
   const ov = app.querySelector(".coach"); if(ov) ov.remove();
 }
@@ -1864,18 +1887,21 @@ function applyProfile(){
   let base = DEFAULT_FIXED.slice();
   const i = base.indexOf("שכירות / משכנתא");
   if(p.housing === "rent") base[i] = "שכירות"; else if(p.housing === "mortgage") base[i] = "משכנתא"; else if(p.housing === "none") base.splice(i, 1);
-  if(p.car === "no") base = base.filter(n => n !== "רכב ודלק");
+  if(p.car === "no") base = base.filter(n => n !== "ביטוח רכב");
   if(p.household === "family") base.push("גן, צהרון וחוגים");
   if(p.incomeType === "self") base.push("הפרשה למס וביטוח לאומי");
-  const autoNames = new Set(DEFAULT_FIXED.concat(["שכירות","משכנתא","גן, צהרון וחוגים","הפרשה למס וביטוח לאומי"]));
+  const autoNames = new Set(DEFAULT_FIXED.concat(["רכב ודלק"],["שכירות","משכנתא","גן, צהרון וחוגים","הפרשה למס וביטוח לאומי"]));
   const custom = (ob.fixed || []).filter(f => !autoNames.has(f.name));
   ob.fixed = base.map(n => {
     if(keep[n]) return keep[n];
     if((n === "שכירות" || n === "משכנתא") && keep["שכירות / משכנתא"]) return Object.assign({}, keep["שכירות / משכנתא"], { name:n });
-    return { id:uid(), name:n, on:true, budget:"" };
+    return { id:uid(), name:n, on:false, budget:"" };
   }).concat(custom);
+  const hasFuel = ob.cats.some(c => c.name === "דלק");
+  if(p.car !== "no" && !hasFuel) ob.cats.splice(Math.max(0, ob.cats.length - 1), 0, { id:uid(), name:"דלק", on:false, budget:"", color:COLORS[ob.cats.length % COLORS.length], auto:true });
+  if(p.car === "no" && hasFuel) ob.cats = ob.cats.filter(c => !(c.name === "דלק" && c.auto && !num(c.budget)));
   const hasKidsCat = ob.cats.some(c => c.name === "ילדים");
-  if(p.household === "family" && !hasKidsCat) ob.cats.splice(Math.max(0, ob.cats.length - 1), 0, { id:uid(), name:"ילדים", on:true, budget:"", color:COLORS[ob.cats.length % COLORS.length], auto:true });
+  if(p.household === "family" && !hasKidsCat) ob.cats.splice(Math.max(0, ob.cats.length - 1), 0, { id:uid(), name:"ילדים", on:false, budget:"", color:COLORS[ob.cats.length % COLORS.length], auto:true });
   if(p.household !== "family" && hasKidsCat) ob.cats = ob.cats.filter(c => !(c.name === "ילדים" && c.auto && !num(c.budget)));
   if(p.incomeType === "hourly" || p.incomeType === "self") ob.incomeVar = true;
   if((p.focus === "overdraft" || p.focus === "loans") && ob.hasDebts == null){
@@ -1969,8 +1995,8 @@ function renderProfileStep(){
 function renderOnboarding(){
   if(!ob){
     ob = { step:0, income:"", saving:"",
-      fixed: DEFAULT_FIXED.map(n => ({ id:uid(), name:n, on:true, budget:"" })),
-      cats: DEFAULT_ENVELOPES.map((n,i) => ({ id:uid(), name:n, on:true, budget:"", color:COLORS[i % COLORS.length] })),
+      fixed: DEFAULT_FIXED.map(n => ({ id:uid(), name:n, on:false, budget:"" })),
+      cats: DEFAULT_ENVELOPES.map((n,i) => ({ id:uid(), name:n, on:false, budget:"", color:COLORS[i % COLORS.length] })),
       hasDebts: null, debts: [],
       goals: [{ id:uid(), name:"קרן חירום", on:true, target:"3000", monthly:"500" }] };
   }
@@ -1980,18 +2006,28 @@ function renderOnboarding(){
   if(!ob.debts){ ob.debts = []; ob.hasDebts = null; }
   if(!ob.goals) ob.goals = [{ id:uid(), name:"קרן חירום", on:true, target:"3000", monthly:"500" }];
   const s = ob.step, LAST = 5, STEPS = 6;
-  const listHTML = (key, items, placeholder, label) => `
+  const editListHTML = key => {
+    const items = key === "fixed" ? ob.fixed : ob.cats;
+    const have = new Set(items.map(f => f.name));
+    const sug = (key === "fixed" ? FIXED_SUGGEST : CAT_SUGGEST).filter(n => !have.has(n) && !(ob.noCar && /רכב|דלק|חניה/.test(n)));
+    return `
       <div id="obList">${items.map(c => `
-        <div class="ob-env" data-id="${c.id}">
-          <label><input type="checkbox" ${c.on?"checked":""} data-act="toggle"><span>${esc(c.name)}</span></label>
-          <input class="field" inputmode="decimal" placeholder="₪" value="${esc(c.budget)}" ${c.on?"":"disabled"} data-act="budget" aria-label="${label} ${esc(c.name)}">
+        <div class="ob-env ob-fx" data-id="${c.id}">
+          ${ob.renaming === c.id
+            ? `<input class="field" data-act="name" value="${esc(c.name)}" aria-label="שם ההוצאה">`
+            : `<label><input type="checkbox" ${c.on?"checked":""} data-act="toggle"><span>${esc(c.name)}</span></label>
+          <button type="button" class="ob-ic" data-act="rename" aria-label="שינוי השם ${esc(c.name)}">${svgIcon("pen-line", 17)}</button>`}
+          <input class="field" inputmode="decimal" placeholder="₪" value="${esc(c.budget)}" data-act="budget" aria-label="${key === "fixed" ? "סכום" : "תקציב"} ${esc(c.name)}">
+          <button type="button" class="ob-ic" data-act="del" aria-label="מחיקת ${esc(c.name)}">×</button>
         </div>`).join("")}
       </div>
+      ${sug.length ? `<div class="ob-sug"><span>${key === "fixed" ? "עוד הוצאות נפוצות" : "עוד קטגוריות נפוצות"}, לחיצה מוסיפה:</span><div class="ob-chips">${sug.map(n => `<button type="button" data-sug="${esc(n)}">+ ${esc(n)}</button>`).join("")}</div></div>` : ""}
       <div class="ob-add">
-        <input class="field" id="obNew" placeholder="${placeholder}" aria-label="שם חדש">
+        <input class="field" id="obNew" placeholder="${key === "fixed" ? "שם של הוצאה אחרת" : "שם של קטגוריה אחרת"}" aria-label="שם חדש">
         <button type="button" id="obAddBtn">הוספה</button>
       </div>
       <div class="ob-sum" id="obSum"></div>`;
+  };
   let body = "";
   if(s === 0){
     body = `
@@ -2020,8 +2056,8 @@ function renderOnboarding(){
       <div class="ob-ill">${ill("fixed")}</div>
       <div class="ob-kicker">הוצאות קבועות</div>
       <h1>מה יוצא מהחשבון כל חודש?</h1>
-      <p class="lead">תשלומים שחוזרים כל חודש. סמנו את מה שרלוונטי והזינו סכום משוער. אפשר לדייק אחר כך בדף ההוצאות.</p>
-      ${listHTML("fixed", ob.fixed, "הוצאה קבועה נוספת, למשל ארנונה", "סכום")}`;
+      <p class="lead">תשלומים שחוזרים כל חודש. הזינו סכום רק למה שאתם באמת משלמים, ומחקו את מה שלא שייך לכם. אפשר לדייק אחר כך בדף ההוצאות.</p>
+      ${editListHTML("fixed")}`;
   } else if(s === 3){
     const typeOpts = d => [["loan","הלוואה"],["installments","תשלומים"],["overdraft","מינוס"]].map(([k,l]) => `<option value="${k}" ${d.type === k ? "selected" : ""}>${l}</option>`).join("");
     body = `
@@ -2076,8 +2112,8 @@ function renderOnboarding(){
       <div class="ob-ill">${ill("variable")}</div>
       <div class="ob-kicker">הוצאות משתנות</div>
       <h1>על מה אתם מוציאים במהלך החודש?</h1>
-      <p class="lead">לכל סוג הוצאה משתנה קובעים תקציב חודשי. סמנו את מה שרלוונטי וקבעו סכום.</p>
-      ${listHTML("cats", ob.cats, "קטגוריה נוספת, למשל מתנות", "תקציב")}`;
+      <p class="lead">לכל סוג הוצאה משתנה קובעים תקציב חודשי. הזינו סכום רק למה שאתם באמת מוציאים עליו, ומחקו את מה שלא שייך לכם.</p>
+      ${editListHTML("cats")}`;
   }
   app.innerHTML = `
     <div class="ob">
@@ -2141,16 +2177,37 @@ function renderOnboarding(){
     const onRow = e => {
       const row = e.target.closest(".ob-env"); if(!row) return;
       const c = arr.find(x => x.id === row.dataset.id);
-      if(e.target.dataset.act === "budget") c.budget = e.target.value;
-      if(e.target.dataset.act === "toggle"){ c.on = e.target.checked; row.querySelector("[data-act=budget]").disabled = !c.on; }
+      if(e.target.dataset.act === "budget"){
+        c.budget = e.target.value;
+        { c.on = num(c.budget) > 0; const cb = row.querySelector("[data-act=toggle]"); if(cb) cb.checked = c.on; }
+      }
+      if(e.target.dataset.act === "toggle") c.on = e.target.checked;
+      if(e.target.dataset.act === "name" && e.type === "change"){ const v = e.target.value.trim(); if(v) c.name = v; ob.renaming = null; renderOnboarding(); return; }
       updateObSum();
     };
     wrap.addEventListener("input", onRow);
     wrap.addEventListener("change", onRow);
+    {
+      wrap.addEventListener("click", e => {
+        const b = e.target.closest("[data-act=rename],[data-act=del]"); if(!b) return;
+        const id = b.closest(".ob-env").dataset.id;
+        if(b.dataset.act === "del"){ const i = arr.findIndex(x => x.id === id); if(i >= 0) arr.splice(i, 1); ob.renaming = null; renderOnboarding(); return; }
+        ob.renaming = id; renderOnboarding();
+        const f = app.querySelector("[data-act=name]"); if(f){ f.focus(); f.select(); f.addEventListener("keydown", ev => { if(ev.key === "Enter") f.blur(); }); }
+      });
+      app.querySelectorAll("[data-sug]").forEach(b => b.onclick = () => {
+        const item = { id:uid(), name:b.dataset.sug, on:false, budget:"" };
+        if(s === 4) item.color = COLORS[arr.length % COLORS.length];
+        arr.push(item);
+        renderOnboarding();
+        const fields = app.querySelectorAll("[data-act=budget]"); fields[fields.length-1].focus();
+      });
+      maybeCoach(s === 2 ? "ob_fixed" : "ob_cats");
+    }
     const addNew = () => {
       const f = document.getElementById("obNew"); const name = f.value.trim();
       if(!name) return;
-      const item = { id:uid(), name, on:true, budget:"" };
+      const item = { id:uid(), name, on:false, budget:"" };
       if(s === 4) item.color = COLORS[arr.length % COLORS.length];
       arr.push(item);
       renderOnboarding();
@@ -2225,11 +2282,14 @@ function updateObSum(){
     : `חולקו להוצאות משתנות <b>${money(allocated)}</b>, יותר ב-<b style="color:var(--rose)">${money(-rest)}</b> ממה שנשאר אחרי החיסכון וההוצאות הקבועות.`;
 }
 function finishOnboarding(){
-  const cats = ob.cats.filter(c => c.on).map(c => ({ id:c.id, name:c.name, color:c.color }));
-  const env = {}; ob.cats.filter(c => c.on).forEach(c => env[c.id] = num(c.budget));
+  /* Only categories with a budget go into the app. With none, keep "משתנות נוספות" so expenses have a home. */
+  let used = ob.cats.filter(c => c.on && num(c.budget) > 0);
+  if(!used.length) used = [ob.cats.find(c => c.name === "משתנות נוספות") || { id:uid(), name:"משתנות נוספות", color:COLORS[0], budget:"" }];
+  const cats = used.map(c => ({ id:c.id, name:c.name, color:c.color }));
+  const env = {}; used.forEach(c => env[c.id] = num(c.budget));
   const lines = {
     income:[mkLine(({ self:"הכנסה מהעסק", pension:"קצבה" })[(ob.profile || {}).incomeType] || "משכורת", num(ob.income))],
-    fixed: ob.fixed.filter(f => f.on).map(f => mkLine(f.name, num(f.budget))).concat(DEFAULT_EXTRA.filter(n => !(ob.noCar && /רכב/.test(n))).map(n => mkLine(n, 0))),
+    fixed: ob.fixed.filter(f => f.on && num(f.budget) > 0).map(f => mkLine(f.name, num(f.budget))),
     extra: []
   };
   const ym0 = (() => { const d = new Date(), cd = ob.cycleDay || 1; const t = new Date(d.getFullYear(), d.getMonth() - (d.getDate() < cd ? 1 : 0), 1); return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0"); })();
