@@ -1586,8 +1586,9 @@ function coachKey(){
 function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 52;
+const APP_VERSION = 53;
 const WHATS_NEW = [
+  { v:53, ic:"pen-line", t:"עריכת חוב לפי פרטי ההלוואה", d:"בעריכת הלוואה או עסקה בתשלומים רואים ומשנים את כל הפרטים: סכום, ריבית, מסלול, תאריכים, כמה שולם ויום החיוב. ההחזר והיתרה מתעדכנים לבד." },
   { v:52, ic:"landmark", t:"הלוואות לפי פרטי ההלוואה", d:"מזינים סכום, ריבית, מסלול (או מסלול אחר), חודש התחלה וחודש סיום, וכמה כבר שילמתם, ויום החיוב. ההחזר החודשי והיתרה מחושבים לבד, וההחזר מסומן \"שולם\" ביום החיוב." },
   { v:51, ic:"target", t:"מטרות עם תקופה", d:"לכל מטרה מזינים יעד, חודש התחלה וחודש סיום, וההפרשה החודשית מחושבת לבד. למשל אגרת רכב: 1,440 ₪ ל־12 חודשים = 120 ₪ בחודש." },
   { v:50, ic:"pen-line", t:"הקמה שמתאימה רק לך", d:"בהקמת התקציב שום הוצאה לא מסומנת מראש. מזינים סכום רק למה שבאמת משלמים, משנים שם, מוחקים, ומוסיפים בלחיצה הצעות כמו ביטוח רכב או דלק. מה שנשאר בלי סכום לא נכנס לאפליקציה." },
@@ -2521,7 +2522,7 @@ function loanSumText(d, c){
   const varNote = d.type === "loan" && d.track && d.track !== "ריבית קבועה" ? `<span class="ld-note">${d.track === "other" ? "במסלול הזה" : "ב" + esc(d.track)} הריבית יכולה להשתנות, אז זו הערכה. כדאי להעתיק את ההחזר המדויק מהבנק.</span>` : "";
   return `${head}. ${tail}${varNote}`;
 }
-function loanFieldsHTML(d, nowYM, withDay){
+function loanFieldsHTML(d, nowYM, withDay, paidLabel){
   const y = Number(nowYM.slice(0, 4)), isI = d.type === "installments", c = loanCalc(d, nowYM);
   return `<div class="ld">
     <div class="ld-grid">
@@ -2536,7 +2537,7 @@ function loanFieldsHTML(d, nowYM, withDay){
       ${isI ? "" : `<label><span>סיום</span>${ymPickHTML("end", d, y, y + 35, "סיום")}</label>`}
     </div>
     <div class="ld-grid ld-out">
-      <label><span>כבר שילמתי עד היום</span><input class="field" data-f="paidBefore" inputmode="decimal" placeholder="${c.paidAuto ? "בערך " + c.paidAuto.toLocaleString("he-IL") : "₪"}" value="${esc(d.paidBefore || "")}"></label>
+      <label><span>${paidLabel || "כבר שילמתי עד היום"}</span><input class="field" data-f="paidBefore" inputmode="decimal" placeholder="${c.paidAuto ? "בערך " + c.paidAuto.toLocaleString("he-IL") : "₪"}" value="${esc(d.paidBefore || "")}"></label>
       <label><span>החזר חודשי</span><input class="field" data-f="pay" inputmode="decimal" placeholder="₪" value="${c.pay ? esc(String(d.payManual ? d.pay : c.pay)) : ""}"></label>
     </div>
     ${withDay ? `<label class="ld-day"><span>יום חיוב בחודש</span><select class="field" data-f="day"><option value="">בחרו יום</option>${Array.from({length:31}, (_, i) => `<option value="${i + 1}" ${String(d.day) === String(i + 1) ? "selected" : ""}>${i + 1} בחודש</option>`).join("")}</select></label>` : ""}
@@ -2664,18 +2665,26 @@ function debtsHTML(){
 }
 function openDebtSheet(id){
   const d = id ? debts().find(x => x.id === id) : null;
-  const sel = { type: d ? d.type : "loan" };
-  const tmp = { type:"loan", start:"", end:"" };
+  const sel = { type: d ? d.type : "loan", full: !d || !!d.loan };
+  /* Edit: the form is filled from the loan's details. "Paid so far" = what was paid before the app + every payment marked in it. */
+  const appPaid = d ? Object.keys(state.months).reduce((a, k) => a + ["fixed","extra"].reduce((b, sec) => b + (state.months[k].lines[sec] || []).filter(l => l.debtId === d.id && l.actual > 0).reduce((c, l) => c + l.actual, 0), 0), 0) : 0;
+  const lineDay = d ? (((state.months[curYM()] || { lines:{ fixed:[] } }).lines.fixed.find(l => l.debtId === d.id) || {}).day || d.day || "") : "";
+  const tmp = d && d.loan ? { type:d.type, amount:String(d.loan.amount || ""), rate: d.rate ? String(d.rate) : "", start:d.loan.start || "", end:d.loan.end || "", count: d.type === "installments" ? String(d.loan.months || "") : "",
+      track: LOAN_TRACKS.includes(d.loan.track) ? d.loan.track : d.loan.track ? "other" : "", trackOther: LOAN_TRACKS.includes(d.loan.track) ? "" : (d.loan.track || ""),
+      paidBefore: String(Math.round((d.loan.paidBefore || 0) + appPaid)), pay:String(d.payment || ""), payManual:false }
+    : { type: d ? d.type : "loan", start:"", end:"", rate: d && d.rate ? String(d.rate) : "" };
+  if(d && d.loan){ const c0 = loanCalc(Object.assign({}, tmp), curYM()); if(Math.abs(c0.pay - (d.payment || 0)) > 0.5) tmp.payManual = true; }
   const draw = () => {
-    const t = sel.type, od = t === "overdraft", full = !d && !od;
+    const t = sel.type, od = t === "overdraft", full = !od && sel.full;
     tmp.type = t;
     showSheet(`
       <h3 id="sheetTitle">${d ? "עריכת חוב" : "חוב חדש"}</h3>
       ${d ? "" : `<div class="seg" style="margin:0 0 6px">${Object.keys(DEBT_TYPES).map(k => `<button data-dt="${k}" aria-pressed="${t === k}">${DEBT_TYPES[k].t}</button>`).join("")}</div>`}
       <label class="lbl" for="dName">שם</label>
       <input class="field" id="dName" value="${d ? esc(d.name) : ""}" placeholder="${od ? "מינוס בבנק" : t === "installments" ? "למשל טלפון ב-12 תשלומים" : "למשל הלוואת רכב"}">
-      ${full ? `<div id="dLoan">${loanFieldsHTML(tmp, curYM())}</div>` : ""}
-      ${d && d.loan ? `<p class="hint">${[d.loan.track, d.loan.amount ? "סכום מקורי " + money(d.loan.amount) : "", d.loan.end ? "סיום ב" + ymLabel(d.loan.end) : ""].filter(Boolean).join(" · ")}</p>` : ""}
+      ${full ? `<div id="dLoan">${loanFieldsHTML(tmp, curYM(), false, d ? "שולם עד היום (כולל מה שסומן כאן)" : "")}</div>` : ""}
+      ${d && !od && !full ? `<button type="button" class="ob-adddebt" id="dFull" style="margin-top:12px">${svgIcon("pen-line", 16)} ${t === "installments" ? "מילוי לפי פרטי העסקה" : "מילוי לפי פרטי ההלוואה"}</button>
+        <p class="hint">${t === "installments" ? "העסקה נוספה לפני שהיו פרטים מלאים. אפשר למלא אותם עכשיו (סכום, מספר תשלומים ותשלום ראשון)" : "החוב נוסף לפני שהיו פרטי הלוואה. אפשר למלא אותם עכשיו (סכום, ריבית, מסלול ותאריכים)"}, או לתקן כאן רק יתרה והחזר.</p>` : ""}
       <div class="row2" style="grid-template-columns:1fr 1fr${full ? ";display:none" : ""}">
         <div><label class="lbl" for="dBal">${od ? "יתרת המינוס עכשיו" : "יתרה להחזר"}</label><input class="field" id="dBal" inputmode="decimal" placeholder="₪" value="${d ? Math.round(debtBalance(d)) : ""}"></div>
         ${od ? "" : `<div><label class="lbl" for="dPay">החזר חודשי</label><input class="field" id="dPay" inputmode="decimal" placeholder="₪" value="${d ? d.payment : ""}"></div>`}
@@ -2687,8 +2696,8 @@ function openDebtSheet(id){
         <p class="hint" id="dCalc">ממלאים יתרה${t === "loan" ? ", ריבית" : ""} ומספר חודשים, וההחזר החודשי יחושב לבד.</p>
       </div>`}
       ${od ? "" : `<label class="tgl-row"><input type="checkbox" id="dAuto" ${!d || d.autoPay !== false ? "checked" : ""}><span>לסמן "שולם" אוטומטית ביום החיוב, כך שהיתרה תרד לבד</span></label>`}
-      ${!od && !d ? `<label class="lbl" for="dDay">יום חיוב בחודש (לא חובה)</label><select class="field" id="dDay"><option value="">לא מוגדר</option>${Array.from({length:31}, (_, i) => `<option value="${i+1}">${i+1} בחודש</option>`).join("")}</select>
-        <p class="hint">ההחזר החודשי יתווסף לבד להוצאות הקבועות, ויסומן "שולם" ביום החיוב (או בתחילת החודש אם לא נבחר יום).</p>` : ""}
+      ${!od ? `<label class="lbl" for="dDay">יום חיוב בחודש (לא חובה)</label><select class="field" id="dDay"><option value="">לא מוגדר</option>${Array.from({length:31}, (_, i) => `<option value="${i+1}" ${String(lineDay) === String(i + 1) ? "selected" : ""}>${i+1} בחודש</option>`).join("")}</select>
+        <p class="hint">${d ? "שינוי בהחזר או ביום החיוב חל מהחודש הזה והלאה, על תשלומים שעוד לא סומנו." : "ההחזר החודשי יתווסף לבד להוצאות הקבועות, ויסומן \"שולם\" ביום החיוב (או בתחילת החודש אם לא נבחר יום)."}</p>` : ""}
       ${od ? `<p class="hint">מינוס לא יורד מעצמו. מעדכנים את היתרה פעם בחודש, ורואים אותה יורדת בגרף.</p>` : ""}
       <div class="err" id="sErr" style="margin-top:8px"></div>
       <div class="actions" style="margin-top:8px">
@@ -2696,6 +2705,7 @@ function openDebtSheet(id){
         <button class="btn btn-primary" id="dSave">שמירה</button>
       </div>`);
     document.querySelectorAll("#sheet [data-dt]").forEach(b => b.onclick = () => { sel.type = b.dataset.dt; draw(); });
+    const fb = document.getElementById("dFull"); if(fb) fb.onclick = () => { const nm = document.getElementById("dName").value; sel.full = true; draw(); document.getElementById("dName").value = nm; maybeCoach("debt_sheet"); };
     const lw = document.getElementById("dLoan");
     if(lw){
       const onL = e => {
@@ -2742,7 +2752,10 @@ function openDebtSheet(id){
         const au = document.getElementById("dAuto"); if(au) d.autoPay = au.checked;
         if(od){ d.history = d.history || {}; d.history[curYM()] = bal; }
         else if(Math.abs(bal - B) > 0.5) d.original += (bal - B);
-        Object.keys(state.months).filter(k => k >= curYM()).forEach(k => state.months[k].lines.fixed.forEach(l => { if(l.debtId === d.id && l.actual == null){ l.name = name; l.plan = pay; } }));
+        if(full) d.loan = { amount:lc.A, start:tmp.start, end: t === "installments" ? shiftYM(tmp.start, lc.n - 1) : tmp.end, months:lc.n, track: trackName(tmp), paidBefore: Math.max(0, lc.paid - appPaid) };
+        const dd = document.getElementById("dDay"), day = dd && dd.value ? Number(dd.value) : null;
+        if(!od) d.day = day;
+        Object.keys(state.months).filter(k => k >= curYM()).forEach(k => state.months[k].lines.fixed.forEach(l => { if(l.debtId === d.id && l.actual == null){ l.name = name; l.plan = pay; if(!od) l.day = day; } }));
         d.done = debtBalance(d) <= 0.5;
         save(); closeSheet(); renderApp(); toast("נשמר");
       } else {
