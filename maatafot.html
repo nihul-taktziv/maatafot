@@ -285,6 +285,8 @@ select.field{appearance:none;-webkit-appearance:none}
 .md-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
 .md-grid button{min-height:38px;font-size:14px;border-radius:10px}
 .day-chips button[aria-checked=true],.md-grid button[aria-checked=true]{background:var(--seal);border-color:var(--seal);color:var(--on-seal,#fff)}
+.rem-f-wide{margin-top:4px}
+.rem-f-wide span{font-size:13.5px}
 .rem-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .rem-f{display:flex;flex-direction:column;gap:4px;min-width:0}
 .rem-f span{font-size:13px;color:var(--ink-2)}
@@ -2896,6 +2898,12 @@ function nextWeekly(wd, hm, fromISO){
   while(d <= now) d.setDate(d.getDate() + 7);
   return d;
 }
+function nextMonthlyISO(day){
+  const t = new Date(); t.setHours(0,0,0,0);
+  const d = new Date(t.getFullYear(), t.getMonth(), Math.min(day, daysIn(t.getFullYear() + "-" + pad(t.getMonth()+1))));
+  if(d < t) d.setMonth(d.getMonth() + 1, Math.min(day, new Date(d.getFullYear(), d.getMonth() + 2, 0).getDate()));
+  return isoOf(d);
+}
 function nextMonthly(day, hm, fromISO){
   const [h, m] = parseHM(hm), now = new Date(), f = fromDate(fromISO);
   const d = new Date(f.getFullYear(), f.getMonth(), day, h, m, 0, 0);
@@ -2907,9 +2915,10 @@ function icsEvent(o){
   const dt = d => d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00";
   const stamp = new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
   return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Maatafot//HE","CALSCALE:GREGORIAN","BEGIN:VEVENT",
-    "UID:maatafot-" + o.kind + "-" + uid() + "@local","DTSTAMP:" + stamp,"DTSTART:" + dt(o.first),"DURATION:" + o.dur,
+    "UID:maatafot-" + o.kind + "-" + uid() + "@local","DTSTAMP:" + stamp,
+    ...(o.allDay ? ["DTSTART;VALUE=DATE:" + o.allDay.replace(/-/g, ""), "DURATION:P1D", "TRANSP:TRANSPARENT"] : ["DTSTART:" + dt(o.first), "DURATION:" + o.dur]),
     "RRULE:" + o.rule, "SUMMARY:" + o.title, "DESCRIPTION:" + o.desc,
-    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:" + o.title,"END:VALARM",
+    "BEGIN:VALARM","TRIGGER:" + (o.allDay ? "PT9H" : "PT0M"),"ACTION:DISPLAY","DESCRIPTION:" + o.title,"END:VALARM",
     "END:VEVENT","END:VCALENDAR"].join("\r\n");
 }
 function openIcs(ics, name){
@@ -2925,14 +2934,16 @@ function remWeekPick(){
   return { wd: on ? on.dataset.wd : (state.reminderWeekday || "SU"), hm: (document.getElementById("remWeekTime") || {}).value, from: (document.getElementById("remWeekFrom") || {}).value };
 }
 function remMonthPick(){
-  const on = document.querySelector("[data-md][aria-checked=true]");
-  return { day: on ? Number(on.dataset.md) : (state.reminderDay || cycleDay()), hm: (document.getElementById("remDayTime") || {}).value, from: (document.getElementById("remDayFrom") || {}).value };
+  const el = document.getElementById("remDayDate"), t = todayISO();
+  const iso = el && el.value && el.value >= t ? el.value : nextMonthlyISO(state.reminderDay || cycleDay());
+  return { iso, day: Number(iso.slice(8, 10)) };
 }
+function monthDayLabel(iso){ const d = new Date(iso + "T00:00"); return `יום ${WEEKDAYS[d.getDay()][1]}, ${d.getDate()} ב${MONTHS[d.getMonth()]}${d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""}`; }
 function remPreview(){
   const w = remWeekPick(), m = remMonthPick();
   const wn = document.getElementById("remWeekNext"), mn = document.getElementById("remDayNext");
   if(wn) wn.innerHTML = `${svgIcon("alarm-clock", 16)}<span>התזכורת הראשונה: <b>${whenLabel(nextWeekly(w.wd, w.hm, w.from))}</b>, ואחר כך כל שבוע</span>`;
-  if(mn) mn.innerHTML = `${svgIcon("alarm-clock", 16)}<span>התזכורת הראשונה: <b>${whenLabel(nextMonthly(m.day, m.hm, m.from))}</b>, ואחר כך כל חודש</span>`;
+  if(mn) mn.innerHTML = `${svgIcon("alarm-clock", 16)}<span>הסגירה הראשונה: <b>${monthDayLabel(m.iso)}</b>, ואחר כך ב-${m.day} בכל חודש${m.day > 28 ? " (בחודש קצר יותר: ביום האחרון שלו)" : ""}</span>`;
 }
 function addWeeklyReminder(){
   const w = remWeekPick(), first = nextWeekly(w.wd, w.hm, w.from);
@@ -2941,10 +2952,12 @@ function addWeeklyReminder(){
   openIcs(icsEvent({ kind:"w", first, dur:"PT10M", rule:"FREQ=WEEKLY;BYDAY=" + w.wd, title:"בדיקה שבועית – ניהול פיננסי", desc:"לבדוק כמה נשאר בכל קטגוריה ולרשום הוצאות שנשכחו." }), "budget-weekly.ics");
 }
 function addReminder(){
-  const m = remMonthPick(), first = nextMonthly(m.day, m.hm, m.from);
-  state.reminderDay = m.day; state.reminderMonthTime = m.hm || "20:00"; save();
+  const m = remMonthPick();
+  state.reminderDay = m.day; save();
   const rv = app.querySelector('[data-set="rem"] .set-v'); if(rv && !state.reminderWeekday) rv.textContent = `${m.day} בחודש`;
-  openIcs(icsEvent({ kind:"m", first, dur:"PT15M", rule:"FREQ=MONTHLY;BYMONTHDAY=" + m.day, title:"סגירת חודש – ניהול פיננסי", desc:"להזין הכנסות והוצאות בפועל\\, לסמן כמה הועבר לחיסכון ולשמור גיבוי." }), "budget-reminder.ics");
+  // all-day event on that date, repeating monthly; days 29-31 fall back to the last day of shorter months
+  const rule = m.day > 28 ? "FREQ=MONTHLY;BYMONTHDAY=" + Array.from({length: m.day - 27}, (_, i) => 28 + i).join(",") + ";BYSETPOS=-1" : "FREQ=MONTHLY;BYMONTHDAY=" + m.day;
+  openIcs(icsEvent({ kind:"m", allDay:m.iso, rule, title:"סגירת חודש – ניהול פיננסי", desc:"להזין הכנסות והוצאות בפועל\\, לסמן כמה הועבר לחיסכון ולשמור גיבוי." }), "budget-reminder.ics");
 }
 
 function relDay(iso){
@@ -3505,12 +3518,7 @@ function openSettingsSheet(key){
       </section>
       <section class="rem-card">
         <div class="rem-h"><span class="rem-ic">${svgIcon("calendar-days")}</span><div><b>סגירת חודש</b><small>מעדכנים בפועל, חוסכים ושומרים גיבוי</small></div></div>
-        <div class="lbl">באיזה יום בחודש?</div>
-        <div class="md-grid" role="radiogroup" aria-label="יום בחודש">${Array.from({length:28}, (_, i) => `<button type="button" role="radio" data-md="${i+1}" aria-checked="${i + 1 === md}">${i+1}</button>`).join("")}</div>
-        <div class="rem-row">
-          <label class="rem-f"><span>שעה</span><input type="time" id="remDayTime" value="${esc(state.reminderMonthTime || "20:00")}"></label>
-          <label class="rem-f"><span>החל מתאריך</span><input type="date" id="remDayFrom" min="${today}" value="${today}"></label>
-        </div>
+        <label class="rem-f rem-f-wide"><span>באיזה תאריך? בדרך כלל ביום שנכנסת המשכורת</span><input type="date" id="remDayDate" min="${today}" value="${nextMonthlyISO(cycleDay())}"></label>
         <div class="rem-next" id="remDayNext"></div>
         <button class="btn btn-primary" id="remAdd">הוספה ליומן</button>
       </section>${close}`;
@@ -3543,8 +3551,8 @@ function bindSettingsControls(){
   const rw = document.getElementById("remWeekAdd"); if(rw) rw.onclick = addWeeklyReminder;
   if(rb || rw){
     const pick = sel => document.querySelectorAll(sel).forEach(x => x.onclick = () => { document.querySelectorAll(sel).forEach(y => y.setAttribute("aria-checked", y === x)); remPreview(); });
-    pick("[data-wd]"); pick("[data-md]");
-    ["remWeekTime","remWeekFrom","remDayTime","remDayFrom"].forEach(id => { const el = document.getElementById(id); if(el){ el.oninput = remPreview; el.onchange = () => { const t = todayISO(); if(el.type === "date" && (!el.value || el.value < t)) el.value = t; remPreview(); }; } });
+    pick("[data-wd]");
+    ["remWeekTime","remWeekFrom","remDayDate"].forEach(id => { const el = document.getElementById(id); if(el){ el.oninput = remPreview; el.onchange = () => { const t = todayISO(); if(el.type === "date" && (!el.value || el.value < t)) el.value = t; remPreview(); }; } });
     remPreview();
   }
   const lo = document.getElementById("lockOn"); if(lo) lo.onclick = () => { closeSheet(); setTimeout(enableLockFlow, 0); };
