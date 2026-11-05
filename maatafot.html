@@ -2416,7 +2416,41 @@ function openSummary(ym){
   ui.summary = ym; ui.tab = "home"; renderApp();
   const mn = document.getElementById("main"); if(mn) mn.scrollTop = 0;
 }
+/* Phone back button: each window, screen or tab the user opens adds one step to the browser
+   history, so "back" closes it instead of leaving the app. Only from the home page does back exit. */
+const nav = { stack: [], ignore: 0, fromPop: false, last: null };
+function navPush(k){ try{ history.pushState({ maatafot:k }, ""); nav.stack.push(k); }catch(e){} }
+function navDrop(k){ // a layer closed from inside the app: remove its history step too
+  if(nav.stack.length && nav.stack[nav.stack.length - 1] === k){ nav.stack.pop(); nav.ignore++; try{ history.back(); }catch(e){ nav.ignore--; } }
+}
+function navSync(){
+  const now = { tab: ui.tab, help: !!ui.help, summary: !!ui.summary }, was = nav.last;
+  nav.last = now;
+  if(!was || nav.fromPop) return;
+  if(was.summary && !now.summary) navDrop("summary");
+  if(was.help && !now.help) navDrop("help");
+  if(was.tab !== "home" && now.tab === "home") navDrop("tab");
+  if(was.tab === "home" && now.tab !== "home") navPush("tab");
+  if(!was.help && now.help) navPush("help");
+  if(!was.summary && now.summary) navPush("summary");
+}
+window.addEventListener("popstate", () => {
+  if(nav.ignore > 0){ nav.ignore--; return; }
+  nav.stack.pop();
+  if(!state || !state.onboarded || ui.locked) return;
+  const sheet = document.getElementById("sheet");
+  nav.fromPop = true;
+  try{
+    if(sheet && sheet.classList.contains("open")){ closeSheet(true); return; }
+    if(typeof coach !== "undefined" && coach){ endCoach(); }
+    if(ui.summary){ ui.summary = null; renderApp(); return; }
+    if(ui.help){ ui.help = false; renderApp(); return; }
+    if(ui.tab !== "home"){ ui.tab = "home"; renderApp(); return; }
+  } finally { nav.fromPop = false; }
+});
 function renderApp(){
+  { const sh = document.getElementById("sheet"); if(sh && sh.classList.contains("open") && !nav.fromPop) navDrop("sheet"); }
+  navSync();
   if(coach){ coach = null; }
   closeHelp && app.querySelector && closeHelp();
   applyTheme();
@@ -3793,6 +3827,7 @@ function openSheet(expId, presetCat){
 
 function showSheet(html){
   const sheet = document.getElementById("sheet");
+  if(!sheet.classList.contains("open")) navPush("sheet");
   sheet.classList.remove("set-sheet");
   sheet.innerHTML = '<div class="handle"></div>' + html;
   document.getElementById("backdrop").classList.add("open");
@@ -3881,8 +3916,9 @@ function openSavingSheet(){
   const a = document.getElementById("svAmt"); setTimeout(() => a.focus(), 280);
   document.getElementById("svSave").onclick = () => { m.saving = Math.max(0, num(a.value)); state.template.saving = m.saving; save(); closeSheet(); renderApp(); toast("היעד עודכן"); };
 }
-function closeSheet(){
+function closeSheet(fromPop){
   const s = document.getElementById("sheet"), b = document.getElementById("backdrop");
+  if(s && s.classList.contains("open") && fromPop !== true) navDrop("sheet");
   if(s) s.classList.remove("open"); if(b) b.classList.remove("open");
   if(document.activeElement) document.activeElement.blur();
 }
