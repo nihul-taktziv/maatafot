@@ -1391,8 +1391,8 @@ const COACH = {
   ],
   budget_fixed: [
     { sel:".tsum", t:"סיכום ההוצאות הקבועות", what:"כמה מהתשלומים הקבועים כבר ירדו החודש, מתוך כל המתוכנן.", why:"רואים מה עוד צפוי לרדת מהחשבון.", act:"מתעדכן כשמסמנים תשלום." },
-    { sel:"[data-paid]", t:"סימון \"שולם\"", what:"העיגול ליד כל תשלום.", why:"ככה האפליקציה יודעת מה כבר ירד בפועל.", act:"כשהתשלום יורד מהחשבון, לוחצים. הוא הופך לווי ירוק." },
-    { sel:".frow", t:"שורת תשלום", what:"שם, סכום, ויום החיוב בחודש.", why:"תשלום שעבר את היום שלו ולא סומן, מסומן בכתום.", act:"לחיצה על השורה: עריכת סכום, יום חיוב או מחיקה." },
+    { sel:"[data-paid], [data-unpaid]", t:"סימון \"שולם\"", what:"העיגול ליד כל תשלום.", why:"ככה האפליקציה יודעת מה כבר ירד בפועל.", act:"תשלום עם יום חיוב מסומן לבד ביום הזה. בלי יום חיוב, לוחצים כשהוא יורד." },
+    { sel:".frow", t:"שורת תשלום", what:"שם, סכום, ויום החיוב בחודש.", why:"מתחת לשם רואים אם כבר ירד, ומתי הוא יורד.", act:"לחיצה על השורה: עריכת סכום, יום חיוב או מחיקה." },
     { sel:"[data-addline]", t:"הוספת תשלום קבוע", what:"שורה חדשה, למשל מנוי או חוג.", why:"כל תשלום קבוע צריך להיות כאן.", act:"הלוואות מוסיפים בדף החיסכון ← חובות, והן נכנסות לכאן לבד." }
   ],
   budget_list: [
@@ -1460,8 +1460,9 @@ function coachKey(){
 function coachSeen(k){ return !!(state.coachSeen && state.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 43;
+const APP_VERSION = 44;
 const WHATS_NEW = [
+  { v:44, ic:"circle-check", t:"הוצאות קבועות מסומנות לבד", d:"הוצאה קבועה עם יום חיוב מסומנת \"שולם\" ביום הזה, בלי ללחוץ. בלי יום חיוב מסמנים כמו קודם." },
   { v:43, ic:"sparkles", t:"הודעה על כל עדכון", d:"מעכשיו, אחרי כל עדכון יופיע כאן מה חדש. אפשר לחזור לזה בכל רגע: הגדרות ← מה חדש." },
   { v:42, ic:"alarm-clock", t:"תזכורות ישירות ל-Google Calendar", d:"באנדרואיד הכפתור פותח את Google Calendar עם אירוע מוכן. לוחצים שם \"שמירה\" והתזכורת נכנסת." },
   { v:41, ic:"undo-2", t:"כפתור \"חזור\" של הטלפון", d:"סוגר חלונית או חוזר לדף הקודם, ולא יוצא מהאפליקציה." },
@@ -1566,7 +1567,7 @@ const HELP = {
   spend:  ["לאן הלך הכסף", "כל ההוצאות של החודש, מהגדולה לקטנה. סכום באפור עוד לא שולם, ונספר לפי התכנון."],
   wf:     ["סיכום החודש", "תכנון מול בפועל: הכנסות, פחות חיסכון, פחות הוצאות, שווה מה שנשאר. המספר הגדול זהה לזה שבראש הדף."],
   tsvar:  ["הוצאות משתנות", "כמה הוצאתם החודש בכל הקטגוריות, מתוך מה שתכננתם. לחיצה על קטגוריה מראה את ההוצאות שלה."],
-  tsfix:  ["הוצאות קבועות", "כמה מהתשלומים הקבועים כבר ירדו מהחשבון. כשתשלום יורד, לוחצים על העיגול שלו. לחיצה על שורה פותחת עריכה, כולל יום החיוב בחודש."],
+  tsfix:  ["הוצאות קבועות", "כמה מהתשלומים הקבועים כבר ירדו מהחשבון. תשלום עם יום חיוב מסומן \"שולם\" לבד ביום הזה. תשלום בלי יום חיוב מסמנים בעיגול. לחיצה על שורה פותחת עריכה, כולל יום החיוב."],
   yrsave: ["קופת החיסכון", "מה שנחסך השנה, פחות מה שעבר למטרות. החיסכון מחושב לבד בסוף כל חודש: ההכנסה פחות כל ההוצאות. העברתם בפועל סכום אחר? מעדכנים בלחיצה על החודש."],
   yrgoal: ["נצבר למטרות", "כמה כסף כבר מיועד למטרות. בסוף כל חודש, ההפרשה של כל מטרה נכנסת לבד מהחיסכון של החודש. ההפרשות נכנסות מהחודש שבו נוספה המטרה, והמטרה הראשונה ברשימה מתמלאת קודם."],
   yrdebt: ["סך החובות", "כל ההלוואות, התשלומים והמינוס יחד. כל סימון \"שולם\" בהוצאות הקבועות מוריד את היתרה."],
@@ -2101,19 +2102,28 @@ function loanPayment(bal, ratePct, months){
   const P = r > 0 ? bal * r / (1 - Math.pow(1 + r, -months)) : bal / months;
   return Math.round(P * 100) / 100;
 }
+/* Payments are marked "paid" by themselves: loan payments on their charge day (or the start of the month),
+   and any fixed or periodic expense that has an amount and a charge day, on that day. Lines without a
+   charge day stay manual. A payment the user un-marked by hand is never re-marked. */
 function autoPayDebts(){
-  if(!state.debts || !state.debts.length) return;
   const today = new Date(); today.setHours(0,0,0,0);
-  const cur = curYM(), touched = [];
+  const cur = curYM(), touched = [], debtsList = state.debts || [];
   Object.keys(state.months).filter(ym => ym <= cur).forEach(ym => {
     let hit = false;
-    (state.months[ym].lines.fixed || []).forEach(l => {
-      if(!l.debtId || l.actual != null || l.noAuto) return;
-      const d = state.debts.find(x => x.id === l.debtId);
-      if(!debtAutoOn(d) || d.done || (d.startYM && ym < d.startYM)) return;
-      const due = chargeDate(ym, l.day) || cycleStart(ym);
+    ["fixed","extra"].forEach(k => (state.months[ym].lines[k] || []).forEach(l => {
+      if(l.actual != null || l.noAuto) return;
+      let due;
+      if(l.debtId){
+        if(k !== "fixed") return;
+        const d = debtsList.find(x => x.id === l.debtId);
+        if(!debtAutoOn(d) || d.done || (d.startYM && ym < d.startYM)) return;
+        due = chargeDate(ym, l.day) || cycleStart(ym);
+      } else {
+        if(!l.day || !((l.plan || 0) > 0)) return;
+        due = chargeDate(ym, l.day);
+      }
       if(ym < cur || today >= due){ l.actual = l.plan || 0; l.autoPaid = true; hit = true; }
-    });
+    }));
     if(hit) touched.push(ym);
   });
   if(touched.length){ save(); touched.forEach(ym => syncDebts(ym)); }
@@ -2431,7 +2441,7 @@ function helpHTML(){
     ${sec(svgIcon("pen-line"), "כל יום: רושמים הוצאות", `
       <ol class="hp-ol"><li>לוחצים על <b>+</b> בתחתית המסך.</li><li>מזינים סכום ו"על מה?". שם שכבר הזנתם יוצע לבד, עם הקטגוריה שלו.</li><li>בוחרים קטגוריה ומוודאים שהתאריך הוא יום הקנייה.</li><li>שמירה. טעיתם? כפתור <b>ביטול</b> מופיע לכמה שניות.</li></ol>`, true)}
     ${sec(svgIcon("circle-check"), "כשתשלום קבוע יורד", `
-      <p>בדף <b>הוצאות ← קבועות</b> לוחצים על העיגול ליד התשלום, והוא הופך לווי ירוק. סכום שונה מהתכנון? לוחצים על השורה ומעדכנים. כשהמשכורת נכנסת: בדף הבית ← <b>הכנסות החודש</b> ← "התקבל".</p>`)}
+      <p>תשלום קבוע עם <b>יום חיוב</b> מסומן "שולם" לבד ביום הזה, בלי לעשות כלום. תשלום בלי יום חיוב מסמנים בעיגול בדף <b>הוצאות ← קבועות</b>. סכום שונה מהתכנון, או חיוב שלא ירד? לוחצים על השורה ומעדכנים, או על העיגול כדי לבטל את הסימון. כשהמשכורת נכנסת: בדף הבית ← <b>הכנסות החודש</b> ← "התקבל".</p>`)}
     ${sec(svgIcon("chart-column"), "כל שבוע: בודקים איפה עומדים", `
       <p>בדף <b>הוצאות ← משתנות</b> רואים לכל קטגוריה כמה נשאר. כתום = קרוב לגבול, אדום = חריגה. בלשונית <b>פירוט</b> אפשר לחפש ("כמה הוצאתי על קפה?") ולמיין לפי סכום. בדף הבית, "נשאר להוציא" אומר כמה עוד אפשר להוציא, וכמה זה ליום.</p>`)}
     ${sec(svgIcon("calendar-check"), "סוף החודש: ניתוח והמלצות", `
@@ -2923,12 +2933,16 @@ function lineMeta(k, l, ym){
     const base = k === "income" ? "התקבל" : "שולם";
     if(d > 0 && k !== "income") return { cls:"over", text:`${base}, ${money(d)} יותר מהתכנון` };
     if(d < 0 && k === "income") return { cls:"over", text:`${base}, חסרו ${money(-d)}` };
-    return { cls:"ok", text: base + (cd ? " ב-" + shortDate(cd) : "") };
+    return { cls:"ok", text: (l.autoPaid && k !== "income" ? "שולם אוטומטית" : base) + (cd ? " ב-" + shortDate(cd) : "") };
   }
   if(!(l.plan > 0)) return { cls:"none", text:"ללא סכום" };
-  if(cd && cd < today) return { cls:"warn", text:`היה אמור לרדת ב-${shortDate(cd)}` };
-  if(cd) return { cls:"none", text:`${k === "income" ? "צפוי" : "יורד"} ב-${shortDate(cd)}` };
-  return { cls:"none", text: k === "income" ? "עוד לא התקבל" : "עוד לא שולם" };
+  if(k === "income"){
+    if(cd) return { cls:"none", text:`צפוי ב-${shortDate(cd)}` };
+    return { cls:"none", text:"עוד לא התקבל" };
+  }
+  if(cd && cd <= today) return { cls:"warn", text:`סומן שלא ירד ב-${shortDate(cd)}` };
+  if(cd) return { cls:"none", text:`עוד לא ירד · יורד ב-${shortDate(cd)}` };
+  return { cls:"none", text:"אין יום חיוב · מסמנים ידנית" };
 }
 function lineRowHTML(k, l, paidLabel){
   const meta = lineMeta(k, l, ui.month);
@@ -2949,7 +2963,7 @@ function lineRowHTML(k, l, paidLabel){
 function markUnpaid(key, inSheet){
   const [k, id] = key.split(":"), m = monthData(ui.month), l = m.lines[k].find(x => x.id === id);
   if(!l) return;
-  const before = l.actual, beforeNo = l.noAuto; l.actual = null; if(l.debtId) l.noAuto = true; save();
+  const before = l.actual, beforeNo = l.noAuto; l.actual = null; if(k !== "income") l.noAuto = true; delete l.autoPaid; save();
   const redraw = () => { renderApp(); if(inSheet) openIncomeSheet(); };
   redraw();
   toast(`${l.name}: הסימון בוטל`, () => { l.actual = before; l.noAuto = beforeNo; save(); redraw(); toast("הסימון הוחזר"); });
@@ -2957,7 +2971,7 @@ function markUnpaid(key, inSheet){
 function markPaid(key, inSheet){
   const [k, id] = key.split(":"), m = monthData(ui.month), l = m.lines[k].find(x => x.id === id);
   if(!l) return;
-  l.actual = l.plan || 0; delete l.noAuto; save();
+  l.actual = l.plan || 0; delete l.noAuto; delete l.autoPaid; save();
   const redraw = () => { renderApp(); if(inSheet) openIncomeSheet(); };
   redraw();
   toast(`${l.name}: ${k === "income" ? "התקבל" : "שולם"} ${fmt(l.actual)} ₪`, () => { l.actual = null; save(); redraw(); toast("הסימון בוטל"); });
@@ -3948,7 +3962,7 @@ function openLineSheet(k, id){
     const dSel = document.getElementById("lDay");
     const data = { name, plan:num(document.getElementById("lPlan").value), actual: actRaw === "" ? null : num(actRaw), note:document.getElementById("lNote").value.trim() };
     if(dSel) data.day = dSel.value ? Number(dSel.value) : null;
-    if(l && l.debtId){ if(data.actual == null && l.actual != null) data.noAuto = true; else if(data.actual != null) data.noAuto = false; }
+    if(l && k !== "income"){ if(data.actual == null && l.actual != null) data.noAuto = true; else if(data.actual != null) data.noAuto = false; if(data.actual !== l.actual) data.autoPaid = false; }
     if(l) Object.assign(l, data); else m.lines[k].push(Object.assign({ id:uid() }, data));
     save(); closeSheet(); renderApp(); toast(l ? "השינוי נשמר" : "השורה נוספה");
   };
