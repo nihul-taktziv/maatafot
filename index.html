@@ -281,6 +281,8 @@ select.field{appearance:none;-webkit-appearance:none}
 .wn-list b{display:block;font-size:15.5px}
 .wn-list span:not(.wn-ic){display:block;color:var(--ink-2);font-size:14px;line-height:1.45;margin-top:1px}
 .wn-ic{width:38px;height:38px;border-radius:12px;background:var(--seal-soft);color:var(--seal);display:grid;place-items:center;flex:none}
+.inc-var{margin-top:16px}
+.bonus-ill{width:130px;margin:-4px auto 4px}
 .rem-card{background:var(--paper);border-radius:18px;padding:14px;margin-top:14px}
 .rem-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .rem-h b{display:block;font-size:16px}
@@ -1460,8 +1462,9 @@ function coachKey(){
 function coachSeen(k){ return !!(state.coachSeen && state.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 44;
+const APP_VERSION = 45;
 const WHATS_NEW = [
+  { v:45, ic:"piggy-bank", t:"הכנסה שמשתנה", d:"מסמנים \"ההכנסה שלי משתנה\", מתכננים לפי החודש הנמוך, ומה שנכנס מעבר לזה מציע לכם להעביר לחיסכון." },
   { v:44, ic:"circle-check", t:"הוצאות קבועות מסומנות לבד", d:"הוצאה קבועה עם יום חיוב מסומנת \"שולם\" ביום הזה, בלי ללחוץ. בלי יום חיוב מסמנים כמו קודם." },
   { v:43, ic:"sparkles", t:"הודעה על כל עדכון", d:"מעכשיו, אחרי כל עדכון יופיע כאן מה חדש. אפשר לחזור לזה בכל רגע: הגדרות ← מה חדש." },
   { v:42, ic:"alarm-clock", t:"תזכורות ישירות ל-Google Calendar", d:"באנדרואיד הכפתור פותח את Google Calendar עם אירוע מוכן. לוחצים שם \"שמירה\" והתזכורת נכנסת." },
@@ -1770,10 +1773,11 @@ function renderOnboarding(){
     body = `
       <div class="ob-ill">${ill("income")}</div>
       <div class="ob-kicker">מתחילים: ההכנסה</div>
-      <h1>מה ההכנסה החודשית שלכם?</h1>
-      <p class="lead">הסכום נטו שנכנס לחשבון בחודש רגיל. אפשר לעדכן בכל חודש.</p>
+      <h1>${ob.incomeVar ? "מה ההכנסה הכי נמוכה שלכם בחודש רגיל?" : "מה ההכנסה החודשית שלכם?"}</h1>
+      <p class="lead">${ob.incomeVar ? "הכנסה שמשתנה (למשל שכר לפי שעות)? מתכננים לפי החודש החלש. בחודשים שתקבלו יותר, ההפרש יחכה לכם כבונוס, ותחליטו מה לעשות איתו." : "הסכום נטו שנכנס לחשבון בחודש רגיל. אפשר לעדכן בכל חודש."}</p>
       <div class="amount"><input id="obIn" inputmode="decimal" placeholder="0" value="${esc(ob.income)}" aria-label="הכנסה חודשית"><span>₪</span></div>
       <div class="err" id="obErr"></div>
+      <label class="switch inc-var"><span>ההכנסה שלי משתנה מחודש לחודש<small class="hint" style="display:block;margin:0">למשל שכר לפי שעות, משמרות או עבודה עצמאית</small></span><input type="checkbox" id="obVar" ${ob.incomeVar ? "checked" : ""}></label>
       <label class="lbl" for="obDay" style="margin-top:18px">באיזה יום בחודש נכנסת המשכורת?</label>
       <select class="field" id="obDay">${Array.from({length:28}, (_, i) => `<option value="${i+1}" ${(ob.cycleDay || 1) === i+1 ? "selected" : ""}>${i+1} בחודש</option>`).join("")}</select>
       <p class="hint">החודש באפליקציה יתחיל ביום הזה, כך שהמשכורת וההוצאות שהיא מממנת יהיו באותו חודש.</p>
@@ -1864,6 +1868,8 @@ function renderOnboarding(){
   const od = document.getElementById("obDay"); if(od) od.onchange = () => ob.cycleDay = Number(od.value);
   bindObRestore();
   const obt = document.getElementById("obTour"); if(obt) obt.onclick = () => { intro = { stage:"tour", i:0 }; render(); };
+  const ov = document.getElementById("obVar");
+  if(ov) ov.onchange = () => { ob.incomeVar = ov.checked; renderOnboarding(); const i = document.getElementById("obIn"); if(i) i.focus(); };
   const inp = document.getElementById("obIn");
   if(inp){
     inp.addEventListener("input", () => { if(s===0) ob.income = inp.value; else ob.saving = inp.value; updateObNote(); });
@@ -2011,7 +2017,7 @@ function finishOnboarding(){
   debtsList.filter(d => d.type !== "overdraft").forEach(d => lines.fixed.push(Object.assign(mkLine(d.name, d.payment), { debtId:d.id })));
   const goalsList = ob.goals.filter(g => g.on && g.name.trim() && num(g.target) > 0).map((g, i) => ({ id:uid(), name:g.name.trim(), target:num(g.target), monthly:num(g.monthly), initial:0, date:null, order:i, startYM:ym0 }));
   state = {
-    v:1, onboarded:true, seenVersion:APP_VERSION, hideInstall:false, cats, createdAt:Date.now(), lastBackup:null, theme:"auto", cycleDay: ob.cycleDay || 1,
+    v:1, onboarded:true, seenVersion:APP_VERSION, incomeVariable: !!ob.incomeVar, hideInstall:false, cats, createdAt:Date.now(), lastBackup:null, theme:"auto", cycleDay: ob.cycleDay || 1,
     template:{ income:num(ob.income), saving:num(ob.saving), env, lines },
     months:{}, expenses:[], debts:debtsList, goals:goalsList
   };
@@ -2470,11 +2476,23 @@ function openSummary(ym){
 }
 /* Phone back button: each window, screen or tab the user opens adds one step to the browser
    history, so "back" closes it instead of leaving the app. Only from the home page does back exit. */
-const nav = { stack: [], ignore: 0, fromPop: false, last: null };
-function navPush(k){ try{ history.pushState({ maatafot:k }, ""); nav.stack.push(k); }catch(e){} }
-function navDrop(k){ // a layer closed from inside the app: remove its history step too
-  if(nav.stack.length && nav.stack[nav.stack.length - 1] === k){ nav.stack.pop(); nav.ignore++; try{ history.back(); }catch(e){ nav.ignore--; } }
+const nav = { stack: [], moving: false, fromPop: false, last: null, t: 0 };
+/* The app keeps a list of open layers (nav.stack) and makes the browser history as deep as that list.
+   Changes are applied in one go after the current click, so opening one window right after closing
+   another never moves the history in the wrong direction. */
+function navDepth(){ return (history.state && history.state.maatafotD) || 0; }
+function navSchedule(){ if(!nav.t) nav.t = setTimeout(navReconcile, 0); }
+function navReconcile(){
+  nav.t = 0;
+  if(nav.moving) return;
+  const want = nav.stack.length, have = navDepth();
+  try{
+    if(have > want){ nav.moving = true; history.go(want - have); }
+    else for(let d = have + 1; d <= want; d++) history.pushState({ maatafotD:d }, "");
+  }catch(e){ nav.moving = false; }
 }
+function navPush(k){ nav.stack.push(k); navSchedule(); }
+function navDrop(k){ if(nav.stack.length && nav.stack[nav.stack.length - 1] === k){ nav.stack.pop(); navSchedule(); } }
 function navSync(){
   const now = { tab: ui.tab, help: !!ui.help, summary: !!ui.summary }, was = nav.last;
   nav.last = now;
@@ -2487,8 +2505,10 @@ function navSync(){
   if(!was.summary && now.summary) navPush("summary");
 }
 window.addEventListener("popstate", () => {
-  if(nav.ignore > 0){ nav.ignore--; return; }
-  nav.stack.pop();
+  if(nav.moving){ nav.moving = false; navReconcile(); return; }   // our own correction finished
+  const have = navDepth();
+  if(nav.stack.length <= have){ navReconcile(); return; }
+  while(nav.stack.length > have) nav.stack.pop();                  // the phone's back button: one step back
   if(!state || !state.onboarded || ui.locked) return;
   const sheet = document.getElementById("sheet");
   nav.fromPop = true;
@@ -2498,7 +2518,7 @@ window.addEventListener("popstate", () => {
     if(ui.summary){ ui.summary = null; renderApp(); return; }
     if(ui.help){ ui.help = false; renderApp(); return; }
     if(ui.tab !== "home"){ ui.tab = "home"; renderApp(); return; }
-  } finally { nav.fromPop = false; }
+  } finally { nav.fromPop = false; navReconcile(); }
 });
 function renderApp(){
   { const sh = document.getElementById("sheet"); if(sh && sh.classList.contains("open") && !nav.fromPop) navDrop("sheet"); }
@@ -2971,6 +2991,7 @@ function markUnpaid(key, inSheet){
 function markPaid(key, inSheet){
   const [k, id] = key.split(":"), m = monthData(ui.month), l = m.lines[k].find(x => x.id === id);
   if(!l) return;
+  if(k === "income" && state.incomeVariable){ openIncomeAmountSheet(l, inSheet); return; }
   l.actual = l.plan || 0; delete l.noAuto; delete l.autoPaid; save();
   const redraw = () => { renderApp(); if(inSheet) openIncomeSheet(); };
   redraw();
@@ -3346,6 +3367,40 @@ function openCatSheet(id){
   const ca = document.getElementById("catAdd"); if(ca) ca.onclick = () => openSheet(null, id);
 }
 
+function openIncomeAmountSheet(l, fromIncomeSheet){
+  showSheet(`
+    <h3 id="sheetTitle">כמה נכנס בפועל?</h3>
+    <p class="hint" style="text-align:center;margin:-6px 0 10px">${esc(l.name)} · התכנון: ${money(l.plan || 0)}</p>
+    <div class="amount"><input id="iaAmt" inputmode="decimal" placeholder="0" value="${l.plan || ""}" aria-label="הסכום שנכנס"><span>₪</span></div>
+    <div class="err" id="sErr"></div>
+    <div class="actions"><button class="btn btn-ghost" id="sCancel">ביטול</button><button class="btn btn-primary" id="iaSave">התקבל</button></div>`);
+  const inp = document.getElementById("iaAmt"); inp.select();
+  document.getElementById("iaSave").onclick = () => {
+    const v = num(inp.value);
+    if(!(v > 0)){ document.getElementById("sErr").textContent = "הזינו את הסכום שנכנס"; return; }
+    l.actual = v; save(); renderApp();
+    incomeDiffPrompt(l, ui.month);
+  };
+}
+/* After income is entered: more than planned -> ask where the extra goes; less -> a gentle heads-up. */
+function incomeDiffPrompt(l, ym){
+  const diff = Math.round((l.actual || 0) - (l.plan || 0));
+  if(diff < 0){ toast(`נכנסו ${fmt(-diff)} ₪ פחות מהתכנון. כדאי לבדוק את ההוצאות המשתנות החודש.`); return; }
+  if(diff === 0){ toast(`${l.name}: התקבל`); return; }
+  const m = monthData(ym);
+  showSheet(`
+    <div class="bonus-ill">${ill("saving")}</div>
+    <h3 id="sheetTitle">קיבלת ${money(diff)} יותר מהתכנון 🎉</h3>
+    <p class="hint" style="text-align:center;margin:-6px 0 14px">מה לעשות עם הבונוס? את ההחלטה אפשר לשנות אחר כך ביעד החיסכון של החודש.</p>
+    <button class="btn btn-primary" id="bnSave" style="width:100%">להעביר לחיסכון</button>
+    <button class="btn btn-outline" id="bnKeep" style="width:100%;margin-top:10px">להשאיר להוצאות החודש</button>
+    <button class="btn btn-ghost" id="sCancel" style="width:100%;margin-top:10px">להחליט אחר כך</button>`);
+  document.getElementById("bnSave").onclick = () => {
+    m.saving = (m.saving || 0) + diff; save(); closeSheet(); renderApp();
+    toast(`${fmt(diff)} ₪ נוספו ליעד החיסכון של ${monthNameOf(ym)}`);
+  };
+  document.getElementById("bnKeep").onclick = () => { closeSheet(); toast(`${fmt(diff)} ₪ נוספו למה שנשאר להוציא החודש`); };
+}
 function openIncomeSheet(){
   const m = monthData(ui.month);
   showSheet(`
@@ -3354,8 +3409,9 @@ function openIncomeSheet(){
       ${m.lines.income.map(l => lineRowHTML("income", l, "התקבל")).join("") || `<div class="empty">אין מקורות הכנסה.</div>`}
       <button class="addline" id="incAdd">${PLUS_SM}הוספת מקור הכנסה</button>
     </div>
-    <p class="hint">את הסכום בפועל מזינים כשהכסף נכנס לחשבון.</p>
+    <label class="switch inc-var"><span>ההכנסה שלי משתנה מחודש לחודש<small class="hint" style="display:block;margin:0">מתכננים לפי החודש הנמוך. כשמסמנים "התקבל", מזינים כמה נכנס בפועל.</small></span><input type="checkbox" id="incVar" ${state.incomeVariable ? "checked" : ""}></label>
     <div class="actions"><button class="btn btn-ghost" id="sCancel">סגירה</button></div>`);
+  const iv = document.getElementById("incVar"); if(iv) iv.onchange = () => { state.incomeVariable = iv.checked; save(); toast(iv.checked ? "מעכשיו, בסימון \"התקבל\" תתבקשו להזין כמה נכנס" : "הכנסה קבועה: \"התקבל\" מסמן את הסכום המתוכנן"); };
   document.querySelectorAll('#sheet [data-line]').forEach(b => b.onclick = () => openLineSheet("income", b.dataset.line.split(":")[1]));
   document.querySelectorAll('#sheet [data-paid]').forEach(b => b.onclick = () => markPaid(b.dataset.paid, true));
   document.querySelectorAll('#sheet [data-unpaid]').forEach(b => b.onclick = () => markUnpaid(b.dataset.unpaid, true));
@@ -3963,8 +4019,11 @@ function openLineSheet(k, id){
     const data = { name, plan:num(document.getElementById("lPlan").value), actual: actRaw === "" ? null : num(actRaw), note:document.getElementById("lNote").value.trim() };
     if(dSel) data.day = dSel.value ? Number(dSel.value) : null;
     if(l && k !== "income"){ if(data.actual == null && l.actual != null) data.noAuto = true; else if(data.actual != null) data.noAuto = false; if(data.actual !== l.actual) data.autoPaid = false; }
+    const wasAct = l ? l.actual : null;
     if(l) Object.assign(l, data); else m.lines[k].push(Object.assign({ id:uid() }, data));
-    save(); closeSheet(); renderApp(); toast(l ? "השינוי נשמר" : "השורה נוספה");
+    save(); closeSheet(); renderApp();
+    if(k === "income" && l && data.actual != null && data.actual !== wasAct) incomeDiffPrompt(l, ui.month);
+    else toast(l ? "השינוי נשמר" : "השורה נוספה");
   };
 }
 function openEnvSheet(catId){
