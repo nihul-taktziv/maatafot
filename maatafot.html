@@ -1028,7 +1028,7 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 .ld label,.ld-dates label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--ink-2)}
 .ld .field{min-height:44px;padding:9px 10px;font-size:16px}
 .ld select.field{font-size:15px}
-.ld-track{margin-top:8px}
+.ld-track,.ld-day{margin-top:8px}
 .ld-dates{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
 .ympick{display:grid;grid-template-columns:1.3fr 1fr;gap:6px}
 .ld-out .field[data-f=pay]{font-weight:600}
@@ -1499,7 +1499,8 @@ const COACH = {
   ob_debts: [
     { sel:"#obDebts .ob-debt", t:"כרטיס הלוואה", what:"כל הלוואה או עסקה בתשלומים בכרטיס משלה. בוחרים סוג ושם, וה־× מוחק.", why:"ככה רואים כל חוב לחוד, ומתי הוא נגמר.", act:"את הפרטים מעתיקים מאפליקציית הבנק או מחוזה ההלוואה." },
     { sel:"#obDebts .ld-track, #obDebts .ld-dates", t:"מסלול, ריבית ותאריכים", what:"המסלול (פריים, קבועה, משתנה, צמודה, או מסלול אחר), הריבית השנתית, ומתי ההלוואה התחילה ומתי היא נגמרת.", why:"מאלה מחושב ההחזר החודשי.", act:"בפריים, משתנה וצמודה הריבית זזה, אז החישוב הוא הערכה." },
-    { sel:"#obDebts .ld-out", t:"החזר ויתרה", what:"ההחזר החודשי מחושב לבד. \"כבר שילמתי\" ממולא בהערכה לפי התאריכים.", why:"ככה האפליקציה יודעת כמה באמת נשאר לשלם.", act:"יש מספר מדויק מהבנק? מזינים אותו במקום ההערכה." }
+    { sel:"#obDebts .ld-out", t:"החזר ויתרה", what:"ההחזר החודשי מחושב לבד. \"כבר שילמתי\" ממולא בהערכה לפי התאריכים.", why:"ככה האפליקציה יודעת כמה באמת נשאר לשלם.", act:"יש מספר מדויק מהבנק? מזינים אותו במקום ההערכה." },
+    { sel:"#obDebts .ld-day", t:"יום חיוב", what:"באיזה יום בחודש ההחזר יורד מהחשבון.", why:"ביום הזה ההחזר מסומן \"שולם\" לבד בהוצאות הקבועות, והיתרה יורדת.", act:"בלי יום חיוב, ההחזר מסומן בתחילת החודש." }
   ],
   ob_goals: [
     { sel:"#obGoals .ob-goal", t:"מטרת חיסכון", what:"קופה שכסף נכנס אליה כל חודש: קרן חירום, או הוצאה שיודעים שתגיע, כמו אגרת רכב.", why:"כשההוצאה מגיעה, הכסף כבר מחכה ולא יוצא מהחודש השוטף.", act:"העיפרון משנה את השם, ה־× מוחק את המטרה." },
@@ -1585,7 +1586,7 @@ function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen &&
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
 const APP_VERSION = 52;
 const WHATS_NEW = [
-  { v:52, ic:"landmark", t:"הלוואות לפי פרטי ההלוואה", d:"מזינים סכום, ריבית, מסלול (או מסלול אחר), חודש התחלה וחודש סיום, וכמה כבר שילמתם. ההחזר החודשי והיתרה מחושבים לבד." },
+  { v:52, ic:"landmark", t:"הלוואות לפי פרטי ההלוואה", d:"מזינים סכום, ריבית, מסלול (או מסלול אחר), חודש התחלה וחודש סיום, וכמה כבר שילמתם, ויום החיוב. ההחזר החודשי והיתרה מחושבים לבד, וההחזר מסומן \"שולם\" ביום החיוב." },
   { v:51, ic:"target", t:"מטרות עם תקופה", d:"לכל מטרה מזינים יעד, חודש התחלה וחודש סיום, וההפרשה החודשית מחושבת לבד. למשל אגרת רכב: 1,440 ₪ ל־12 חודשים = 120 ₪ בחודש." },
   { v:50, ic:"pen-line", t:"הקמה שמתאימה רק לך", d:"בהקמת התקציב שום הוצאה לא מסומנת מראש. מזינים סכום רק למה שבאמת משלמים, משנים שם, מוחקים, ומוסיפים בלחיצה הצעות כמו ביטוח רכב או דלק. מה שנשאר בלי סכום לא נכנס לאפליקציה." },
   { v:48, ic:"circle-help", t:"הסבר בכל מקום", d:"כפתור ? ליד כל כרטיס באפליקציה, ופס צבעוני ברור בדף הבית: ירוק חיסכון, אדום הוצאות, לבן מה שנשאר." },
@@ -2125,7 +2126,7 @@ function renderOnboarding(){
           ${d.type === "overdraft" ? `<div class="ob-debt-nums">
             <label><span>יתרת המינוס</span><input class="field" data-f="bal" inputmode="decimal" placeholder="₪" value="${esc(d.bal)}"></label>
             <label class="ob-od-note"><span>&nbsp;</span>מעדכנים פעם בחודש</label>
-          </div>` : loanFieldsHTML(d, obStartYM())}
+          </div>` : loanFieldsHTML(d, obStartYM(), true)}
         </div>`).join("")}
       </div>
       <button type="button" class="ob-adddebt" id="obAddDebt">${PLUS_SM}הוספת חוב</button>
@@ -2208,7 +2209,7 @@ function renderOnboarding(){
       const onD = e => {
         const row = e.target.closest(".ob-debt"); if(!row) return;
         const d = ob.debts.find(x => x.id === row.dataset.id), f = e.target.dataset.f; if(!f) return;
-        if(f === "type" || f === "name" || f === "bal"){ d[f] = e.target.value; if(f === "type" && e.type === "change"){ renderOnboarding(); return; } updateObSum(); return; }
+        if(f === "type" || f === "name" || f === "bal" || f === "day"){ d[f] = e.target.value; if(f === "type" && e.type === "change"){ renderOnboarding(); return; } updateObSum(); return; }
         if(e.type === "change" && !e.target.dataset.part && f !== "track") return;
         const c = loanFormInput(row, d, e, obStartYM()); if(!c) return;
         d.bal = c.bal ? String(c.bal) : ""; d.payCalc = c.pay;
@@ -2395,10 +2396,10 @@ function finishOnboarding(){
   const debtsList = (ob.hasDebts ? ob.debts : []).filter(d => d.type === "overdraft" ? num(d.bal) > 0 : loanCalc(d, ym0).bal > 0).map(d => {
     const od = d.type === "overdraft", c = od ? null : loanCalc(d, ym0), bal = od ? num(d.bal) : c.bal;
     const name = d.name.trim() || (od ? "מינוס בבנק" : d.type === "installments" ? "תשלומים" : "הלוואה");
-    return Object.assign({ id:uid(), type:d.type, name, original:bal, payment: od ? 0 : c.pay, rate: od ? 0 : c.rate, startYM:ym0, paid:{}, history: od ? { [ym0]: bal } : {}, done:false },
+    return Object.assign({ id:uid(), type:d.type, name, day: od ? null : (Number(d.day) || null), original:bal, payment: od ? 0 : c.pay, rate: od ? 0 : c.rate, startYM:ym0, paid:{}, history: od ? { [ym0]: bal } : {}, done:false },
       od ? {} : { loan:{ amount:c.A, start:d.start, end: d.type === "installments" ? shiftYM(d.start, c.n - 1) : d.end, months:c.n, track: trackName(d), paidBefore:c.paid } });
   });
-  debtsList.filter(d => d.type !== "overdraft").forEach(d => lines.fixed.push(Object.assign(mkLine(d.name, d.payment), { debtId:d.id })));
+  debtsList.filter(d => d.type !== "overdraft").forEach(d => lines.fixed.push(Object.assign(mkLine(d.name, d.payment), { debtId:d.id, day: d.day || null })));
   const goalsList = ob.goals.filter(g => g.on && g.name.trim() && num(g.target) > 0).map((g, i) => ({ id:uid(), name:g.name.trim(), target:num(g.target), monthly:num(g.monthly), initial:0, date:g.end || null, order:i, startYM: g.start && g.start > ym0 ? g.start : ym0 }));
   state = {
     v:1, onboarded:true, seenVersion:APP_VERSION, incomeVariable: !!ob.incomeVar, profile: ob.profile && ob.profile.first ? Object.assign({}, ob.profile) : null, hideInstall:false, cats, createdAt:Date.now(), lastBackup:null, theme:"auto", cycleDay: ob.cycleDay || 1,
@@ -2518,7 +2519,7 @@ function loanSumText(d, c){
   const varNote = d.type === "loan" && d.track && d.track !== "ריבית קבועה" ? `<span class="ld-note">${d.track === "other" ? "במסלול הזה" : "ב" + esc(d.track)} הריבית יכולה להשתנות, אז זו הערכה. כדאי להעתיק את ההחזר המדויק מהבנק.</span>` : "";
   return `${head}. ${tail}${varNote}`;
 }
-function loanFieldsHTML(d, nowYM){
+function loanFieldsHTML(d, nowYM, withDay){
   const y = Number(nowYM.slice(0, 4)), isI = d.type === "installments", c = loanCalc(d, nowYM);
   return `<div class="ld">
     <div class="ld-grid">
@@ -2536,6 +2537,7 @@ function loanFieldsHTML(d, nowYM){
       <label><span>כבר שילמתי עד היום</span><input class="field" data-f="paidBefore" inputmode="decimal" placeholder="${c.paidAuto ? "בערך " + c.paidAuto.toLocaleString("he-IL") : "₪"}" value="${esc(d.paidBefore || "")}"></label>
       <label><span>החזר חודשי</span><input class="field" data-f="pay" inputmode="decimal" placeholder="₪" value="${c.pay ? esc(String(d.payManual ? d.pay : c.pay)) : ""}"></label>
     </div>
+    ${withDay ? `<label class="ld-day"><span>יום חיוב בחודש</span><select class="field" data-f="day"><option value="">בחרו יום</option>${Array.from({length:31}, (_, i) => `<option value="${i + 1}" ${String(d.day) === String(i + 1) ? "selected" : ""}>${i + 1} בחודש</option>`).join("")}</select></label>` : ""}
     <p class="ld-sum">${loanSumText(d, c)}</p>
   </div>`;
 }
