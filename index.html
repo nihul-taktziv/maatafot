@@ -298,6 +298,10 @@ select.field{appearance:none;-webkit-appearance:none}
 .rem-next .lic{color:var(--seal);flex:none;margin-top:2px}
 .rem-next b{color:var(--seal)}
 .set-sheet .rem-card .btn{margin-top:12px}
+.rem-alt{display:block;width:100%;margin-top:8px;background:none;border:0;color:var(--seal);font:600 14px var(--font);padding:8px;text-decoration:underline;text-underline-offset:3px}
+.rem-done{display:flex;gap:8px;align-items:flex-start;margin-top:10px;background:var(--ok-soft,#E3F4EC);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.5}
+.rem-done .lic{color:var(--ok);flex:none;margin-top:2px}
+.rem-done[hidden]{display:none}
 .set-reset-btn{background:var(--rose-soft);color:var(--rose)}
 .last-bk{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;padding:10px 12px;border-radius:12px;background:var(--seal-soft);color:var(--seal)}
 .last-bk.warn{background:var(--amber-soft);color:var(--amber)}
@@ -2963,8 +2967,30 @@ function openIcs(ics, name){
   a.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
   if(isIOS()) a.target = "_blank"; else a.download = name;
   document.body.appendChild(a); a.click(); a.remove();
-  toast("נפתח אירוע להוספה ליומן");
 }
+/* Google Calendar "new event" page with the same event, opens the Google Calendar app on Android. */
+function gcalUrl(o){
+  const dt = d => d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00";
+  let dates;
+  if(o.allDay){ const d = new Date(o.allDay + "T00:00"), e = new Date(d); e.setDate(e.getDate() + 1); dates = isoOf(d).replace(/-/g, "") + "/" + isoOf(e).replace(/-/g, ""); }
+  else { const e = new Date(o.first.getTime() + o.mins * 60000); dates = dt(o.first) + "/" + dt(e); }
+  let tz = ""; try{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; }catch(e){}
+  const q = new URLSearchParams({ action:"TEMPLATE", text:o.title, details:o.desc.replace(/\\,/g, ","), dates, recur:"RRULE:" + o.rule });
+  if(tz) q.set("ctz", tz);
+  return "https://calendar.google.com/calendar/render?" + q.toString();
+}
+function openUrl(url){
+  ui.noLockUntil = Date.now() + 120000;
+  const a = document.createElement("a"); a.href = url; a.target = "_blank"; a.rel = "noopener";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+const REM_DONE = {
+  google: "נפתח Google Calendar עם האירוע. <b>חובה ללחוץ שם \"שמירה\"</b>, אחרת התזכורת לא נכנסת. ההתראה מגיעה לפי הגדרות ההתראות של היומן (בדרך כלל 30 דקות לפני). רוצים בדיוק בזמן? באירוע ← התראה ← \"בזמן האירוע\".",
+  ics: "קובץ היומן ירד לטלפון. פותחים אותו מההורדות (או מההתראה על ההורדה), בוחרים את אפליקציית היומן, ולוחצים \"שמירה\". ביומן של Google באנדרואיד אין אפשרות לפתוח קובץ כזה, לכן שם משתמשים בכפתור Google Calendar.",
+  ios: "בחלון שנפתח לוחצים <b>\"הוסף ללוח השנה\"</b> ואז \"סיום\". ההתראה תגיע בזמן שבחרתם."
+};
+function remVia(primary){ const ios = isIOS(); return primary ? (ios ? "ios" : "google") : (ios ? "google" : "ics"); }
+function remDone(id, via){ const el = document.getElementById(id); if(el){ el.innerHTML = `${svgIcon("circle-check", 16)}<span>${REM_DONE[via]}</span>`; el.hidden = false; } }
 function remWeekPick(){
   const on = document.querySelector("[data-wd][aria-checked=true]");
   return { wd: on ? on.dataset.wd : (state.reminderWeekday || "SU"), hm: (document.getElementById("remWeekTime") || {}).value, from: (document.getElementById("remWeekFrom") || {}).value };
@@ -2981,19 +3007,25 @@ function remPreview(){
   if(wn) wn.innerHTML = `${svgIcon("alarm-clock", 16)}<span>התזכורת הראשונה: <b>${whenLabel(nextWeekly(w.wd, w.hm, w.from))}</b>, ואחר כך כל שבוע</span>`;
   if(mn) mn.innerHTML = `${svgIcon("alarm-clock", 16)}<span>הסגירה הראשונה: <b>${monthDayLabel(m.iso)}</b>, ואחר כך ב-${m.day} בכל חודש${m.day > 28 ? " (בחודש קצר יותר: ביום האחרון שלו)" : ""}</span>`;
 }
-function addWeeklyReminder(){
+function addWeeklyReminder(via){
+  via = typeof via === "string" ? via : remVia(true);
   const w = remWeekPick(), first = nextWeekly(w.wd, w.hm, w.from);
   state.reminderWeekday = w.wd; state.reminderWeekTime = w.hm || "20:00"; save();
   const rv = app.querySelector('[data-set="rem"] .set-v'); if(rv) rv.textContent = `יום ${WEEKDAYS.find(x => x[0] === w.wd)[1]} ${state.reminderWeekTime}`;
-  openIcs(icsEvent({ kind:"w", first, dur:"PT10M", rule:"FREQ=WEEKLY;BYDAY=" + w.wd, title:"בדיקה שבועית – ניהול פיננסי", desc:"לבדוק כמה נשאר בכל קטגוריה ולרשום הוצאות שנשכחו." }), "budget-weekly.ics");
+  const ev = { kind:"w", first, mins:10, dur:"PT10M", rule:"FREQ=WEEKLY;BYDAY=" + w.wd, title:"בדיקה שבועית – ניהול פיננסי", desc:"לבדוק כמה נשאר בכל קטגוריה ולרשום הוצאות שנשכחו." };
+  if(via === "google") openUrl(gcalUrl(ev)); else openIcs(icsEvent(ev), "budget-weekly.ics");
+  remDone("remWeekDone", via);
 }
-function addReminder(){
+function addReminder(via){
+  via = typeof via === "string" ? via : remVia(true);
   const m = remMonthPick();
   state.reminderDay = m.day; save();
   const rv = app.querySelector('[data-set="rem"] .set-v'); if(rv && !state.reminderWeekday) rv.textContent = `${m.day} בחודש`;
   // all-day event on that date, repeating monthly; days 29-31 fall back to the last day of shorter months
   const rule = m.day > 28 ? "FREQ=MONTHLY;BYMONTHDAY=" + Array.from({length: m.day - 27}, (_, i) => 28 + i).join(",") + ";BYSETPOS=-1" : "FREQ=MONTHLY;BYMONTHDAY=" + m.day;
-  openIcs(icsEvent({ kind:"m", allDay:m.iso, rule, title:"סגירת חודש – ניהול פיננסי", desc:"להזין הכנסות והוצאות בפועל\\, לסמן כמה הועבר לחיסכון ולשמור גיבוי." }), "budget-reminder.ics");
+  const ev = { kind:"m", allDay:m.iso, rule, title:"סגירת חודש – ניהול פיננסי", desc:"להזין הכנסות והוצאות בפועל\\, לסמן כמה הועבר לחיסכון ולשמור גיבוי." };
+  if(via === "google") openUrl(gcalUrl(ev)); else openIcs(icsEvent(ev), "budget-reminder.ics");
+  remDone("remDayDone", via);
 }
 
 function relDay(iso){
@@ -3540,7 +3572,7 @@ function openSettingsSheet(key){
       const wd = state.reminderWeekday || "SU", md = state.reminderDay || cycleDay(), today = todayISO();
       return `
       <h3 id="sheetTitle">תזכורות ביומן</h3>
-      <p>האפליקציה לא שולחת התראות, כי אין לה שרת. במקום זה מוסיפים ליומן של הטלפון אירוע חוזר, בדיוק ביום ובשעה שנוחים לכם.</p>
+      <p>האפליקציה לא שולחת התראות, כי אין לה שרת. במקום זה מוסיפים ליומן של הטלפון אירוע חוזר, והיומן הוא ששולח את ההתראה.</p>
       <section class="rem-card">
         <div class="rem-h"><span class="rem-ic">${svgIcon("calendar-check")}</span><div><b>בדיקה שבועית</b><small>10 דקות לראות איפה עומדים</small></div></div>
         <div class="lbl">באיזה יום?</div>
@@ -3550,13 +3582,17 @@ function openSettingsSheet(key){
           <label class="rem-f"><span>החל מתאריך</span><input type="date" id="remWeekFrom" min="${today}" value="${today}"></label>
         </div>
         <div class="rem-next" id="remWeekNext"></div>
-        <button class="btn btn-primary" id="remWeekAdd">הוספה ליומן</button>
+        <button class="btn btn-primary" id="remWeekAdd">${isIOS() ? "הוספה ליומן של האייפון" : "הוספה ל-Google Calendar"}</button>
+        <button class="rem-alt" id="remWeekAlt">${isIOS() ? "משתמשים ב-Google Calendar? לחצו כאן" : "יומן אחר (Samsung, Outlook): הורדת קובץ"}</button>
+        <div class="rem-done" id="remWeekDone" hidden></div>
       </section>
       <section class="rem-card">
         <div class="rem-h"><span class="rem-ic">${svgIcon("calendar-days")}</span><div><b>סגירת חודש</b><small>מעדכנים בפועל, חוסכים ושומרים גיבוי</small></div></div>
         <label class="rem-f rem-f-wide"><span>באיזה תאריך? בדרך כלל ביום שנכנסת המשכורת</span><input type="date" id="remDayDate" min="${today}" value="${nextMonthlyISO(cycleDay())}"></label>
         <div class="rem-next" id="remDayNext"></div>
-        <button class="btn btn-primary" id="remAdd">הוספה ליומן</button>
+        <button class="btn btn-primary" id="remAdd">${isIOS() ? "הוספה ליומן של האייפון" : "הוספה ל-Google Calendar"}</button>
+        <button class="rem-alt" id="remDayAlt">${isIOS() ? "משתמשים ב-Google Calendar? לחצו כאן" : "יומן אחר (Samsung, Outlook): הורדת קובץ"}</button>
+        <div class="rem-done" id="remDayDone" hidden></div>
       </section>${close}`;
     },
     install: () => BUILD === "file" ? `
@@ -3583,8 +3619,10 @@ function openSettingsSheet(key){
   bindSettingsControls();
 }
 function bindSettingsControls(){
-  const rb = document.getElementById("remAdd"); if(rb) rb.onclick = addReminder;
-  const rw = document.getElementById("remWeekAdd"); if(rw) rw.onclick = addWeeklyReminder;
+  const rb = document.getElementById("remAdd"); if(rb) rb.onclick = () => addReminder(remVia(true));
+  const rw = document.getElementById("remWeekAdd"); if(rw) rw.onclick = () => addWeeklyReminder(remVia(true));
+  const ra = document.getElementById("remDayAlt"); if(ra) ra.onclick = () => addReminder(remVia(false));
+  const rwa = document.getElementById("remWeekAlt"); if(rwa) rwa.onclick = () => addWeeklyReminder(remVia(false));
   if(rb || rw){
     const pick = sel => document.querySelectorAll(sel).forEach(x => x.onclick = () => { document.querySelectorAll(sel).forEach(y => y.setAttribute("aria-checked", y === x)); remPreview(); });
     pick("[data-wd]");
