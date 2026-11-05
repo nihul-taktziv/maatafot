@@ -1253,6 +1253,8 @@ function defaultLines(income){
 }
 function migrate(){
   if(!state || !state.onboarded) return;
+  /* v57: months before the start that were opened by hand (they have a plan) count in savings. */
+  if(!state.migOpened){ Object.keys(state.months || {}).forEach(k => { const m = state.months[k]; if(k < startYM() && m && m.lines && (m.lines.income || []).some(l => (l.plan || 0) > 0)) m.opened = true; }); state.migOpened = true; }
   (state.cats || []).forEach(c => { const i = PREV_COLORS.indexOf((c.color || "").toUpperCase()); if(i >= 0) c.color = COLORS[i]; });
   if(!state.template.lines){ state.template.lines = defaultLines(state.template.income || 0); }
   if(!state.createdAt) state.createdAt = Date.now();
@@ -1291,12 +1293,14 @@ function sourceKeyFor(ym){
 }
 function monthHasData(m){
   if(!m) return false;
+  if(m.opened) return true;
   if(m.savedActual != null) return true;
   if(m._ym && state.expenses.some(e => cycleOf(e.date) === m._ym)) return true;
   return ["income","fixed","extra"].some(k => (m.lines[k] || []).some(l => l.actual != null));
 }
 function openMonth(ym, empty){
   const m = monthData(ym);
+  m.opened = true;   // opened by hand: counted in savings even if it is before the start month
   if(empty){
     ["income","fixed","extra"].forEach(k => m.lines[k].forEach(l => l.plan = 0));
     Object.keys(m.env).forEach(id => m.env[id] = 0);
@@ -1334,8 +1338,10 @@ function calc(ym){
   r.expensesEff = r.fixedEff + r.extraEff + variable;
   const ended = ym < curYM() || !!m.closed;
   const goal = m.saving || 0, saved = m.savedActual;
-  const hasAny = exps.length > 0 || ["income","fixed","extra"].some(k => m.lines[k].some(l => l.actual != null));
+  const hasAny = !!m.opened || exps.length > 0 || ["income","fixed","extra"].some(k => m.lines[k].some(l => l.actual != null));
   r.autoSaved = hasAny && isTracked(ym) ? Math.max(0, r.incomeEff - r.expensesEff) : null;
+  /* A month from before the start, opened by hand: expenses were not recorded day by day, so count the saving target, not everything left over. */
+  if(r.autoSaved != null && m.opened && ym < startYM()) r.autoSaved = Math.min(r.autoSaved, goal);
   r.savedManual = saved != null; r.monthEnded = ended;
   r.savedActual = saved != null ? saved : (ended ? r.autoSaved : null);
   r.savingEff = saved != null ? (ended ? saved : Math.max(goal, saved)) : (ended && r.autoSaved != null ? r.autoSaved : goal);
@@ -1606,8 +1612,9 @@ function coachKey(){
 function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 56;
+const APP_VERSION = 57;
 const WHATS_NEW = [
+  { v:57, ic:"piggy-bank", t:"סך הכול בחיסכון", d:"בחיסכון ← חודשי המספר הגדול כולל עכשיו גם את מה שהיה בחיסכון לפני שהתחלתם. חודש קודם שפתחתם ידנית נספר בחיסכון לפי היעד שלו." },
   { v:56, ic:"calendar-check", t:"יום חיוב לכל הוצאה קבועה", d:"בהקמה בוחרים יום חיוב לכל הוצאה קבועה. בדף ההוצאות כתוב מתחת לשם \"עדיין לא חויב\" או \"חויב אוטומטית\", והתשלום מסומן לבד ביום החיוב. בלי יום? לוחצים על השורה ובוחרים." },
   { v:55, ic:"piggy-bank", t:"יעד החיסכון והמטרות מחוברים", d:"כשמוסיפים, משנים או מוחקים מטרה, האפליקציה מציעה לעדכן את יעד החיסכון החודשי. בחיסכון ← חודשי יש כפתור \"שינוי יעד החיסכון\", ושם גם מתקנים כמה היה בחיסכון לפני." },
   { v:54, ic:"piggy-bank", t:"חיסכון עם מטרה", d:"בהקמה מזינים בשביל מה חוסכים, סכום יעד, תאריך התחלה וסיום, וכמה כבר יש בצד. הסכום לחסוך בחודש מחושב לבד, וכל מטרה נוספת מתווספת אליו." },
@@ -2477,7 +2484,7 @@ function finishOnboarding(){
   const goalsList = mainGoal.concat(ob.goals.filter(g => g.on && g.name.trim() && num(g.target) > 0).map(g => ({ name:g.name.trim(), target:num(g.target), monthly:num(g.monthly), initial:0, end:g.end, start:g.start })))
     .map((g, i) => Object.assign({ id:uid(), name:g.name, target:g.target, monthly:g.monthly, initial:g.initial, date:g.end || null, order:i, startYM: g.start && g.start > ym0 ? g.start : ym0 }, g.main ? { main:true } : {}));
   state = {
-    v:1, onboarded:true, seenVersion:APP_VERSION, incomeVariable: !!ob.incomeVar, profile: ob.profile && ob.profile.first ? Object.assign({}, ob.profile) : null, hideInstall:false, cats, createdAt:Date.now(), lastBackup:null, theme:"auto", cycleDay: ob.cycleDay || 1,
+    v:1, onboarded:true, cleanedBrowse:true, migOpened:true, seenVersion:APP_VERSION, incomeVariable: !!ob.incomeVar, profile: ob.profile && ob.profile.first ? Object.assign({}, ob.profile) : null, hideInstall:false, cats, createdAt:Date.now(), lastBackup:null, theme:"auto", cycleDay: ob.cycleDay || 1,
     template:{ income:num(ob.income), saving:obSavingTotal(), env, lines }, savedBefore: Math.max(0, num(mg.initial)),
     months:{}, expenses:[], debts:debtsList, goals:goalsList
   };
@@ -3406,11 +3413,17 @@ function homeHTML(){
       <span class="go">לגיבוי</span>
     </button>` : "";
   const incomeNote = r.incomeAct > 0 ? "לפי מה שנכנס בפועל" : "לפי התכנון";
+  const preStart = ym < curYM() && !isTracked(ym) ? `
+    <button class="nudge" id="preStart">
+      <span><b>${monthNameOf(ym)} לפני שהתחלתם</b>החיסכון של החודש הזה לא נספר לבד. חסכתם בו? לחצו והזינו כמה.</span>
+      <span class="go">להוסיף</span>
+    </button>` : "";
   return `
     ${greetHTML()}
     ${install}
     ${nudge}
     ${bkNudge}
+    ${preStart}
     <section class="hero2 ${avail < 0 ? "over" : ""}" aria-label="מצב החודש">
       <div class="h2-top">
         <span class="h2-label">${avail < 0 ? "חריגה ב" + monthNameOf(ym) : isCurrent ? "נשאר להוציא עד " + shortDate(cycleEnd(ym)) : "נשאר ב" + monthNameOf(ym)}${qh("hero", true)}<small>${cycleDay() > 1 ? "חודש תקציבי " + rangeLabel(ym) : ""}</small></span>
@@ -4022,7 +4035,7 @@ function startYM(){ return state.createdAt ? cycleOf(isoOf(new Date(state.create
 function isTracked(ym){
   if(ym >= startYM()) return true;
   const m = state.months[ym];
-  return !!(m && (m.savedActual != null || (m.lines && m.lines.income.some(l => l.actual != null))));
+  return !!(m && (m.opened || m.savedActual != null || (m.lines && m.lines.income.some(l => l.actual != null))));
 }
 function savedValue(ym){
   const m = state.months[ym]; if(!m) return null;
@@ -4114,6 +4127,8 @@ function savingHTML(){
     msg = parts.join(" ");
   }
   const ratio = annual > 0 ? Math.min(1, savedTotal / annual) : 0;
+  const before = state.savedBefore || 0;
+  const allSaved = Object.keys(state.months).reduce((a, k) => { const v = savedValue(k); return a + (v != null ? v : 0); }, 0);
   const GP = goalProgress();
   const yearAlloc = yms.reduce((a, ym) => a + (GP.alloc[ym] || []).reduce((b,x) => b + x.amt, 0), 0);
 
@@ -4129,11 +4144,16 @@ function savingHTML(){
         <span class="op">=</span>
         <span>נשאר בחיסכון<b>${money(Math.max(0, savedTotal - yearAlloc))}</b></span>
       </div>
-      <div class="yr-of" style="margin-top:10px">${annual > 0 ? `יעד החיסכון השנתי: ${money(savedTotal)} מתוך ${money(annual)}` : "אין יעד שנתי"}</div>` : `
+      <div class="yr-of" style="margin-top:10px">${annual > 0 ? `יעד החיסכון השנתי: ${money(savedTotal)} מתוך ${money(annual)}` : "אין יעד שנתי"}</div>
+      ${before > 0 ? `<div class="yr-of">היה בחיסכון לפני שהתחלתם: ${money(before)}</div>` : ""}` : `
+      ${before > 0 ? `
+      <div class="yr-label">סך הכול בחיסכון${qh("yrsave", true)}</div>
+      <div class="yr-num">${money(before + allSaved)}</div>
+      <div class="yr-of">היה לפני שהתחלתם ${money(before)}${allSaved > 0 ? ` + נחסכו מאז ${money(allSaved)}` : ""}</div>
+      <div class="yr-of">נחסכו ב-${y}: ${money(savedTotal)}${annual > 0 ? ` מתוך יעד שנתי של ${money(annual)}` : ""}</div>` : `
       <div class="yr-label">נחסכו ב-${y}${qh("yrsave", true)}</div>
       <div class="yr-num">${money(savedTotal)}</div>
-      <div class="yr-of">${annual > 0 ? `מתוך יעד שנתי של ${money(annual)}` : "אין יעד שנתי"}</div>`}
-      ${state.savedBefore > 0 ? `<div class="yr-of">היה בחיסכון לפני שהתחלתם: ${money(state.savedBefore)}</div>` : ""}
+      <div class="yr-of">${annual > 0 ? `מתוך יעד שנתי של ${money(annual)}` : "אין יעד שנתי"}</div>`}`}
       <div class="bar" aria-hidden="true"><i style="width:${ratio*100}%"></i></div>
       <div class="seals">
         ${rows.map(r => `<button class="sl ${r.st.key}${r.ym === cur ? " now" : ""}" data-sv="${r.ym}" aria-label="${MONTHS[r.i]}: ${r.st.text.replace(/<[^>]+>/g,"")}">
@@ -4164,7 +4184,7 @@ function openSaveSheet(ym){
   const mName = MONTHS[Number(ym.slice(5))-1];
   showSheet(`
     <h3 id="sheetTitle">חיסכון ב${mName} ${ym.slice(0,4)}</h3>
-    <p class="hint" style="text-align:center;margin:-6px 0 10px">בדרך כלל החיסכון מחושב לבד. מעדכנים כאן רק אם בפועל העברתם סכום אחר.</p>
+    <p class="hint" style="text-align:center;margin:-6px 0 10px">${ym < cur && !isTracked(ym) ? "החודש הזה לפני שהתחלתם להשתמש באפליקציה, ולכן הוא לא נספר לבד. הזינו כמה חסכתם בו, והוא ייכנס לחיסכון של השנה." : "בדרך כלל החיסכון מחושב לבד. מעדכנים כאן רק אם בפועל העברתם סכום אחר."}</p>
     ${quickHTML(ym, "data-qfill")}
     <div class="amount"><input id="svAct" inputmode="decimal" placeholder="0" value="${m.savedActual != null ? m.savedActual : ""}" aria-label="סכום שהועבר לחיסכון"><span>₪</span></div>
     <div class="err" id="sErr"></div>
@@ -4483,6 +4503,7 @@ function bindApp(){
   app.querySelectorAll("[data-debt]").forEach(b => b.onclick = () => { const d = debts().find(x => x.id === b.dataset.debt); if(d.type === "overdraft" && !d.done) openOverdraftSheet(d); else openDebtSheet(d.id); });
   app.querySelectorAll("#addGoal").forEach(b => b.onclick = () => openGoalSheet());
   const stb = document.getElementById("saveTarget"); if(stb) stb.onclick = openSavingTargetSheet;
+  const pst = document.getElementById("preStart"); if(pst) pst.onclick = () => openSaveSheet(ui.month);
   const ge = document.getElementById("goalEmergency"); if(ge) ge.onclick = () => openGoalSheet(null, { name:"קרן חירום", target:3000, monthly:500, hint:"המדריך ממליץ להתחיל בסכום קטן, למשל 3,000 ₪, ולהגדיל בהמשך." });
   app.querySelectorAll("[data-goal]").forEach(b => b.onclick = () => openGoalSheet(b.dataset.goal));
   const yp = document.getElementById("yPrev"), yn = document.getElementById("yNext");
