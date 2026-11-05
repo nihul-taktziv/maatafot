@@ -274,6 +274,26 @@ select.field{appearance:none;-webkit-appearance:none}
 .set-sheet .btn{width:100%;margin-top:12px;font-size:16px;min-height:50px}
 .set-sheet .btn-ghost#sCancel{margin-top:10px}
 .set-sheet .last-bk{margin-top:12px}
+.rem-card{background:var(--paper);border-radius:18px;padding:14px;margin-top:14px}
+.rem-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rem-h b{display:block;font-size:16px}
+.rem-h small{display:block;color:var(--ink-2);font-size:13px}
+.rem-ic{width:38px;height:38px;border-radius:12px;background:var(--seal-soft);color:var(--seal);display:grid;place-items:center;flex:none}
+.rem-card .lbl{margin-top:4px}
+.day-chips{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
+.day-chips button,.md-grid button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:12px;min-height:42px;font:600 15px var(--font);padding:0;transition:background .15s,border-color .15s}
+.md-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px}
+.md-grid button{min-height:38px;font-size:14px;border-radius:10px}
+.day-chips button[aria-checked=true],.md-grid button[aria-checked=true]{background:var(--seal);border-color:var(--seal);color:var(--on-seal,#fff)}
+.rem-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.rem-f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.rem-f span{font-size:13px;color:var(--ink-2)}
+.rem-f input{width:100%;min-width:0;min-height:46px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:600 16px var(--font);padding:0 10px;text-align:center;-webkit-appearance:none;appearance:none}
+.rem-f input:focus{outline:none;border-color:var(--seal);box-shadow:0 0 0 3px var(--seal-soft)}
+.rem-next{display:flex;align-items:flex-start;gap:8px;margin-top:12px;background:var(--seal-soft);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.45}
+.rem-next .lic{color:var(--seal);flex:none;margin-top:2px}
+.rem-next b{color:var(--seal)}
+.set-sheet .rem-card .btn{margin-top:12px}
 .set-reset-btn{background:var(--rose-soft);color:var(--rose)}
 .last-bk{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:14px;padding:10px 12px;border-radius:12px;background:var(--seal-soft);color:var(--seal)}
 .last-bk.warn{background:var(--amber-soft);color:var(--amber)}
@@ -2385,7 +2405,8 @@ function helpHTML(){
       </dl>`)}
     ${sec(svgIcon("life-buoy"), "גיבוי ונעילה", `
       <p>הנתונים נשמרים רק בטלפון. פעם בחודש: <b>הגדרות ← שמירת גיבוי</b>. בהגדרות אפשר גם להפעיל נעילה בקוד, ולהוסיף ליומן תזכורת שבועית וחודשית.</p>`)}
-    ${(() => { const base = BUILD === "pwa" ? "" : "https://nihul-taktziv.github.io/maatafot/"; const a = (href, ic, t, sub, first) => `<a class="an-btn" href="${base}${href}" target="_blank" rel="noopener" style="margin-top:${first ? 14 : 8}px;text-decoration:none"><span class="an-ic">${ic}</span><span class="an-t"><b>${t}</b><small>${sub}</small></span>${ICONS.next}</a>`; return a("guide.pdf", svgIcon("book-open"), "המדריך המלא", "איך בונים תקציב מאפס, ב-8 שלבים (PDF)", true) + a("budget-planning.xlsx", svgIcon("file-spreadsheet"), "קובץ האקסל", "מחשב את התקציב לפני שמזינים לאתר", false) + a("madrich-excel.pdf", svgIcon("book-marked"), "מדריך לקובץ האקסל", "מה ממלאים בכל גיליון ואיך קוראים את התוצאות (PDF)", false); })()}
+    ${(() => { const base = BUILD === "pwa" ? "" : "https://nihul-taktziv.github.io/maatafot/"; const a = (href, ic, t, sub, first) => `<a class="an-btn" href="${base}${href}?v=${DOCS_V}" target="_blank" rel="noopener" style="margin-top:${first ? 14 : 8}px;text-decoration:none"><span class="an-ic">${ic}</span><span class="an-t"><b>${t}</b><small>${sub}</small></span>${ICONS.next}</a>`; return a("guide.pdf", svgIcon("book-open"), "המדריך המלא", "איך בונים תקציב מאפס, ב-8 שלבים (PDF)", true) + a("budget-planning.xlsx", svgIcon("file-spreadsheet"), "קובץ האקסל", "מחשב את התקציב לפני שמזינים לאתר", false) + a("madrich-excel.pdf", svgIcon("book-marked"), "מדריך לקובץ האקסל", "מה ממלאים בכל גיליון ואיך קוראים את התוצאות (PDF)", false)
+      + a("madrich-hatkana.pdf", svgIcon("smartphone"), "מדריך ההתקנה", "התקנה בטלפון ובמחשב, גיבוי ונעילה (PDF)", false); })()}
     <button class="btn btn-primary sm-done" id="hpDone">סגירה</button>`;
 }
 function openSummary(ym){
@@ -2862,35 +2883,33 @@ function markPaid(key, inSheet){
   redraw();
   toast(`${l.name}: ${k === "income" ? "התקבל" : "שולם"} ${fmt(l.actual)} ₪`, () => { l.actual = null; save(); redraw(); toast("הסימון בוטל"); });
 }
-function icsFor(day){
-  const now = new Date();
-  let y = now.getFullYear(), mo = now.getMonth();
-  if(now.getDate() >= day) mo++;
-  const d = new Date(y, mo, day);
-  const dt = d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "T200000";
-  const stamp = new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
-  const L = [
-    "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Maatafot//HE","CALSCALE:GREGORIAN","BEGIN:VEVENT",
-    "UID:maatafot-" + uid() + "@local","DTSTAMP:" + stamp,"DTSTART:" + dt,"DURATION:PT15M",
-    "RRULE:FREQ=MONTHLY;BYMONTHDAY=" + day,
-    "SUMMARY:סגירת חודש – ניהול פיננסי",
-    "DESCRIPTION:להזין הכנסות והוצאות בפועל\\, לסמן כמה הועבר לחיסכון ולשמור גיבוי.",
-    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:סגירת חודש – ניהול פיננסי","END:VALARM",
-    "END:VEVENT","END:VCALENDAR"];
-  return L.join("\r\n");
-}
+/* Bump when a guide or the workbook changes, so phones fetch the new file instead of a cached one. */
+const DOCS_V = "20261105";
 const WEEKDAYS = [["SU","ראשון"],["MO","שני"],["TU","שלישי"],["WE","רביעי"],["TH","חמישי"],["FR","שישי"],["SA","שבת"]];
-function icsWeekly(wd){
-  const now = new Date(), idx = WEEKDAYS.findIndex(x => x[0] === wd);
-  const d = new Date(now); d.setDate(now.getDate() + ((idx - now.getDay() + 7) % 7 || 7));
-  const dt = d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "T200000";
+const WD_SHORT = ["א׳","ב׳","ג׳","ד׳","ה׳","ו׳","ש׳"];
+function parseHM(v){ const m = /^(\d{1,2}):(\d{2})$/.exec(v || ""); return m ? [Math.min(23, +m[1]), Math.min(59, +m[2])] : [20, 0]; }
+function fromDate(iso){ const t = new Date(); t.setHours(0,0,0,0); const d = iso ? new Date(iso + "T00:00") : t; return isNaN(d) || d < t ? t : d; }
+/* First time the reminder rings: on or after the start date, and never in the past. */
+function nextWeekly(wd, hm, fromISO){
+  const idx = WEEKDAYS.findIndex(x => x[0] === wd), [h, m] = parseHM(hm), now = new Date();
+  const d = fromDate(fromISO); d.setDate(d.getDate() + ((idx - d.getDay() + 7) % 7)); d.setHours(h, m, 0, 0);
+  while(d <= now) d.setDate(d.getDate() + 7);
+  return d;
+}
+function nextMonthly(day, hm, fromISO){
+  const [h, m] = parseHM(hm), now = new Date(), f = fromDate(fromISO);
+  const d = new Date(f.getFullYear(), f.getMonth(), day, h, m, 0, 0);
+  while(d < f || d <= now) d.setMonth(d.getMonth() + 1, day);
+  return d;
+}
+function whenLabel(d){ return `יום ${WEEKDAYS[d.getDay()][1]}, ${d.getDate()} ב${MONTHS[d.getMonth()]}${d.getFullYear() !== new Date().getFullYear() ? " " + d.getFullYear() : ""}, בשעה ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function icsEvent(o){
+  const dt = d => d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00";
   const stamp = new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
   return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Maatafot//HE","CALSCALE:GREGORIAN","BEGIN:VEVENT",
-    "UID:maatafot-w-" + uid() + "@local","DTSTAMP:" + stamp,"DTSTART:" + dt,"DURATION:PT10M",
-    "RRULE:FREQ=WEEKLY;BYDAY=" + wd,
-    "SUMMARY:בדיקה שבועית – ניהול פיננסי",
-    "DESCRIPTION:לבדוק כמה נשאר בכל קטגוריה ולרשום הוצאות שנשכחו.",
-    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:בדיקה שבועית – ניהול פיננסי","END:VALARM",
+    "UID:maatafot-" + o.kind + "-" + uid() + "@local","DTSTAMP:" + stamp,"DTSTART:" + dt(o.first),"DURATION:" + o.dur,
+    "RRULE:" + o.rule, "SUMMARY:" + o.title, "DESCRIPTION:" + o.desc,
+    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY","DESCRIPTION:" + o.title,"END:VALARM",
     "END:VEVENT","END:VCALENDAR"].join("\r\n");
 }
 function openIcs(ics, name){
@@ -2901,22 +2920,31 @@ function openIcs(ics, name){
   document.body.appendChild(a); a.click(); a.remove();
   toast("נפתח אירוע להוספה ליומן");
 }
+function remWeekPick(){
+  const on = document.querySelector("[data-wd][aria-checked=true]");
+  return { wd: on ? on.dataset.wd : (state.reminderWeekday || "SU"), hm: (document.getElementById("remWeekTime") || {}).value, from: (document.getElementById("remWeekFrom") || {}).value };
+}
+function remMonthPick(){
+  const on = document.querySelector("[data-md][aria-checked=true]");
+  return { day: on ? Number(on.dataset.md) : (state.reminderDay || cycleDay()), hm: (document.getElementById("remDayTime") || {}).value, from: (document.getElementById("remDayFrom") || {}).value };
+}
+function remPreview(){
+  const w = remWeekPick(), m = remMonthPick();
+  const wn = document.getElementById("remWeekNext"), mn = document.getElementById("remDayNext");
+  if(wn) wn.innerHTML = `${svgIcon("alarm-clock", 16)}<span>התזכורת הראשונה: <b>${whenLabel(nextWeekly(w.wd, w.hm, w.from))}</b>, ואחר כך כל שבוע</span>`;
+  if(mn) mn.innerHTML = `${svgIcon("alarm-clock", 16)}<span>התזכורת הראשונה: <b>${whenLabel(nextMonthly(m.day, m.hm, m.from))}</b>, ואחר כך כל חודש</span>`;
+}
 function addWeeklyReminder(){
-  const sel = document.getElementById("remWeek"), wd = sel ? sel.value : "SU";
-  state.reminderWeekday = wd; save();
-  openIcs(icsWeekly(wd), "budget-weekly.ics");
+  const w = remWeekPick(), first = nextWeekly(w.wd, w.hm, w.from);
+  state.reminderWeekday = w.wd; state.reminderWeekTime = w.hm || "20:00"; save();
+  const rv = app.querySelector('[data-set="rem"] .set-v'); if(rv) rv.textContent = `יום ${WEEKDAYS.find(x => x[0] === w.wd)[1]} ${state.reminderWeekTime}`;
+  openIcs(icsEvent({ kind:"w", first, dur:"PT10M", rule:"FREQ=WEEKLY;BYDAY=" + w.wd, title:"בדיקה שבועית – ניהול פיננסי", desc:"לבדוק כמה נשאר בכל קטגוריה ולרשום הוצאות שנשכחו." }), "budget-weekly.ics");
 }
 function addReminder(){
-  ui.noLockUntil = Date.now() + 120000;
-  const sel = document.getElementById("remDay");
-  const day = Math.min(28, Math.max(1, Number(sel ? sel.value : 1)));
-  state.reminderDay = day; save();
-  const ics = icsFor(day);
-  const a = document.createElement("a");
-  a.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
-  if(isIOS()) a.target = "_blank"; else a.download = "budget-reminder.ics";
-  document.body.appendChild(a); a.click(); a.remove();
-  toast("נפתח אירוע להוספה ליומן");
+  const m = remMonthPick(), first = nextMonthly(m.day, m.hm, m.from);
+  state.reminderDay = m.day; state.reminderMonthTime = m.hm || "20:00"; save();
+  const rv = app.querySelector('[data-set="rem"] .set-v'); if(rv && !state.reminderWeekday) rv.textContent = `${m.day} בחודש`;
+  openIcs(icsEvent({ kind:"m", first, dur:"PT15M", rule:"FREQ=MONTHLY;BYMONTHDAY=" + m.day, title:"סגירת חודש – ניהול פיננסי", desc:"להזין הכנסות והוצאות בפועל\\, לסמן כמה הועבר לחיסכון ולשמור גיבוי." }), "budget-reminder.ics");
 }
 
 function relDay(iso){
@@ -3389,7 +3417,7 @@ function settingsHTML(){
   const bkDays = never ? null : daysSince(state.lastBackup);
   const bkVal = never ? "עוד לא נשמר" : bkDays === 0 ? "היום" : bkDays === 1 ? "אתמול" : `לפני ${bkDays} ימים`;
   const wd = WEEKDAYS.find(([k]) => k === state.reminderWeekday);
-  const remVal = wd ? `יום ${wd[1]}` : state.reminderDay ? `${state.reminderDay} בחודש` : "לא הוגדרו";
+  const remVal = wd ? `יום ${wd[1]} ${state.reminderWeekTime || "20:00"}` : state.reminderDay ? `${state.reminderDay} בחודש` : "לא הוגדרו";
   const standalone = isStandalone();
   const row = (key, ic, t, v, extra) => `<button class="set-row" data-set="${key}"${extra || ""}><span class="set-ic">${ic}</span><span class="set-t">${t}</span>${v ? `<span class="set-v${v.warn ? " warn" : ""}">${v.t}</span>` : ""}${ICONS.next}</button>`;
   return `
@@ -3459,15 +3487,34 @@ function openSettingsSheet(key){
       <label class="lbl" for="cycleSel">המשכורת נכנסת ב:</label>
       <select class="field" id="cycleSel">${Array.from({length:28}, (_, i) => `<option value="${i+1}" ${cycleDay() === i+1 ? "selected" : ""}>${i+1} בחודש${i === 0 ? " (חודש קלנדרי רגיל)" : ""}</option>`).join("")}</select>
       <p class="hint">החודש הנוכחי: ${monthNameOf(curYM())}, ${rangeLabel(curYM())}.</p>${close}`,
-    rem: () => `
+    rem: () => {
+      const wd = state.reminderWeekday || "SU", md = state.reminderDay || cycleDay(), today = todayISO();
+      return `
       <h3 id="sheetTitle">תזכורות ביומן</h3>
-      <p>האפליקציה לא שולחת התראות, כי אין לה שרת. במקום זה מוסיפים ליומן של הטלפון אירועים חוזרים.</p>
-      <label class="lbl" for="remWeek">בדיקה שבועית: באיזה יום?</label>
-      <select class="field" id="remWeek">${WEEKDAYS.map(([k,l]) => `<option value="${k}" ${(state.reminderWeekday || "SU") === k ? "selected" : ""}>יום ${l}, בשעה 20:00</option>`).join("")}</select>
-      <button class="btn btn-outline" id="remWeekAdd">הוספת תזכורת שבועית</button>
-      <label class="lbl" for="remDay" style="margin-top:16px">סגירת חודש: באיזה יום בחודש?</label>
-      <select class="field" id="remDay">${Array.from({length:28}, (_, i) => `<option value="${i+1}" ${(state.reminderDay || cycleDay()) === i+1 ? "selected" : ""}>${i+1} בחודש, בשעה 20:00</option>`).join("")}</select>
-      <button class="btn btn-outline" id="remAdd">הוספת תזכורת חודשית</button>${close}`,
+      <p>האפליקציה לא שולחת התראות, כי אין לה שרת. במקום זה מוסיפים ליומן של הטלפון אירוע חוזר, בדיוק ביום ובשעה שנוחים לכם.</p>
+      <section class="rem-card">
+        <div class="rem-h"><span class="rem-ic">${svgIcon("calendar-check")}</span><div><b>בדיקה שבועית</b><small>10 דקות לראות איפה עומדים</small></div></div>
+        <div class="lbl">באיזה יום?</div>
+        <div class="day-chips" role="radiogroup" aria-label="יום בשבוע">${WEEKDAYS.map(([k,l], i) => `<button type="button" role="radio" data-wd="${k}" aria-checked="${k === wd}" aria-label="יום ${l}">${WD_SHORT[i]}</button>`).join("")}</div>
+        <div class="rem-row">
+          <label class="rem-f"><span>שעה</span><input type="time" id="remWeekTime" value="${esc(state.reminderWeekTime || "20:00")}"></label>
+          <label class="rem-f"><span>החל מתאריך</span><input type="date" id="remWeekFrom" min="${today}" value="${today}"></label>
+        </div>
+        <div class="rem-next" id="remWeekNext"></div>
+        <button class="btn btn-primary" id="remWeekAdd">הוספה ליומן</button>
+      </section>
+      <section class="rem-card">
+        <div class="rem-h"><span class="rem-ic">${svgIcon("calendar-days")}</span><div><b>סגירת חודש</b><small>מעדכנים בפועל, חוסכים ושומרים גיבוי</small></div></div>
+        <div class="lbl">באיזה יום בחודש?</div>
+        <div class="md-grid" role="radiogroup" aria-label="יום בחודש">${Array.from({length:28}, (_, i) => `<button type="button" role="radio" data-md="${i+1}" aria-checked="${i + 1 === md}">${i+1}</button>`).join("")}</div>
+        <div class="rem-row">
+          <label class="rem-f"><span>שעה</span><input type="time" id="remDayTime" value="${esc(state.reminderMonthTime || "20:00")}"></label>
+          <label class="rem-f"><span>החל מתאריך</span><input type="date" id="remDayFrom" min="${today}" value="${today}"></label>
+        </div>
+        <div class="rem-next" id="remDayNext"></div>
+        <button class="btn btn-primary" id="remAdd">הוספה ליומן</button>
+      </section>${close}`;
+    },
     install: () => BUILD === "file" ? `
       <h3 id="sheetTitle">גרסת מחשב</h3>
       <p>הנתונים נשמרים בדפדפן שבו נפתח הקובץ. כדאי לפתוח אותו תמיד באותו דפדפן ומאותה תיקייה, ולשמור גיבוי פעם בחודש. כדי לעבור לאייפון, שומרים גיבוי כאן ומשחזרים אותו באפליקציה.</p>${close}` : `
@@ -3494,6 +3541,12 @@ function openSettingsSheet(key){
 function bindSettingsControls(){
   const rb = document.getElementById("remAdd"); if(rb) rb.onclick = addReminder;
   const rw = document.getElementById("remWeekAdd"); if(rw) rw.onclick = addWeeklyReminder;
+  if(rb || rw){
+    const pick = sel => document.querySelectorAll(sel).forEach(x => x.onclick = () => { document.querySelectorAll(sel).forEach(y => y.setAttribute("aria-checked", y === x)); remPreview(); });
+    pick("[data-wd]"); pick("[data-md]");
+    ["remWeekTime","remWeekFrom","remDayTime","remDayFrom"].forEach(id => { const el = document.getElementById(id); if(el){ el.oninput = remPreview; el.onchange = () => { const t = todayISO(); if(el.type === "date" && (!el.value || el.value < t)) el.value = t; remPreview(); }; } });
+    remPreview();
+  }
   const lo = document.getElementById("lockOn"); if(lo) lo.onclick = () => { closeSheet(); setTimeout(enableLockFlow, 0); };
   const la = document.getElementById("lockAfter"); if(la) la.onchange = () => { state.lock.after = Number(la.value); save(); toast("נשמר"); };
   const lc = document.getElementById("lockChange"); if(lc) lc.onclick = () => { closeSheet(); verifyThen("שינוי קוד", () => startPinSetup(true)); };
