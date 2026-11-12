@@ -915,6 +915,14 @@ main.anim .sp-donut{animation:donutIn .7s cubic-bezier(.2,.8,.2,1) both}
 .tgl-row{display:flex;gap:10px;align-items:flex-start;margin:12px 2px 0;font-size:14.5px;line-height:1.45;cursor:pointer}
 .tgl-row input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--seal)}
 .wl-copy{font-size:12.5px;opacity:.72;margin-top:10px;position:relative;z-index:1}
+.gt-form{width:100%;max-width:400px;margin:28px 0 0;text-align:right;position:relative;z-index:1}
+.gt-form label{display:block;font-weight:700;font-size:15px;margin-bottom:6px}
+.gt-in{width:100%;min-height:54px;border:0;border-radius:14px;padding:0 16px;font:700 19px ui-monospace,monospace;letter-spacing:1px;text-align:left;direction:ltr;background:#fff;color:#1C1F33}
+.gt-in:focus-visible{outline:3px solid #FCE8AC;outline-offset:2px}
+.gt-err{margin:8px 0 0;font-weight:700;font-size:15px;color:#fff;background:rgba(150,20,20,.55);border-radius:10px;padding:6px 10px}
+.gt-err:empty{display:none}
+.gt-trial{margin:16px 0 0;font-size:13.5px;background:rgba(0,0,0,.22);border-radius:12px;padding:8px 12px;position:relative;z-index:1;max-width:400px}
+.wl a.wl-link{display:inline-block}
 .wl-link{border:0;background:none;color:#fff;opacity:.88;font-size:15px;margin-top:12px;padding:8px;position:relative;z-index:1;text-decoration:underline;text-underline-offset:3px}
 /* ---------- tour ---------- */
 .tr{height:100%;display:flex;flex-direction:column;padding:max(18px, calc(env(safe-area-inset-top,0px) + 10px)) 22px max(22px, env(safe-area-inset-bottom,0px));background:var(--paper);overflow-y:auto}
@@ -1092,6 +1100,14 @@ const SECTIONS = {
 const BUILD = window.__BUILD || "pwa";
 const app = document.getElementById("app");
 let state = load();
+/* paid access. Users who already had data keep using the app for free.
+   TRIAL: one sample code, no server. On launch, checkAccessCode asks the server. */
+const ACCESS_KEY = "maatafot-access-v1", ACCESS_TRIAL = true, ACCESS_SAMPLE = "NT-DEMO-2026";
+function accessNorm(c){ return String(c || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+function hasAccess(){ try{ return !!localStorage.getItem(ACCESS_KEY); }catch(e){ return true; } }
+function grantAccess(o){ try{ localStorage.setItem(ACCESS_KEY, JSON.stringify(Object.assign({ at:Date.now() }, o))); }catch(e){} }
+function checkAccessCode(c){ return Promise.resolve(ACCESS_TRIAL && accessNorm(c) === accessNorm(ACCESS_SAMPLE)); }
+if(state && !hasAccess()) grantAccess({ existing:true });
 let ui = { tab:"home", month: curYM(), year: new Date().getFullYear(), showAll:false, expTab:"var" };
 let ob = null;
 
@@ -1422,6 +1438,36 @@ function tourIll(k){
   if(k === "goals") return `<div class="tm">${bars([["קרן חירום","1,500 / 3,000",50],["רכב","6,000 / 24,000",25],["✈️ חופשה","800 / 4,000",20]])}<div class="tm-card tm-soft"><div class="tm-row"><span>500 ₪ בחודש</span><b>יעד ב-2027</b></div></div></div>`;
   if(k === "debts") return `<div class="tm"><div class="tm-hero"><small>סך החובות</small><b>21,375 ₪</b><svg viewBox="0 0 120 30" class="tm-line"><polyline points="2,6 32,11 62,15 92,21 118,26" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>${bars([["הלוואת רכב","14,475 ₪",12,"var(--ok)"],["טלפון בתשלומים","2,200 ₪",8,"var(--ok)"]])}</div>`;
   return `<div class="tm"><div class="tm-hero"><small>ניתוח אוקטובר</small><b style="font-size:19px">עמדת בתקציב</b></div><div class="tm-card"><div class="tm-row"><span>בגדים וקניות</span><b style="color:var(--rose)">חריגה 200</b></div><div class="tm-row"><span>בילויים</span><b style="color:var(--ok)">נשאר 350</b></div></div><div class="tm-card tm-soft"><div class="tm-row"><span>להעלות יעד ל-450 ₪?</span><b style="color:var(--seal)">אישור</b></div></div></div>`;
+}
+function renderGate(){
+  app.innerHTML = `
+    <div class="wl">
+      <div class="wl-logo"><svg viewBox="212 212 600 600" aria-hidden="true"><defs><linearGradient id="gtG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBE6A6"/><stop offset="1" stop-color="#D9A93F"/></linearGradient><linearGradient id="gtGH" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#E0B24A"/><stop offset="1" stop-color="#FCE8AC"/></linearGradient></defs><path class="wl-arc" pathLength="500" d="M 690 300 A 282 282 0 1 0 794 512" fill="none" stroke="url(#gtGH)" stroke-width="30" stroke-linecap="round"/><rect x="352" y="520" width="78" height="170" rx="14" fill="url(#gtG)"/><rect x="456" y="440" width="78" height="250" rx="14" fill="url(#gtG)"/><rect x="560" y="350" width="78" height="340" rx="14" fill="url(#gtG)"/><path d="M 300 470 C 420 440 560 380 690 262" fill="none" stroke="url(#gtGH)" stroke-width="30" stroke-linecap="round"/><path d="M 610 250 L 724 230 L 700 344 Z" fill="#FCE8AC" stroke="#FCE8AC" stroke-width="14" stroke-linejoin="round"/><circle cx="676" cy="652" r="104" fill="url(#gtG)" stroke="#5A63CF" stroke-width="12"/><g fill="none" stroke="#3A44A8" stroke-width="17" stroke-linecap="round" stroke-linejoin="round"><path d="M 628 702 L 628 604 L 676 604 Q 700 604 700 628 L 700 668"/><path d="M 724 602 L 724 700 L 676 700 Q 652 700 652 676 L 652 636"/></g></svg></div>
+      <div class="wl-kick">ברוכים הבאים ל</div>
+      <h1>ניהול פיננסי</h1>
+      <p class="wl-sub">כדי להפעיל את האפליקציה, הזינו את קוד הגישה שקיבלתם במייל אחרי ההצטרפות.</p>
+      <div class="gt-form">
+        <label for="gtCode">קוד גישה</label>
+        <input id="gtCode" class="gt-in" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="NT-XXXX-XXXX" aria-describedby="gtErr">
+        <p class="gt-err" id="gtErr" role="alert"></p>
+      </div>
+      ${ACCESS_TRIAL ? `<p class="gt-trial">מצב ניסיון: קוד לדוגמה <b dir="ltr">${ACCESS_SAMPLE}</b></p>` : ""}
+      <button class="wl-go" id="gtGo">הפעלה</button>
+      <a class="wl-link" href="https://nihul-taktziv.github.io/#join" target="_blank" rel="noopener">עדיין לא הצטרפתם? להצטרפות · 50 ₪</a>
+      <div class="wl-copy">© 2026 בנימין אמבאו · כל הזכויות שמורות</div>
+    </div>`;
+  const inp = document.getElementById("gtCode"), err = document.getElementById("gtErr");
+  const go = () => {
+    const c = inp.value.trim();
+    if(!c){ err.textContent = "הזינו את קוד הגישה מהמייל."; inp.setAttribute("aria-invalid", "true"); inp.focus(); return; }
+    checkAccessCode(c).then(ok => {
+      if(!ok){ err.textContent = "הקוד לא נמצא. בדקו שהעתקתם אותו בדיוק כמו במייל."; inp.setAttribute("aria-invalid", "true"); inp.focus(); return; }
+      grantAccess({ code: accessNorm(c) }); render();
+    });
+  };
+  inp.oninput = () => { err.textContent = ""; inp.removeAttribute("aria-invalid"); };
+  inp.onkeydown = e => { if(e.key === "Enter") go(); };
+  document.getElementById("gtGo").onclick = go;
 }
 function renderIntro(){
   const replay = !!ui.tourReplay;
@@ -1798,6 +1844,7 @@ app.addEventListener("scroll", closeHelp, true);
 
 function render(){
   coach = null;
+  if(!state && !hasAccess()){ renderGate(); return; }
   if(!state || !state.onboarded){ if(intro.stage !== "done") renderIntro(); else renderOnboarding(); return; }
   if(ui.locked){ renderLock(); return; }
   if(ui.tourReplay){ renderIntro(); return; }
