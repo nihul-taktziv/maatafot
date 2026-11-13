@@ -307,6 +307,8 @@ select.field{appearance:none;-webkit-appearance:none}
 .gc-ic{width:38px;height:38px;border-radius:12px;background:var(--seal);color:var(--on-seal,#fff);display:grid;place-items:center;flex:none}
 .gc-t{flex:1;min-width:0}.gc-t b{display:block;font-size:15px;color:var(--seal)}.gc-t small{display:block;color:var(--ink-2);font-size:13px}
 .gc-x{font-style:normal;font-size:22px;color:var(--ink-2);padding:0 6px;line-height:1}
+.sh-p{margin:0 0 12px;color:var(--ink-2);font-size:15.5px;line-height:1.55}
+.sh-list{margin:0 0 12px;padding:0 20px 0 0;font-size:15.5px;line-height:1.55;display:flex;flex-direction:column;gap:6px}
 .wn-list{list-style:none;margin:0 0 4px;padding:0;display:flex;flex-direction:column;gap:14px}
 .wn-list li{display:flex;gap:12px;align-items:flex-start}
 .wn-list b{display:block;font-size:15.5px}
@@ -1345,6 +1347,46 @@ function monthData(ym){
   }
   return state.months[ym];
 }
+function ymShift(ym, n){ let [y, m] = ym.split("-").map(Number); m += n; while(m > 12){ m -= 12; y++; } while(m < 1){ m += 12; y--; } return y + "-" + pad(m); }
+/* Months the user did not open (no visit all month) are filled in from the plan,
+   so savings, goals and loan balances keep counting. Saving in such a month = the target. */
+function fillGapMonths(){
+  const cur = curYM(), keys = Object.keys(state.months).sort(), first = keys[0];
+  if(!first || first >= cur) return;
+  let ym = first > startYM() ? first : startYM();
+  if(monthsBetween(ym, cur) > 36) ym = ymShift(cur, -36);
+  const added = [];
+  for(; ym < cur; ym = ymShift(ym, 1)){
+    if(state.months[ym]) continue;
+    monthData(ym).gap = true; added.push(ym);
+  }
+  if(added.length){
+    const n = state.gapNote;
+    state.gapNote = { from: n && n.from < added[0] ? n.from : added[0], to: added[added.length - 1], count: (n ? n.count : 0) + added.length };
+    save();
+  }
+}
+function gapNoteHTML(g){
+  const when = g.count === 1 ? `ב${ymLabel(g.from)}` : `מ${ymLabel(g.from)} עד ${ymLabel(g.to)}`;
+  return `
+    <h3 id="sheetTitle">${svgIcon("calendar-check", 20)} השלמנו חודשים שעברו</h3>
+    <p class="sh-p">לא נכנסתם לאפליקציה ${when}, אז השלמנו ${g.count === 1 ? "את החודש הזה" : "את החודשים האלה"} לפי התוכנית שלכם:</p>
+    <ul class="sh-list">
+      <li>תשלומים קבועים עם יום חיוב, והחזרי הלוואות, סומנו כחויבו.</li>
+      <li>החיסכון נרשם לפי היעד החודשי, והמטרות קיבלו את ההפרשה שלהן.</li>
+    </ul>
+    <p class="sh-p">אם משהו היה אחרת, אפשר לתקן: בדף החיסכון לוחצים על החודש ומזינים כמה נחסך בפועל, ובמסך הבית עוברים לחודש ומעדכנים הוצאות.</p>
+    <button class="btn btn-primary" id="sCancel">הבנתי</button>`;
+}
+function maybeGapNote(){
+  if(!state.gapNote || ui.tab !== "home" || ui.help || ui.summary || ui.locked || (state.seenVersion || 0) < APP_VERSION) return;
+  clearTimeout(maybeGapNote.t);
+  maybeGapNote.t = setTimeout(() => {
+    if(!state.gapNote || coach || document.querySelector(".sheet.open") || ui.tab !== "home") return;
+    const g = state.gapNote; state.gapNote = null; save();
+    showSheet(gapNoteHTML(g)).classList.add("set-sheet");
+  }, 900);
+}
 function activeCats(){ return state.cats.filter(c => !c.archived); }
 function calc(ym){
   const m = monthData(ym);
@@ -1367,10 +1409,12 @@ function calc(ym){
   r.expensesEff = r.fixedEff + r.extraEff + variable;
   const ended = ym < curYM() || !!m.closed;
   const goal = m.saving || 0, saved = m.savedActual;
-  const hasAny = !!m.opened || exps.length > 0 || ["income","fixed","extra"].some(k => m.lines[k].some(l => l.actual != null));
+  const hasAny = !!m.opened || !!m.gap || exps.length > 0 || ["income","fixed","extra"].some(k => m.lines[k].some(l => l.actual != null));
   r.autoSaved = hasAny && isTracked(ym) ? Math.max(0, r.incomeEff - r.expensesEff) : null;
   /* A month from before the start, opened by hand: expenses were not recorded day by day, so count the saving target, not everything left over. */
   if(r.autoSaved != null && m.opened && ym < startYM()) r.autoSaved = Math.min(r.autoSaved, goal);
+  /* A month filled in while the app was not used: spending was not recorded, so count the target, not everything left over. */
+  if(r.autoSaved != null && m.gap) r.autoSaved = Math.min(r.autoSaved, goal);
   r.savedManual = saved != null; r.monthEnded = ended;
   r.savedActual = saved != null ? saved : (ended ? r.autoSaved : null);
   r.savingEff = saved != null ? (ended ? saved : Math.max(goal, saved)) : (ended && r.autoSaved != null ? r.autoSaved : goal);
@@ -1671,8 +1715,9 @@ function coachKey(){
 function coachSeen(k){ const src = state || ob || {}; return !!(src.coachSeen && src.coachSeen[k]); }
 /* "What's new": shown once after an update. When shipping a user-facing change, bump APP_VERSION
    (same number as the sw.js cache) and add a line at the top of WHATS_NEW. */
-const APP_VERSION = 60;
+const APP_VERSION = 61;
 const WHATS_NEW = [
+  { v:61, ic:"calendar-check", t:"חודשים שלא נכנסתם אליהם", d:"אם לא פתחתם את האפליקציה חודש שלם, היא משלימה אותו לפי התוכנית: תשלומים קבועים והלוואות מסומנים כחויבו, והחיסכון נרשם לפי היעד. אפשר לתקן בדף החיסכון." },
   { v:59, ic:"shield", t:"פרטיות, תנאי שימוש ונגישות", d:"בהגדרות ← מידע משפטי: מדיניות פרטיות, תנאי שימוש והצהרת נגישות. האפליקציה נוחה יותר עם מקלדת וקורא מסך, והצבעים קריאים יותר." },
   { v:58, ic:"message-circle", t:"יצירת קשר", d:"שאלה או רעיון לשיפור? הגדרות ← יצירת קשר, ומשם בלחיצה לוואטסאפ או למייל." },
   { v:57, ic:"piggy-bank", t:"סך הכול בחיסכון", d:"בחיסכון ← חודשי המספר הגדול כולל עכשיו גם את מה שהיה בחיסכון לפני שהתחלתם. חודש קודם שפתחתם ידנית נספר בחיסכון לפי היעד שלו." },
@@ -3195,6 +3240,7 @@ function renderApp(){
   if(coach){ coach = null; }
   closeHelp && app.querySelector && closeHelp();
   applyTheme();
+  fillGapMonths();
   autoPayDebts();
   syncDebts(ui.month); if(ui.month !== curYM()) syncDebts(curYM());
   const tab = ui.tab;
@@ -3273,6 +3319,7 @@ function renderApp(){
   animateIn(tab);
   maybeCoach();
   maybeWhatsNew();
+  maybeGapNote();
 }
 /* Gentle motion: bars and charts grow when a page opens, the big number counts to its new value. */
 const reduceMotion = () => window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -4140,7 +4187,7 @@ function saveQuickOptions(ym){
   const r = calc(ym), goal = r.m.saving || 0, extra = Math.max(0, Math.round(r.leftAfterGoal));
   const opts = [];
   if(goal > 0) opts.push({ v: goal, t: "העברתי את היעד", s: money(goal) });
-  if(extra > 0) opts.push({ v: goal + extra, t: r.monthEnded ? "היעד + מה שנשאר" : "היעד + מה שנשאר עד עכשיו", s: money(goal + extra) });
+  if(extra > 0 && !r.m.gap) opts.push({ v: goal + extra, t: r.monthEnded ? "היעד + מה שנשאר" : "היעד + מה שנשאר עד עכשיו", s: money(goal + extra) });
   return opts;
 }
 function quickHTML(ym, attr){
@@ -4265,7 +4312,7 @@ function openSaveSheet(ym){
     <label class="lbl" for="svNote">הערה (לא חובה)</label>
     <input class="field" id="svNote" value="${esc(m.savingNote || "")}" placeholder="למשל העברה לקרן השתלמות">
     ${ym === cur ? `<label class="switch"><span>החודש הסתיים<small class="hint" style="display:block;margin:0">מסמנים כדי לקבל תוצאה סופית מול היעד</small></span><input type="checkbox" id="svClosed" ${m.closed ? "checked" : ""}></label>` : ""}
-    ${r.leftAfterGoal > 0 ? `<div class="info">אחרי היעד וההוצאות, נשארו בחודש הזה ${money(r.leftAfterGoal)} שלא הוצאו. אם העברתם גם אותם לחיסכון, בחרו "היעד + מה שנשאר".</div>` : ""}
+    ${r.m.gap ? `<div class="info">לא נכנסתם לאפליקציה בחודש הזה, ולכן החיסכון נרשם לפי היעד. אם העברתם סכום אחר, הקלידו אותו כאן.</div>` : r.leftAfterGoal > 0 ? `<div class="info">אחרי היעד וההוצאות, נשארו בחודש הזה ${money(r.leftAfterGoal)} שלא הוצאו. אם העברתם גם אותם לחיסכון, בחרו "היעד + מה שנשאר".</div>` : ""}
     <div class="actions">
       ${m.savedActual != null ? `<button class="btn btn-ghost" id="svClear">חישוב אוטומטי</button>` : `<button class="btn btn-ghost" id="sCancel">ביטול</button>`}
       <button class="btn btn-primary" id="svSave2">שמירה</button>
