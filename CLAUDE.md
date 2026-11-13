@@ -9,5 +9,6 @@ Budget PWA in Hebrew (RTL). Data lives only on the device (localStorage), no ser
 - `madrich-excel.pdf` is generated from `budget-planning.xlsx` by `tools/excel-guide/` (build.py writes HTML, render.js writes the PDF and reports overflow and page fill; keep one page per sheet). Regenerate after any change to the workbook.
 - Test in headless Chromium at 390x844: welcome → tour → onboarding → home, then each tab. Coach balloons (`#cSkip`) cover the page after each navigation.
 - Legal: the privacy, terms and accessibility pages live on the landing page repo and are linked from Settings → מידע משפטי. New users tick a consent box on the name screen (`state.terms`). Icons are Lucide (ISC/MIT), see `THIRD_PARTY_NOTICES.md`. Keep text contrast at 4.5:1 and check new screens with axe-core.
+- Access: new users without data must enter an access code (`renderGate`, key `maatafot-access-v1`, shared with the landing page). Users who already have data are granted access automatically. TRIAL mode (`ACCESS_TRIAL`) accepts only the sample code `NT-DEMO-2026` and shows it on the screen.
 - Copyright: © בנימין אמבאו (Binyamin Ambaw), all rights reserved, see `LICENSE`. Keep the footer lines on the welcome screen and in Settings.
 - User-facing text is Hebrew; reply to the owner in Hebrew.
